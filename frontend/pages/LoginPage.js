@@ -1,23 +1,51 @@
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native'
 
 const LoginPage = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        /** if (logged in) 
+         * navigation.navigate("Home")
+         */ 
+        return;
+    });
+
+    const goHome = () => {navigation.replace("Home")};
+
+    const handleSignUp = () =>  {
+        console.log("Signing up " + email + " " + password);
+        //sendToBackEnd(email,password)
+
+    }
+    const handleLogin = () => {
+        console.log("Logging in " + email + " " + password);
+        //sendToBackEnd(email,password)
+    }
+
   return (
     <KeyboardAvoidingView
         style = {styles.container}
         behavior="padding"
-    >
+    > 
         <h1>Login and Signup</h1>
 
         <View style={styles.inputContainer}>
             <TextInput 
                 placeholder="Email"
+                value = {email}
+                onChangeText={input => setEmail(input)}
                 style={styles.input}
             />
 
             <TextInput 
                 placeholder="Password"
+                value = {password}
+                onChangeText={input => setPassword(input)}
                 style={styles.input}
                 secureTextEntry
             />
@@ -25,17 +53,24 @@ const LoginPage = () => {
 
         <View style={styles.buttonContainer}>
             <TouchableOpacity
-                onPress={ () => {}}
+                onPress={handleLogin}
                 style={[styles.button, styles.buttonOutline]}
             >
                 <Text style={styles.button}>Login</Text>
             </TouchableOpacity> 
 
             <TouchableOpacity
-                onPress={ () => {}}
+                onPress={handleSignUp}
                 style={[styles.button, styles.buttonOutline]}
             >
                 <Text style={styles.button}>Signup</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                onPress={goHome}
+                style={[styles.button, styles.buttonOutline]}
+            >
+                <Text style={styles.button}>(Override: Go Home)</Text>
             </TouchableOpacity>
         </View>
 
