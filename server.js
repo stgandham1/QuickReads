@@ -14,6 +14,7 @@ var pool = new Pool({
   maxUses: 7500, // close (and replace) a connection after it has been used 7500 times (see below for discussion)
 })
   
+let a = 2
 
 app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
@@ -28,7 +29,7 @@ app.get('/read', async (req,res) => {
 
 app.get('/getcategories/:username',async (req,res) => {
     let user = req.params.username
-    
+
     res.send("" + z)
   });
 
