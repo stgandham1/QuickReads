@@ -15,7 +15,7 @@ const LoginPage = () => {
         return;
     });
 
-    const goHome = () => {navigation.replace("Home")};
+    const goHome = () => {navigation.navigate("Home")};
 
     const handleSignUp = () =>  {
         console.log("Signing up " + email + " " + password);
