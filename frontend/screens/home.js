@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-
-
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -8,17 +6,9 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
+import { globalStyles } from "../../front_end/styles/global";
 
-
-import { globalStyles } from "../styles/global";
-import { useNavigation } from "@react-navigation/native";
-
-
-
-//HOME IS ARTICLE CONTAINER
-export default function Home() {
-
-  const navigation = useNavigation();
+export default function Home({ navigation }) {
   const [reviews, setReviews] = useState([
     { title: "article one", content: "article one content", key: "1" },
     { title: "article two", content: "article two content", key: "2" },
