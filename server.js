@@ -1,15 +1,20 @@
 const express = require ('express');
 const app = express();
-const Pool = require('pg').Pool
+const {Pool} = require('pg')
 
-var pool = new Pool({
-  database: 'postgres',
-  user: 'postgres',
-  password: 'postgres',
-  host:'quickreads.caksjqa6dpcu.us-east-2.rds.amazonaws.com',
-  port: 5432,
-})
-pool.connect();
+const pool = new Pool({
+
+  host: process.env.RDS_HOSTNAME,
+  user:process.env.RDS_USERNAME,
+  port:process.env.RDS_PORT,
+  password:process.env.RDS_PASSWORD,
+  database:process.env.RDS_DB_NAME,
+  ssl: {
+    rejectUnauthorized: false,
+}
+});
+
+pool.connect()
 
 app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
