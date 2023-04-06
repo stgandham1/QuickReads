@@ -21,8 +21,13 @@ app.get('/', async (req,res) => {
   });
 
   app.get('/test', async (req,res) => {
-    
-    pool.query("INSERT INTO public.userinfo (idtoken, firstname, lastname) VALUES ($1,$2,$3)", ["1","2","3"])
+    let n1 =  Math.floor(Math.random() * 1000).toString()
+
+    let n2 =  Math.floor(Math.random() * 1000).toString()
+
+    let n3 =  Math.floor(Math.random() * 1000).toString()
+    pool.query("INSERT INTO public.userinfo (idtoken, firstname, lastname) VALUES ($1,$2,$3)", [n1,n2,n3])
+    res.send("Inserted random element")
   });
 
 
