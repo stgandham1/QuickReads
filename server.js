@@ -48,8 +48,8 @@ app.get('/', async (req,res) => {
 
   // Check if the username and password are correct
   app.get('/checkuser/:username/:password', async (req,res) => {
-    let results = await pool.query("SELECT * FROM public.authentication WHERE username = $1 and password = $2", [req.params.username,req.params.password])
-    res.send(results.rowCount)
+    let results = await pool.query("SELECT COUNT(*) FROM public.authentication WHERE username = $1", [req.params.username])
+    res.send(results)
   });
 
 
