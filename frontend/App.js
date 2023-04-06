@@ -5,11 +5,12 @@ import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import LoginPage from "./pages/LoginPage";
+import LoginPage from "./screens/LoginPage";
 import HomePage from "./pages/HomePage";
-import BottomTabNavigator from "./routes/buttomTab";
+import BottomTabNavigator from "./routes/bottomTab";
 import Home from "./screens/home";
 import ReviewDetail from "./screens/reviewDetails";
+import { LoginStackNavigator } from "./routes/loginStack";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -31,7 +32,8 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <BottomTabNavigator />
+      {/* <BottomTabNavigator /> */}
+      <LoginStackNavigator/>
     </NavigationContainer>
   );
   // return (

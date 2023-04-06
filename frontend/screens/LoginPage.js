@@ -2,8 +2,9 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-n
 import React, {useState, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native'
+import BottomTabNavigator from '../routes/bottomTab'
 
-const LoginPage = () => {
+export default function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const navigation = useNavigation();
@@ -15,7 +16,7 @@ const LoginPage = () => {
         return;
     });
 
-    const goHome = () => {navigation.navigate("Home")};
+    const goHome = () => {navigation.replace("BottomTabNavigator")};
 
     const handleSignUp = () =>  {
         console.log("Signing up " + email + " " + password);
@@ -77,8 +78,6 @@ const LoginPage = () => {
     </KeyboardAvoidingView>
   )
 }
-
-export default LoginPage
 
 const styles = StyleSheet.create({
     container: {

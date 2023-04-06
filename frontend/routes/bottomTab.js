@@ -14,7 +14,7 @@ const BottomTabNavigator = () => {
       />
       <Tab.Screen
         options={{ headerShown: false }}
-        name="ButtomContact"
+        name="BottomContact"
         component={ContactStackNavigator}
       />
     </Tab.Navigator>
