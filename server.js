@@ -19,7 +19,18 @@ pool.connect()
 app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
   });
-  
+
+  app.get('/test', async (req,res) => {
+    
+    pool.query("INSERT INTO public.userinfo (idtoken, firstname, lastname) VALUES ($1,$2,$3)", ["1","2","3"])
+  });
+
+
+  app.get('/testResults', async (req,res) => {
+    let results = await pool.query("SELECT * from public.userinfo")
+    res.send(results.rows)
+  });
+
 app.get('/verifyAuthentication/:username/:password', async  (req,res) => {
   const username = req.params.username
   const password = req.params.password
