@@ -1,14 +1,14 @@
 const express = require ('express');
 const app = express();
-// var Pool = require('pg-pool')
+var Pool = require('pg-pool')
 
-// var pool = new Pool({
-//   database: 'postgres',
-//   user: 'postgres',
-//   password: 'postgres',
-//   host:'quickreads.caksjqa6dpcu.us-east-2.rds.amazonaws.com',
-//   port: 5432,
-// })
+var pool = new Pool({
+  database: 'postgres',
+  user: 'postgres',
+  password: 'postgres',
+  host:'quickreads.caksjqa6dpcu.us-east-2.rds.amazonaws.com',
+  port: 5432,
+})
   
 
 app.get('/', async (req,res) => {
