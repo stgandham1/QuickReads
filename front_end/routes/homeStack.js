@@ -1,27 +1,34 @@
-import { createStackNavigator } from "react-navigation-stack";
-import { createAppContainer } from "react-navigation";
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
 import Home from "../screens/home";
 import ReviewDetail from "../screens/reviewDetails";
-const screens = {
-  Home: {
-    screen: Home,
-    navigationOptions: {
-      title: "HomePage",
-    },
+import About from "../screens/about";
+const Stack = createNativeStackNavigator();
+
+const screenOptionStyle = {
+  headerStyle: {
+    backgroundColor: "#9AC4F8",
   },
-  ReviewDetail: {
-    screen: ReviewDetail,
-    navigationOptions: {
-      title: "Details",
-    },
-  },
+  headerTintColor: "white",
+  headerBackTitle: "Back",
 };
 
-const HomeStack = createStackNavigator(screens, {
-  defaultNavigationOptions: {
-    headerTintColor: "#444",
-    headerStyle: { backgroundColor: "#eee", height: 60 },
-  },
-});
+const MainStackNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="ReviewDetail" component={ReviewDetail} />
+    </Stack.Navigator>
+  );
+};
 
-export default createAppContainer(HomeStack);
+const ContactStackNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="About" component={About} />
+    </Stack.Navigator>
+  );
+};
+
+export { MainStackNavigator, ContactStackNavigator };

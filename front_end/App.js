@@ -1,8 +1,9 @@
 import React from "react";
-import Home from "./screens/home";
 import { useFonts } from "expo-font";
-import Navigator from "./routes/homeStack";
-export default function App() {
+import { NavigationContainer } from "@react-navigation/native";
+import BottomTabNavigator from "./routes/buttomTab";
+
+const App = () => {
   const [loaded] = useFonts({
     "n-regular": require("./assets/fonts/Nunito-Regular.ttf"),
     "n-bold": require("./assets/fonts/Nunito-Bold.ttf"),
@@ -10,5 +11,10 @@ export default function App() {
   if (!loaded) {
     return null;
   }
-  return <Navigator />;
-}
+  return (
+    <NavigationContainer>
+      <BottomTabNavigator />
+    </NavigationContainer>
+  );
+};
+export default App;
