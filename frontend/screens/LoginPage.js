@@ -33,7 +33,7 @@ export default function LoginPage() {
         style = {styles.container}
         behavior="padding"
     > 
-        <h1>Login and Signup</h1>
+        <Text>Login and Signup</Text>
 
         <View style={styles.inputContainer}>
             <TextInput 
