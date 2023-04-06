@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
-
+import BottomTabNavigator from "./routes/buttomTab";
 import Home from "./screens/home";
 import ReviewDetail from "./screens/reviewDetails";
 

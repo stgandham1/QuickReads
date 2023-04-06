@@ -6,7 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { globalStyles } from "../../front_end/styles/global";
+import { globalStyles } from "../styles/global";
 
 export default function Home({ navigation }) {
   const [reviews, setReviews] = useState([
