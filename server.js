@@ -35,6 +35,17 @@ app.get('/', async (req,res) => {
     let results = await pool.query("SELECT * from public.userinfo")
     res.send(results.rows)
   });
+  
+  app.get('/adduser/:username/:password', async (req,res) => {
+    pool.query("INSERT INTO public.authentication (username, password) VALUES ($1,$2)", [req.params.username,req.params.password])
+    res.send("Inserted random element")
+  });
+
+  app.get('/authentication_table', async (req,res) => {
+    let results = await pool.query("SELECT * from public.authentication")
+    res.send(results.rows)
+  });
+
 
 app.get('/verifyAuthentication/:username/:password', async  (req,res) => {
   const username = req.params.username
