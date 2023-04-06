@@ -15,17 +15,17 @@ app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
   });
   
-// app.get('/verifyAuthentication/:username/:password', async  (req,res) => {
-//   const client = await pool.connect();
-//   const username = req.params.username
-//   const password = req.params.password
-//   const query = {
-//           text: 'SELECT * FROM authentication WHERE username = $1 AND password = $2',
-//           values: [username, password],
-//         };
-//   const result = await client.query(query);
-//   res.send(result.rows.length > 0)
-// });
+app.get('/verifyAuthentication/:username/:password', async  (req,res) => {
+  const client = await pool.connect();
+  const username = req.params.username
+  const password = req.params.password
+  const query = {
+          text: 'SELECT * FROM authentication WHERE username = $1 AND password = $2',
+          values: [username, password],
+        };
+  const result = await client.query(query);
+  res.send(result.rows.length > 0)
+});
 
   
 
