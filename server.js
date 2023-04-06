@@ -35,17 +35,23 @@ app.get('/', async (req,res) => {
     let results = await pool.query("SELECT * from public.userinfo")
     res.send(results.rows)
   });
-  
+// Adding new user
   app.get('/adduser/:username/:password', async (req,res) => {
     pool.query("INSERT INTO public.authentication (username, password) VALUES ($1,$2)", [req.params.username,req.params.password])
     res.send("Inserted random element")
   });
-
+// Check if the username and password are correct
   app.get('/authentication_table', async (req,res) => {
     let results = await pool.query("SELECT * from public.authentication")
     res.send(results.rows)
   });
 
+  // Check if the username and password are correct
+  app.get('/adduser/:username/:password', async (req,res) => {
+    let res = await pool.query("SELECT * FROM public.authentication (username, password) VALUES ($1,$2)", [req.params.username,req.params.password])
+    res.send("res")
+  });
+  
 
 app.get('/verifyAuthentication/:username/:password', async  (req,res) => {
   const username = req.params.username
