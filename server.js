@@ -49,7 +49,10 @@ app.get('/', async (req,res) => {
   // Check if the username and password are correct
   app.get('/checkuser/:username/:password', async (req,res) => {
     let results = await pool.query("SELECT * FROM public.authentication WHERE username = $1", [req.params.username])
-    res.send(results)
+    if (results.rowCount == 0){
+      res.send("username doesn't exist")
+    }
+    res.send(results.rows[0].password)
   });
 
 
