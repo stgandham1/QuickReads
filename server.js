@@ -3,18 +3,13 @@ const app = express();
 var Pool = require('pg-pool')
 
 var pool = new Pool({
-  database: 'database-1',
-  user: 'brianc',
-  password: 'secret!',
+  database: 'postgres',
+  user: 'postgres',
+  password: 'postgres',
+  host:'quickreads.caksjqa6dpcu.us-east-2.rds.amazonaws.com',
   port: 5432,
-  ssl: true,
-  max: 20, // set pool max size to 20
-  idleTimeoutMillis: 1000, // close idle clients after 1 second
-  connectionTimeoutMillis: 1000, // return an error after 1 second if connection could not be established
-  maxUses: 7500, // close (and replace) a connection after it has been used 7500 times (see below for discussion)
 })
   
-let a = 2
 
 app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
@@ -37,6 +32,15 @@ let arr = [{name: 'krish', username: "krish67"}, {name: "tommy", username:"tommy
 
 app.get('/getName/:name', async (req,res) =>
 {
+  const client = await pool.connect();
+  const query = {
+          text: 'SELECT * FROM authentication WHERE username = $1 AND password = $2',
+          values: [username, password],
+        };
+  const result = await client.query(query);
+  console.log(result.rows.length)
+  return result.rows.length > 0;
+  res.send(u)
  let n = req.params.name
  let u = null
  for (user in arr){
@@ -47,8 +51,20 @@ app.get('/getName/:name', async (req,res) =>
 
 res.send(u)
 }
+);
 
 
+app.get('/verifyAuthentication/:username/:password', async  (req,res) => {
+  const client = await pool.connect();
+  const username = req.params.username
+  const password = req.params.password
+  const query = {
+          text: 'SELECT * FROM authentication WHERE username = $1 AND password = $2',
+          values: [username, password],
+        };
+  const result = await client.query(query);
+  res.send(result.rows.length > 0)
+}
 );
 
   
