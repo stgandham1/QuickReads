@@ -12,5 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "pg-pool": "^3.6.0"
   }
 }
