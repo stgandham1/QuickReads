@@ -52,7 +52,10 @@ app.get('/', async (req,res) => {
     if (results.rowCount == 0){
       res.send("username doesn't exist")
     }
-    res.send(results.rows[0].password)
+    if (results.rows[0].password == req.params.password){
+      res.send("true")
+    }
+    res.send("false")
   });
 
 
