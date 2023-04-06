@@ -48,26 +48,9 @@ app.get('/', async (req,res) => {
 
   // Check if the username and password are correct
   app.get('/adduser/:username/:password', async (req,res) => {
-    let res = await pool.query("SELECT * FROM public.authentication (username, password) VALUES ($1,$2)", [req.params.username,req.params.password])
-    res.send("res")
+    let res = await pool.query("SELECT * FROM public.authentication WHERE username = $1 and password = $2", [req.params.username,req.params.password])
+    res.send(res)
   });
-  
-
-app.get('/verifyAuthentication/:username/:password', async  (req,res) => {
-  const username = req.params.username
-  const password = req.params.password
-  const query = {
-          text: 'SELECT * FROM authentication WHERE username = $1 AND password = $2',
-          values: [username, password],
-        };
-  const result = await pool.query(query);
-  res.send(result.rows.length > 0)
-});
-
-  
-
-
-
 
 
   app.listen(8080, () => {console.log("Running")});
