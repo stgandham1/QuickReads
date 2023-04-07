@@ -65,9 +65,9 @@ app.get('/', async (req,res) => {
 
   // Add Category
   app.get('/addcategory/:username/:category', async (req,res) => {
-    pool.query("UPDATE public.categories SET category = category || '[$2]'::jsonb WHERE username = $1", [req.params.username,req.params.category])
-    res.send("Added category")
+    pool.query("UPDATE public.categories SET category = category || $1::jsonb WHERE username = $2", [[req.params.category]], [req.params.username]);
+    res.send("Added category");
   });
-
+  
   app.listen(8080, () => {console.log("Running")});
   
