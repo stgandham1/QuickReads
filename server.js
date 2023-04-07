@@ -38,7 +38,7 @@ app.get('/', async (req,res) => {
 // Adding new user
   app.get('/adduser/:username/:password', async (req,res) => {
     pool.query("INSERT INTO public.authentication (username, password) VALUES ($1,$2)", [req.params.username,req.params.password])
-    res.send("Inserted random element")
+    pool.query("INSERT INTO public.categories (username) VALUES ($1)", [req.params.username])
   });
 // Check if the username and password are correct
   app.get('/authentication_table', async (req,res) => {
@@ -56,6 +56,11 @@ app.get('/', async (req,res) => {
       res.send("true")
     }
     res.send("false")
+  });
+  // Adding new user
+  app.get('/addcategory/:username/:category', async (req,res) => {
+    pool.query("UPDATE public.categories SET category = category || '{$2}' WHERE username = $1", [req.params.username,req.params.category])
+    res.send("Added category")
   });
 
 
