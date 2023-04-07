@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import BottomTabNavigator  from "./bottomTab";
-import LoginPage from "../screens/LoginPage";
+import Login from "../screens/Login";
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +16,7 @@ const screenOptionStyle = {
 const LoginStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="LoginPage" component={LoginPage} />
+      <Stack.Screen name="Login" component={Login} />
       <Stack.Screen options={{ headerShown: false }} name="BottomTabNavigator" component={BottomTabNavigator} />
     </Stack.Navigator>
   );

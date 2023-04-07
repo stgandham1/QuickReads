@@ -2,7 +2,6 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-n
 import React, {useState, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { TouchableOpacity } from 'react-native'
-import BottomTabNavigator from '../routes/bottomTab'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -33,7 +32,6 @@ export default function LoginPage() {
         style = {styles.container}
         behavior="padding"
     > 
-        <Text>Login and Signup</Text>
 
         <View style={styles.inputContainer}>
             <TextInput 

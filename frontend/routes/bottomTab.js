@@ -9,12 +9,12 @@ const BottomTabNavigator = () => {
     <Tab.Navigator>
       <Tab.Screen
         options={{ headerShown: false }}
-        name="ButtomHome"
+        name="Home"
         component={MainStackNavigator}
       />
       <Tab.Screen
         options={{ headerShown: false }}
-        name="BottomContact"
+        name="Contact"
         component={ContactStackNavigator}
       />
     </Tab.Navigator>
