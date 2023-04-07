@@ -57,12 +57,17 @@ app.get('/', async (req,res) => {
     }
     res.send("false")
   });
-  // Deleting category
-  app.get('/addcategory/:username/:category', async (req,res) => {
+  // Remove category
+  app.get('/removecategory/:username/:category', async (req,res) => {
     pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [req.params.username,req.params.category])
     res.send("Deleted category")
   });
 
+  // Add Category
+  app.get('/addcategory/:username/:category', async (req,res) => {
+    pool.query("UPDATE public.categories SET category = category || '[$2]'::jsonb WHERE username = $1", [req.params.username,req.params.category])
+    res.send("Added category")
+  });
 
   app.listen(8080, () => {console.log("Running")});
   
