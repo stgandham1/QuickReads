@@ -58,10 +58,10 @@ app.get('/', async (req,res) => {
     res.send("false")
   });
   // Adding new user
-  app.get('/addcategory/:username/:category', async (req,res) => {
-    pool.query("UPDATE public.categories SET category = category || '{$2}' WHERE username = $1", [req.params.username,req.params.category])
-    res.send("Added category")
-  });
+  // app.get('/addcategory/:username/:category', async (req,res) => {
+  //   pool.query("UPDATE public.categories SET category = category || '{$2}' WHERE username = $1", [req.params.username,req.params.category])
+  //   res.send("Added category")
+  // });
 
 
   app.listen(8080, () => {console.log("Running")});
