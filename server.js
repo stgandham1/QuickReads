@@ -75,17 +75,15 @@ app.get('/', async (req,res) => {
     res.send(results.rows)
   });
 
-  // Receives article info based on category info
-  app.get('/getarticles/:username/', async (req,res) => {
+    // Receives article info based on category info
+  app.get('/getarticles/:username', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1")
     let arr = []
     results[0].category.forEach(element => {
-      res.write(element)
-      // res.write(pool.query("SELECT * FROM public.articles WHERE Category = $1",[String(element)]))
-      // arr.push(pool.query("SELECT * FROM public.articles WHERE Category = $1",[String(element)]))
+      arr.concat(pool.query("SELECT * FROM public.articles WHERE Category = $1",[String(element)]))
     });
     //cat.foreach(await pool.query(""))
-    res.end()
+    res.send(arr)
   });
 
   app.listen(8080, () => {console.log("Running")});
