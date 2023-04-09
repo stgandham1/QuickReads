@@ -80,7 +80,7 @@ app.get('/', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1")
     let arr = []
     results[0].category.forEach(element => {
-      arr.concat(pool.query("SELECT * FROM public.articles WHERE Category = $1",[element]))
+      arr.push(pool.query("SELECT * FROM public.articles WHERE Category = $1",[String(element)]))
     });
     //cat.foreach(await pool.query(""))
     res.send(arr)
