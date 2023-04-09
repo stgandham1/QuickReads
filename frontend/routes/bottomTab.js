@@ -1,6 +1,10 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { MainStackNavigator, ContactStackNavigator } from "./homeStack";
+import {
+  MainStackNavigator,
+  ContactStackNavigator,
+  SettingStackNavigator,
+} from "./homeStack";
 
 const Tab = createBottomTabNavigator();
 
@@ -9,13 +13,18 @@ const BottomTabNavigator = () => {
     <Tab.Navigator>
       <Tab.Screen
         options={{ headerShown: false }}
-        name="Home"
+        name="BottomHome"
         component={MainStackNavigator}
       />
       <Tab.Screen
         options={{ headerShown: false }}
-        name="Contact"
+        name="BottomContact"
         component={ContactStackNavigator}
+      />
+      <Tab.Screen
+        options={{ headerShown: false }}
+        name="BottomSetting"
+        component={SettingStackNavigator}
       />
     </Tab.Navigator>
   );

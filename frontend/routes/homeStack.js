@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "../screens/home";
 import ReviewDetail from "../screens/reviewDetails";
 import About from "../screens/about";
+import Setting from "../screens/setting";
 const Stack = createNativeStackNavigator();
 
 const screenOptionStyle = {
@@ -31,4 +32,12 @@ const ContactStackNavigator = () => {
   );
 };
 
-export { MainStackNavigator, ContactStackNavigator };
+const SettingStackNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="Setting" component={Setting} />
+    </Stack.Navigator>
+  );
+};
+
+export { MainStackNavigator, ContactStackNavigator, SettingStackNavigator };
