@@ -62,7 +62,7 @@ app.get('/', async (req,res) => {
     res.send(temp.rows)
   });
 
-  app.get('/getarticles/:category', async (req,res) => {
+  app.get('/getarticletemp/:category', async (req,res) => {
     let results = await pool.query("SELECT * from public.articles WHERE category = $1",[req.params.category]);
     res.send(results);
   });
