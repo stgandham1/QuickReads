@@ -58,7 +58,7 @@ app.get('/', async (req,res) => {
   app.get('/getarticles/:username', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1", [req.params.username])
     let ad = results.rows[0].category
-    let temp = await pool.query("SELECT category from public.categories WHERE username = $1", [ad[0]]);
+    let temp = await pool.query("SELECT * from public.articles WHERE Category = $1", [ad[0]]);
     res.send(temp.rows)
   });
 
