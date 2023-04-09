@@ -20,30 +20,10 @@ app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
   });
 
-  app.get('/test', async (req,res) => {
-    let n1 =  Math.floor(Math.random() * 1000).toString()
-
-    let n2 =  Math.floor(Math.random() * 1000).toString()
-
-    let n3 =  Math.floor(Math.random() * 1000).toString()
-    pool.query("INSERT INTO public.userinfo (idtoken, firstname, lastname) VALUES ($1,$2,$3)", [n1,n2,n3])
-    res.send("Inserted random element")
-  });
-
-
-  app.get('/testResults', async (req,res) => {
-    let results = await pool.query("SELECT * from public.userinfo")
-    res.send(results.rows)
-  });
 // Adding new user
   app.get('/adduser/:username/:password', async (req,res) => {
     pool.query("INSERT INTO public.authentication (username, password) VALUES ($1,$2)", [req.params.username,req.params.password])
     pool.query("INSERT INTO public.categories (username) VALUES ($1)", [req.params.username])
-  });
-// Check if the username and password are correct
-  app.get('/authentication_table', async (req,res) => {
-    let results = await pool.query("SELECT * from public.authentication")
-    res.send(results.rows)
   });
 
   // Check if the username and password are correct
@@ -65,25 +45,19 @@ app.get('/', async (req,res) => {
 
   // Add Category
   app.get('/addcategory/:username/:category', async (req,res) => {
-    pool.query("UPDATE public.categories SET category = category || $1::jsonb WHERE username = $2", ['[req.params.category]'], [req.params.username]);
+    pool.query("UPDATE public.categories SET category = category || $1::jsonb WHERE username = $2", ['[req.params.category]', req.params.username]);
     res.send("Added category");
   });
-
-  // Check if the username and password are correct
-  app.get('/category_table', async (req,res) => {
-    let results = await pool.query("SELECT * from public.categories")
-    res.send(results.rows)
+  // Get Categories
+  app.get('/getcategory/:username', async (req,res) => {
+    let results = await pool.query("SELECT category from public.categories WHERE username = $1", [req.params.username]);
+    res.send(results);
   });
 
-    // Receives article info based on category info
+  // Receives article info based on category info
   app.get('/getarticles/:username', async (req,res) => {
-    let results = await pool.query("SELECT category FROM public.categories WHERE username = $1",[req.params.username])
-    let arr = []
-    results[0].category.forEach(element => {
-      arr.push(pool.query("SELECT * FROM public.articles WHERE Category = $1",[String(element)]))
-    });
-    res.send(arr)
+    let results = await pool.query("SELECT category FROM public.categories WHERE username = $1", [req.params.username])
+    res.send(results[0].rows['category'])
   });
 
   app.listen(8080, () => {console.log("Running")});
-  
