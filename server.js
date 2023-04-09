@@ -80,10 +80,12 @@ app.get('/', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1")
     let arr = []
     results[0].category.forEach(element => {
-      arr.push(pool.query("SELECT * FROM public.articles WHERE Category = $1",[String(element)]))
+      res.write(element)
+      // res.write(pool.query("SELECT * FROM public.articles WHERE Category = $1",[String(element)]))
+      // arr.push(pool.query("SELECT * FROM public.articles WHERE Category = $1",[String(element)]))
     });
     //cat.foreach(await pool.query(""))
-    res.send(arr)
+    res.end()
   });
 
   app.listen(8080, () => {console.log("Running")});
