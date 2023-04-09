@@ -27,13 +27,62 @@ export default function LoginPage() {
     navigation.replace("BottomTabNavigator");
   };
 
-  const handleSignUp = () => {
-    console.log("Signing up " + email + " " + password);
+  const signupRoute = 'http://quickreads-env.eba-fcrydzrp.us-east-2.elasticbeanstalk.com/adduser';
+  const loginRoute = 'http://quickreads-env.eba-fcrydzrp.us-east-2.elasticbeanstalk.com/checkuser';
+  async function handleSignUp() {
+    if (email.length == 0 || password.length == 0) { 
+      console.log("[No Input Detected]");
+      return;
+    }
+
+    const loginRequest = await fetch(loginRoute+'/'+email+'/'+password, {
+      method:'GET',
+      mode:'no-cors'
+    });
+    loginRequest = loginRequest.json();
+
+    const loginResponse = "trueFalseOrDNE"; 
+    if (loginResponse == "username doesn't exist") {
+      const signupRequest = await fetch(signupRoute+'/'+email+'/'+password, {
+        method:'POST',
+        mode:'no-cors'
+      });
+      signupRequest = signupRequest.json();
+      //SIGN UP ON JSON
+      console.log("Signing up " + email + " " + password);
+    }
+    else { 
+      // Indicate: Username Already Exists
+    }
+
     //sendToBackEnd(email,password)
   };
-  const handleLogin = () => {
-    console.log("Logging in " + email + " " + password);
-    //sendToBackEnd(email,password)
+
+  async function handleLogin() {
+    if (email.length == 0 || password.length == 0) { 
+      console.log("[No Input Detected]");
+      return;
+    }
+
+    const request = await fetch(loginRoute+'/'+email+'/'+password, {
+      method:'GET',
+      mode:'no-cors'
+    });
+
+    request = request.json();
+    const response = "trueFalseOrDNE"; // set to page. 
+    
+    if (response == 'true') {
+      //log in
+      console.log("Logging in " + email + " " + password);
+      goHome();
+    } else if (response == 'false') {
+      //console.log("wrong password")
+      console.log("Could not log in " + email + " " + password);
+    }
+    else if (response == "username doesn't exist" ) {
+      console.log("Could not log in " + email + " " + password);
+    }
   };
 
   return (
