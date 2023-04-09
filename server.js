@@ -57,9 +57,7 @@ app.get('/', async (req,res) => {
   // Receives article info based on category info
   app.get('/getarticles/:username', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1", [req.params.username])
-    res.write(results.rows[0].category)
-    res.write('hi')
-    res.end()
+    res.send(results.rows[0].category)
   });
 
   app.listen(8080, () => {console.log("Running")});
