@@ -80,7 +80,7 @@ app.get('/', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1", [req.params.username])
     let cat = results
     //cat.foreach(await pool.query(""))
-    res.send(cat, typeof(cat))
+    res.send(cat)
   });
 
   app.listen(8080, () => {console.log("Running")});
