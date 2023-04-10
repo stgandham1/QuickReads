@@ -53,6 +53,8 @@ app.get('/', async (req,res) => {
     res.send(currentcategories);
   });
 
+
+  //test
   // Get Categories
   app.get('/getcategory/:username', async (req,res) => {
     let results = await pool.query("SELECT category from public.categories WHERE username = $1", [req.params.username]);
