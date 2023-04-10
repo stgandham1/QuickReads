@@ -57,14 +57,14 @@ app.get('/', async (req,res) => {
   // Receives article info based on category info
   app.get('/getarticles/:username', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1", [req.params.username])
-    let ad = results.rows[0].category
-    let temp = await pool.query("SELECT * from public.articles WHERE category = $1", [ad[0]]);
+    let listofcategories = results.rows[0].category
+    let temp = await pool.query("SELECT * from public.articles WHERE category = ANY($1::varchar[])", [listofcategories]);
     res.send(temp.rows)
   });
 
-  app.get('/getarticletemp/:category', async (req,res) => {
-    let results = await pool.query("SELECT * from public.articles WHERE category = $1",[req.params.category]);
-    res.send(results);
-  });
+  // app.get('/getarticle/:category', async (req,res) => {
+  //   let results = await pool.query("SELECT * from public.articles WHERE category = $1",[req.params.category]);
+  //   res.send(results);
+  // });
 
   app.listen(8080, () => {console.log("Running")});
