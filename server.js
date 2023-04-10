@@ -68,12 +68,8 @@ app.get('/', async (req,res) => {
 
   // get bookmarks
   app.get('/getbookmarks/:username', async (req,res) => {
-    let results = await pool.query("SELECT json_array_elements(url) from public.bookmarks WHERE username = $1", [req.params.username]);
-    // arr = []
-    // results.forEach(element =>{
-    //   arr.push(element["url"])
-    // })
-    res.send(results);
+    let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", [req.params.username]);
+    res.send(results.rows);
   });
 
   // add bookmark
@@ -83,7 +79,7 @@ app.get('/', async (req,res) => {
   });
 
   // remove bookmark
-  app.get('/removebookmark/:username/:url', async (req,res) => {
+  app.get('/getbookmarks/:username/:url', async (req,res) => {
     await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [req.params.username,req.params.url]);
     res.send();
   });
