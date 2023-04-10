@@ -69,11 +69,7 @@ app.get('/', async (req,res) => {
   // get bookmarks
   app.get('/getbookmarks/:username', async (req,res) => {
     let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", [req.params.username]);
-    arr = []
-    for (var key in results) {
-      arr.push(dict[key]);
-    }
-    res.send(arr);
+    res.send(results.rows);
   });
 
   // add bookmark
