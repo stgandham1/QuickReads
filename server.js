@@ -46,7 +46,7 @@ app.get('/', async (req,res) => {
   // Add Category
   app.get('/addcategory/:username/:category', async (req,res) => {
     const { username, category } = req.params;
-      // Fetch the current categories
+
       const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE username=$1", [username]);
       let currentCategories = currentCategoriesResult.rows[0].category;
       currentCategories.push(category);
@@ -56,7 +56,6 @@ app.get('/', async (req,res) => {
   });
 
 
-  //test
   // Get Categories
   app.get('/getcategory/:username', async (req,res) => {
     let results = await pool.query("SELECT category from public.categories WHERE username = $1", [req.params.username]);
@@ -71,8 +70,7 @@ app.get('/', async (req,res) => {
     res.send(temp.rows)
   });
 
-  // get bookmarks
-  /*
+//get bookmark
   app.get('/getbookmarks/:username', async (req,res) => {
     let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", [req.params.username]);
     res.send(results.rows);
@@ -89,7 +87,7 @@ app.get('/', async (req,res) => {
     await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [req.params.username,req.params.url]);
     res.send();
   });
-  */
+  
 
   app.listen(8080, () => {console.log("Running")});
 
