@@ -48,7 +48,8 @@ app.get('/', async (req,res) => {
     currentcategories = await pool.query("SELECT category from public.categories WHERE username=$1",[req.params.username])
     currentcategories = currentcategories.rows[0].category
     currentcategories.push(req.params.category)
-    pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [currentcategories, req.params.username]);
+    let test = await pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [currentcategories, req.params.username]);
+    console.log(test)
     res.send(currentcategories);
   });
 
