@@ -73,13 +73,13 @@ app.get('/', async (req,res) => {
   });
 
   // add bookmark
-  app.get('/getbookmarks/:username/:url', async (req,res) => {
+  app.get('/addbookmark/:username/:url', async (req,res) => {
     await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [req.params.username,req.params.url]);
     res.send();
   });
 
   // remove bookmark
-  app.get('/getbookmarks/:username/:url', async (req,res) => {
+  app.get('/removebookmark/:username/:url', async (req,res) => {
     await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [req.params.username,req.params.url]);
     res.send();
   });
