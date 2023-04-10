@@ -67,6 +67,7 @@ app.get('/', async (req,res) => {
   });
 
   // get bookmarks
+  /*
   app.get('/getbookmarks/:username', async (req,res) => {
     let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", [req.params.username]);
     res.send(results.rows);
@@ -83,6 +84,7 @@ app.get('/', async (req,res) => {
     await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [req.params.username,req.params.url]);
     res.send();
   });
+  */
 
   app.listen(8080, () => {console.log("Running")});
 
