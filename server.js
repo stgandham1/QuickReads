@@ -79,7 +79,7 @@ app.get('/', async (req,res) => {
   });
 
   // remove bookmark
-  app.get('/getbookmarks/:username/:url', async (req,res) => {
+  app.get('/removebookmark/:username/:url', async (req,res) => {
     await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [req.params.username,req.params.url]);
     res.send();
   });
