@@ -66,10 +66,23 @@ app.get('/', async (req,res) => {
     res.send(temp.rows)
   });
 
-  // app.get('/getarticle/:category', async (req,res) => {
-  //   let results = await pool.query("SELECT * from public.articles WHERE category = $1",[req.params.category]);
-  //   res.send(results);
-  // });
+  // get bookmarks
+  app.get('/getbookmarks/:username', async (req,res) => {
+    let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", [req.params.username]);
+    res.send(results.rows);
+  });
+
+  // add bookmark
+  app.get('/getbookmarks/:username/:url', async (req,res) => {
+    await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [req.params.username,req.params.url]);
+    res.send();
+  });
+
+  // remove bookmark
+  app.get('/getbookmarks/:username/:url', async (req,res) => {
+    await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [req.params.username,req.params.url]);
+    res.send();
+  });
 
   app.listen(8080, () => {console.log("Running")});
 
