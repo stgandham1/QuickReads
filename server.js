@@ -45,11 +45,14 @@ app.get('/', async (req,res) => {
 
   // Add Category
   app.get('/addcategory/:username/:category', async (req,res) => {
-    currentcategories = await pool.query("SELECT category from public.categories WHERE username=$1",[JSON.parsereq.params.username])
-    currentcategories = currentcategories.rows[0].category
-    currentcategories.push(req.params.category)
-    let test = await pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [JSON.stringify(currentcategories), req.params.username]);
-    res.send(test);
+    const { username, category } = req.params;
+      // Fetch the current categories
+      const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE username=$1", [username]);
+      let currentCategories = currentCategoriesResult.rows[0].category;
+      currentCategories.push(category);
+      await pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [JSON.stringify(currentCategories), username]);
+      res.send(currentCategories)
+      
   });
 
 
