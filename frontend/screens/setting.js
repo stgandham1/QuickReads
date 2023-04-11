@@ -10,8 +10,8 @@ export default function About() {
   };
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.titleText}>Setting Screen</Text>
-      <Button title="log out" onPress={pressHandler} />
+      <Text style={globalStyles.titleText}>Settings</Text>
+      <Button title="Log Out" onPress={pressHandler} />
     </View>
   );
 }

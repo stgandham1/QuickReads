@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { globalStyles } from "../styles/global";
 import { articles } from "../articles";
-export default function Home({ navigation }) {
+export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState(articles);
 
   const pressHandler = () => {

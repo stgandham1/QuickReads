@@ -1,10 +1,12 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import Home from "../screens/home";
+import Feed from "../screens/Feed";
 import ReviewDetail from "../screens/reviewDetails";
-import About from "../screens/about";
+import Category from "../screens/Category";
 import Setting from "../screens/setting";
+import Newsletter from "../screens/Newsletter";
+
 const Stack = createNativeStackNavigator();
 
 const screenOptionStyle = {
@@ -18,7 +20,7 @@ const screenOptionStyle = {
 const HomeStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Feed" component={Feed} />
       <Stack.Screen name="ReviewDetail" component={ReviewDetail} />
     </Stack.Navigator>
   );
@@ -27,7 +29,7 @@ const HomeStackNavigator = () => {
 const CategoryStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Category" component={About} />
+      <Stack.Screen name="Categories" component={Category} />
     </Stack.Navigator>
   );
 };
@@ -35,9 +37,17 @@ const CategoryStackNavigator = () => {
 const SettingStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Setting" component={Setting} />
+      <Stack.Screen name="Settings" component={Setting} />
     </Stack.Navigator>
   );
 };
 
-export { HomeStackNavigator, CategoryStackNavigator, SettingStackNavigator };
+const NewsletterStackNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="Newsletter" component={Newsletter} />
+    </Stack.Navigator>
+  );
+};
+
+export { HomeStackNavigator, CategoryStackNavigator, SettingStackNavigator, NewsletterStackNavigator};
