@@ -1,7 +1,9 @@
 const express = require ('express');
 const app = express();
 const {Pool} = require('pg')
+const cors = require('cors');
 
+app.use(cors());
 const pool = new Pool({
 
   host: process.env.RDS_HOSTNAME,
