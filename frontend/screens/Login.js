@@ -127,9 +127,9 @@ export default function LoginPage() {
 
           <TouchableOpacity
             onPress={goHome}
-            style={[styles.button, styles.buttonOutline]}
+            style={[styles.button, styles.buttonEmpty]}
           >
-            <Text style={styles.button}>(Override: Go Home)</Text>
+            <Text style={styles.button}>Read Without Account</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -160,10 +160,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   button: {
-    backgroundColor: "white",
     borderRadius: 5,
   },
   buttonOutline: {
+    backgroundColor: "white",
     width: "100%",
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -171,4 +171,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 10,
   },
+  buttonEmpty: {
+    backgroundColor: "#d6e8ff",
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderColor: '#bbd8fc',
+    borderWidth: 2,
+    marginTop:10,
+  }
 });

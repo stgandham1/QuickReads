@@ -15,7 +15,7 @@ const screenOptionStyle = {
   headerBackTitle: "Back",
 };
 
-const MainStackNavigator = () => {
+const HomeStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Home" component={Home} />
@@ -24,10 +24,10 @@ const MainStackNavigator = () => {
   );
 };
 
-const ContactStackNavigator = () => {
+const CategoryStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="About" component={About} />
+      <Stack.Screen name="Category" component={About} />
     </Stack.Navigator>
   );
 };
@@ -40,4 +40,4 @@ const SettingStackNavigator = () => {
   );
 };
 
-export { MainStackNavigator, ContactStackNavigator, SettingStackNavigator };
+export { HomeStackNavigator, CategoryStackNavigator, SettingStackNavigator };

@@ -16,7 +16,7 @@ const screenOptionStyle = {
 const LoginStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Welcome to QuickReads!" component={Login} />
       <Stack.Screen options={{ headerShown: false }} name="BottomTabNavigator" component={BottomTabNavigator} />
     </Stack.Navigator>
   );
