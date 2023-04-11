@@ -79,7 +79,7 @@ app.get('/', async (req,res) => {
     let responseList = []
     console.log("SQL add")
     
-    for (r in temp.rows){
+    for (r of temp.rows){
       console.log(r.title)
       console.log(r.summary)
       responseList.push({title: r.title, summary: r.summary})
