@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function About() {
   const navigation = useNavigation();
   const pressHandler = () => {
-    navigation.replace("Login");
+    navigation.replace("Welcome to QuickReads!");
   };
   return (
     <View style={globalStyles.container}>

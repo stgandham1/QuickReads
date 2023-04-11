@@ -1,17 +1,44 @@
 import React from "react";
-import { StyleSheet, View, Text, Button } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { globalStyles } from "../styles/global";
 
 export default function ReviewDetail({ route, navigation }) {
   const pressHandler = () => {
     navigation.goBack();
   };
-  const { title, content } = route.params;
+  const { title, content, tags } = route.params;
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.titleText}>{title}</Text>
-      <Text style={globalStyles.paragrph}>{content}</Text>
-      <Button title="back to home" onPress={pressHandler} />
+      <ScrollView>
+        <Text style={globalStyles.paragrph}>{content}</Text>
+      </ScrollView>
+      <View
+        style={{
+          justifyContent: "flex-end",
+          marginBottom: 0,
+        }}
+      >
+        <FlatList
+          horizontal={false}
+          numColumns={4}
+          data={tags}
+          keyExtractor={(item, index) => index.toString()}
+          //contentContainerStyle={globalStyles.scrollTags}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={{ padding: 5 }}>
+              <Text style={globalStyles.tagText}>{item}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
     </View>
   );
 }
