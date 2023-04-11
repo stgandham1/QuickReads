@@ -74,7 +74,12 @@ app.get('/', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1", [req.params.username])
     let listofcategories = results.rows[0].category
     let temp = await pool.query("SELECT * from public.articles WHERE category = ANY($1::varchar[])", [listofcategories]);
-    res.send(temp.rows)
+    let responseList = []
+    for (r in temp.rows){
+      responseList.push({title: r.title, summary: r.summary})
+    }
+    console.log(responseList)
+    res.json(responseList)
   });
 
 //get bookmark
