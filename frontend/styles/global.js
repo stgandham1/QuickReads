@@ -20,6 +20,7 @@ export const globalStyles = StyleSheet.create({
     marginVertical: 8,
     lineHeight: 20,
     fontFamily: "n-regular",
+    fontSize: 20,
   },
   scrollTags: {
     justifyContent: "flex-start",

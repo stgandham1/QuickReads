@@ -25,7 +25,7 @@ export default function ReviewDetail({ route, navigation }) {
       >
         <FlatList
           horizontal={false}
-          numColumns={4}
+          numColumns={10}
           data={tags}
           keyExtractor={(item, index) => index.toString()}
           //contentContainerStyle={globalStyles.scrollTags}
