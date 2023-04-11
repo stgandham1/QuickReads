@@ -29,18 +29,18 @@ app.get('/', async (req,res) => {
   });
 
   // Check if the username and password are correct
-  app.get('/checkuser/:username/:password', async (req,res) => {
+app.get('/checkuser/:username/:password', async (req,res) => {
     let results = await pool.query("SELECT * FROM public.authentication WHERE username = $1", [req.params.username])
     if (results.rowCount == 0){
       console.log("false")
-      res.json({status: false})
+      res.json({status: false, message: "Username does not exist"})
     }else  if (results.rows[0].password == req.params.password){
       console.log("true")
-      res.json({status: true})
+      res.json({status: true, message: "User exists and password matches"})
 
     }else{
       console.log("false")
-      res.json({status: false})
+      res.json({status: false, message: "Username does not exist"})
     }
     
   });
