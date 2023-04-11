@@ -30,12 +30,14 @@ app.get('/', async (req,res) => {
   app.get('/checkuser/:username/:password', async (req,res) => {
     let results = await pool.query("SELECT * FROM public.authentication WHERE username = $1", [req.params.username])
     if (results.rowCount == 0){
-      res.send("username doesn't exist")
+      res.json({status: false})
+    }else  if (results.rows[0].password == req.params.password){
+      res.json({status: true})
+
+    }else{
+      res.json({status: false})
     }
-    if (results.rows[0].password == req.params.password){
-      res.send("true")
-    }
-    res.send("false")
+    
   });
   // Remove category
   app.get('/removecategory/:username/:category', async (req,res) => {
