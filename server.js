@@ -80,7 +80,7 @@ app.get('/', async (req,res) => {
     let temp = await pool.query("SELECT * from public.articles WHERE category = ANY($1::varchar[])", [listofcategories]);
     let responseList = []
     console.log("SQL add")
-    console.log(temp)
+    console.log(temp.rows)
     for (r in temp.rows){
       responseList.push({title: r.title, summary: r.summary})
     }
