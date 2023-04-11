@@ -7,29 +7,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { globalStyles } from "../styles/global";
-
+import { articles } from "../articles";
 export default function Home({ navigation }) {
-  const [reviews, setReviews] = useState([
-    {
-      title: "article one",
-      content:
-        "article one content\naaaa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa",
-      tags: ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6"],
-      key: "1",
-    },
-    {
-      title: "article two",
-      content: "article two content",
-      tags: ["tag1", "tag2", "tag3"],
-      key: "2",
-    },
-    {
-      title: "article three",
-      content: "article three content",
-      tags: ["tag1", "tag2", "tag3"],
-      key: "3",
-    },
-  ]);
+  const [reviews, setReviews] = useState(articles);
 
   const pressHandler = () => {
     navigation.navigate("ReviewDetail");
