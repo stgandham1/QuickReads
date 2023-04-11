@@ -72,9 +72,15 @@ app.get('/', async (req,res) => {
   // Receives article info based on category info
   app.get('/getarticles/:username', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1", [req.params.username])
+    console.log("results of pulling")
+    console.log(results)
     let listofcategories = results.rows[0].category
+    console.log("results of adding")
+    console.log(listofcategories)
     let temp = await pool.query("SELECT * from public.articles WHERE category = ANY($1::varchar[])", [listofcategories]);
     let responseList = []
+    console.log("SQL add")
+    console.log(temp)
     for (r in temp.rows){
       responseList.push({title: r.title, summary: r.summary})
     }
