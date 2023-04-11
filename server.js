@@ -30,11 +30,14 @@ app.get('/', async (req,res) => {
   app.get('/checkuser/:username/:password', async (req,res) => {
     let results = await pool.query("SELECT * FROM public.authentication WHERE username = $1", [req.params.username])
     if (results.rowCount == 0){
+      console.log("false")
       res.json({status: false})
     }else  if (results.rows[0].password == req.params.password){
+      console.log("true")
       res.json({status: true})
 
     }else{
+      console.log("false")
       res.json({status: false})
     }
     
