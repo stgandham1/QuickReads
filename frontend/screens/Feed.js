@@ -51,8 +51,9 @@ export default function Feed({ navigation }) {
       })
       .then((responseJSON) => {
         console.log(responseJSON);
+        deleteHandler();
         for (var key in responseJSON) {
-          articles.unshift({
+          submitHandler({
             title: responseJSON[key]["title"],
             content: responseJSON[key]["summary"],
             tags: ["tag1", "tag2", "tag3"],
