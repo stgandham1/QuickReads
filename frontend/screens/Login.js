@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
+  const [errorText, setErrorText] = useState(""); 
 
   useEffect(() => {
     /** if (logged in)
@@ -24,11 +25,13 @@ export default function LoginPage() {
   });
 
   const goHome = () => {
+    console.log("GOING" + email);
     navigation.replace("BottomTabNavigator");
   };
 
   const signupRoute = 'http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/adduser';
   const loginRoute = 'http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/checkuser';
+  
   async function handleSignUp() {
     if (email.length == 0 || password.length == 0) { 
       console.log("[No Input Detected]");
@@ -40,19 +43,19 @@ export default function LoginPage() {
       method:'GET',
     }).then(response => {return response.json()})
     .then((responseJSON) => {
-        if (responseJSON.status) {
+        if (responseJSON.status  || (responseJSON.message != 'Username does not exist')) {
           usernameExists = true;
         }
-    }).catch();
+    }).catch(); 
     if (usernameExists) { 
-      console.log("[Username Already Exists]"); 
+      setErrorText("Username Already Exists");
       return; 
     }
-    // ADD USER TO TABLE
+    setErrorText("Registered " + email + "!");
+    //ADD USER TO TABLE
     const signupRequest = await fetch(signupRoute+'/'+email+'/'+password, {
       method:'GET', 
     })
-    console.log("Signing up " + email + " " + password);
   };
 
   async function handleLogin() {
@@ -65,10 +68,10 @@ export default function LoginPage() {
     }).then((response) => {return response.json();})
     .then((responseJSON) => {
         if (responseJSON.status) {
-          console.log("Logging in " + email + " " + password);
+          setErrorText("Logging in " + email);
           goHome();
         } else {
-          console.log("Could not log in " + email + " " + password);
+          setErrorText("Could not log in " + email);
         }
     })
   };
@@ -113,12 +116,13 @@ export default function LoginPage() {
             <Text style={styles.button}>Signup</Text>
           </TouchableOpacity>
 
-          {/* <TouchableOpacity
+          <TouchableOpacity
             onPress={goHome}
             style={[styles.button, styles.buttonEmpty]}
           >
-            <Text style={styles.button}>Read Without Account</Text>
-          </TouchableOpacity> */}
+            <Text style={styles.button}>No Account</Text>
+          </TouchableOpacity>
+          <Text style={styles.error}>{errorText}</Text>
         </View>
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
@@ -167,5 +171,10 @@ const styles = StyleSheet.create({
     borderColor: '#bbd8fc',
     borderWidth: 2,
     marginTop:10,
+  }, 
+  error: { 
+    color:'grey',
+    marginTop:10,
+
   }
 });

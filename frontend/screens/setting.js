@@ -11,7 +11,7 @@ export default function About() {
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.titleText}>Settings</Text>
-      <Button title="Log Out" onPress={pressHandler} />
+      <Button title="Log Out" onPress={pressHandler} style={{marginTop:505,}}/>
     </View>
   );
 }
