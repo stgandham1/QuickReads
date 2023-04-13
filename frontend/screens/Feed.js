@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -63,7 +63,9 @@ export default function Feed({ navigation }) {
       })
       .catch();
   }
-  refreshArticles();
+  useEffect(() => {
+    refreshArticles();
+  }, []);
 
   const pressHandler = () => {
     navigation.navigate("ReviewDetail");
