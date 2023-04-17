@@ -17,9 +17,7 @@ export default function LoginPage() {
   const [errorText, setErrorText] = useState("");
 
   useEffect(() => {
-    /** if (logged in)
-     * navigation.navigate("Home")
-     */
+
     return;
   });
 
@@ -158,6 +156,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
     marginBottom: 10,
+    color: 'grey'
   },
   buttonContainer: {
     width: "50%",
