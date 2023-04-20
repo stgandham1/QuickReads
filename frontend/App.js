@@ -4,7 +4,6 @@ import { useFonts } from "expo-font";
 import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { LoginStackNavigator } from "./routes/loginStack";
-
 // import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // import LoginPage from "./screens/LoginPage";
@@ -22,7 +21,7 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <LoginStackNavigator/>
+      <LoginStackNavigator />
     </NavigationContainer>
   );
 }

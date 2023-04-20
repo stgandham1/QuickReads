@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
@@ -8,12 +8,28 @@ import {
   ScrollView,
 } from "react-native";
 import { globalStyles } from "../styles/global";
-
+import Checkbox from "expo-checkbox";
 export default function ReviewDetail({ route, navigation }) {
   const { title, content, tags } = route.params;
+  const [isSelected, setSelection] = useState(false);
+  const pressHandler = (newValue) => {
+    setSelection(newValue);
+    //if newValue is false, remove the article in bookmark website.
+    //if newValue is true, add the article in bookmark website.
+    //need a way to add articles.
+  };
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.titleText}>{title}</Text>
+      <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+        <Checkbox
+          value={isSelected}
+          onValueChange={pressHandler}
+          color={isSelected ? "#4630EB" : undefined}
+        />
+        {/* need to import the bookmar icon */}
+      </View>
+
       <ScrollView>
         <Text style={globalStyles.paragrph}>{content}</Text>
       </ScrollView>

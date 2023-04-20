@@ -2,11 +2,12 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   HomeStackNavigator,
+  BookmarkStackNavigator,
   CategoryStackNavigator,
   SettingStackNavigator,
   NewsletterStackNavigator,
 } from "./homeStack";
-import {Image} from 'react-native';
+import { Image } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,9 +18,9 @@ const BottomTabNavigator = () => {
         name="BottomHome"
         component={HomeStackNavigator}
         options={{
-          headerShown: false, 
-          tabBarShowLabel:true,
-          tabBarLabel:"Feed",
+          headerShown: false,
+          tabBarShowLabel: true,
+          tabBarLabel: "Feed",
           // showIcon: true,
           // tabBarIcon:({focused})=>(
           //   focused?
@@ -29,17 +30,38 @@ const BottomTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        options={{ headerShown: false, tabBarShowLabel:true, tabBarLabel:"Newsletter", }}
+        name="BottomBookmark"
+        component={BookmarkStackNavigator}
+        options={{
+          headerShown: false,
+          tabBarShowLabel: true,
+          tabBarLabel: "Bookmark",
+        }}
+      />
+      <Tab.Screen
+        options={{
+          headerShown: false,
+          tabBarShowLabel: true,
+          tabBarLabel: "Newsletter",
+        }}
         name="BottomNewsletter"
         component={NewsletterStackNavigator}
       />
       <Tab.Screen
-        options={{ headerShown: false, tabBarShowLabel:true, tabBarLabel:"Categories", }}
+        options={{
+          headerShown: false,
+          tabBarShowLabel: true,
+          tabBarLabel: "Categories",
+        }}
         name="BottomCategory"
         component={CategoryStackNavigator}
       />
       <Tab.Screen
-        options={{ headerShown: false, tabBarShowLabel:true, tabBarLabel:"Settings",}}
+        options={{
+          headerShown: false,
+          tabBarShowLabel: true,
+          tabBarLabel: "Settings",
+        }}
         name="BottomSetting"
         component={SettingStackNavigator}
       />

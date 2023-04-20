@@ -6,6 +6,7 @@ import ReviewDetail from "../screens/reviewDetails";
 import Category from "../screens/Category";
 import Setting from "../screens/setting";
 import Newsletter from "../screens/Newsletter";
+import Bookmark from "../screens/Bookmark";
 
 const Stack = createNativeStackNavigator();
 
@@ -21,6 +22,14 @@ const HomeStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Feed" component={Feed} />
+      <Stack.Screen name="ReviewDetail" component={ReviewDetail} />
+    </Stack.Navigator>
+  );
+};
+const BookmarkStackNavigator = () => {
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="Bookmark" component={Bookmark} />
       <Stack.Screen name="ReviewDetail" component={ReviewDetail} />
     </Stack.Navigator>
   );
@@ -50,4 +59,10 @@ const NewsletterStackNavigator = () => {
   );
 };
 
-export { HomeStackNavigator, CategoryStackNavigator, SettingStackNavigator, NewsletterStackNavigator};
+export {
+  HomeStackNavigator,
+  BookmarkStackNavigator,
+  CategoryStackNavigator,
+  SettingStackNavigator,
+  NewsletterStackNavigator,
+};
