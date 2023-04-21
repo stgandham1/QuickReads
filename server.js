@@ -44,6 +44,52 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     }
     
   });
+
+
+
+
+  app.post('/auth', async (req, res) => {
+    const {
+      id: authtoken,
+      email,
+      name,
+    } = req.body;
+  
+    if (!authtoken || !email || !name) {
+      return res.status(400).json({ error: 'Invalid data received from Google' });
+    }
+  
+    try {
+    
+      const userQuery = 'SELECT * FROM public.authentication WHERE authtoken = $1';
+      const { rows } = await pool.query(userQuery, [authtoken]);
+  
+      let user;
+  
+      if (rows.length === 0) {
+        
+        const insertQuery =
+          'INSERT INTO  public.authentication (email, name, authtoken) VALUES ($1, $2, $3) RETURNING *';
+        const result = await pool.query(insertQuery, [
+          email,
+          name,
+          authtoken,
+        ]);
+        user = result.rows[0];
+      } else {
+       
+        user = rows[0];
+      }
+  
+     
+  
+      res.status(200).json({ message: 'User signed in successfully', user });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while processing the request' });
+    }
+  });
+  
   // Remove category
   app.get('/removecategory/:username/:category', async (req,res) => {
     pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [req.params.username,req.params.category])
