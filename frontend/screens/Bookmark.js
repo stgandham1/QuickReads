@@ -46,9 +46,9 @@ export default function Bookmark({ navigation }) {
       })
       .catch();
   }
-  // useEffect(() => {
-  //   refreshBookmark();
-  // }, []);
+  useEffect(() => {
+    refreshBookmark();
+  }, []);
 
   if (bookmark.length == 0) {
     return (

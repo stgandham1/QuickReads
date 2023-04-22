@@ -34,4 +34,14 @@ export const globalStyles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
+  orangeButton: {
+    alignItems: "center",
+    backgroundColor: "coral",
+    padding: 10,
+  },
+  grayButton: {
+    alignItems: "center",
+    backgroundColor: "#DDDDDD",
+    padding: 10,
+  },
 });
