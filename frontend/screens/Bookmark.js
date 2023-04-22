@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { globalStyles } from "../styles/global";
+import { articles } from "../articles";
 export default function Bookmark({ navigation }) {
-  const [bookmark, setBookmark] = useState("");
+  const [bookmark, setBookmark] = useState(articles);
 
   const submitHandler = (text) => {
     setBookmark((preText) => {
@@ -24,7 +25,7 @@ export default function Bookmark({ navigation }) {
   async function refreshBookmark() {
     let username = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
     let feedRoute =
-      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/getbookmarks";
+      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/getBookmarks";
     const articleRequest = await fetch(feedRoute + "/" + username, {
       method: "GET",
     })
@@ -45,9 +46,9 @@ export default function Bookmark({ navigation }) {
       })
       .catch();
   }
-  useEffect(() => {
-    refreshBookmark();
-  }, []);
+  // useEffect(() => {
+  //   refreshBookmark();
+  // }, []);
 
   if (bookmark.length == 0) {
     return (

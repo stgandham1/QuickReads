@@ -26,14 +26,6 @@ const HomeStackNavigator = () => {
     </Stack.Navigator>
   );
 };
-const BookmarkStackNavigator = () => {
-  return (
-    <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Bookmark" component={Bookmark} />
-      <Stack.Screen name="ReviewDetail" component={ReviewDetail} />
-    </Stack.Navigator>
-  );
-};
 
 const CategoryStackNavigator = () => {
   return (
@@ -47,6 +39,8 @@ const SettingStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Settings" component={Setting} />
+      <Stack.Screen name="Bookmark" component={Bookmark} />
+      <Stack.Screen name="ReviewDetail" component={ReviewDetail} />
     </Stack.Navigator>
   );
 };
@@ -61,7 +55,6 @@ const NewsletterStackNavigator = () => {
 
 export {
   HomeStackNavigator,
-  BookmarkStackNavigator,
   CategoryStackNavigator,
   SettingStackNavigator,
   NewsletterStackNavigator,

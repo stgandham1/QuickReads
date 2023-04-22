@@ -2,7 +2,6 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   HomeStackNavigator,
-  BookmarkStackNavigator,
   CategoryStackNavigator,
   SettingStackNavigator,
   NewsletterStackNavigator,
@@ -27,15 +26,6 @@ const BottomTabNavigator = () => {
           //   <Image source={require("../assets/quickreads_newsletter_icon.png")} style={{width:'40px'}}/>
           //   : <Image source={require("../assets/quickreads_newsletter_icon.png")} style={{width:'40px'}}/>
           // ),
-        }}
-      />
-      <Tab.Screen
-        name="BottomBookmark"
-        component={BookmarkStackNavigator}
-        options={{
-          headerShown: false,
-          tabBarShowLabel: true,
-          tabBarLabel: "Bookmark",
         }}
       />
       <Tab.Screen

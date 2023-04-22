@@ -8,10 +8,24 @@ export default function About() {
   const pressHandler = () => {
     navigation.replace("Welcome to QuickReads!");
   };
+  const BookmarkPressHandler = () => {
+    navigation.navigate("Bookmark");
+  };
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.titleText}>Settings</Text>
-      <Button title="Log Out" onPress={pressHandler} style={{marginTop:505,}}/>
+      <View style={{ flex: 0.1, marginBottom: 10 }}>
+        <Button
+          title="Log Out"
+          onPress={pressHandler}
+          style={{ marginTop: 505 }}
+        />
+      </View>
+      <Button
+        title="Bookmark"
+        onPress={BookmarkPressHandler}
+        style={{ marginTop: 505 }}
+      />
     </View>
   );
 }
