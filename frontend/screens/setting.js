@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
 import { globalStyles } from "../styles/global";
 import { useNavigation } from "@react-navigation/native";
+import SelectDropdown from "react-native-select-dropdown";
+
 export default function About() {
   const navigation = useNavigation();
   const pressHandler = () => {
@@ -23,6 +25,22 @@ export default function About() {
     setWordLength(3);
     console.log("choose long word length");
   };
+  const countries = [
+    "en",
+    "de",
+    "ar",
+    "es",
+    "fr",
+    "he",
+    "it",
+    "nl",
+    "no",
+    "pt",
+    "ru",
+    "sv",
+    "ud",
+    "zh",
+  ];
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.titleText}>Settings</Text>
@@ -41,7 +59,7 @@ export default function About() {
         />
       </View>
       <Text style={globalStyles.homeText}>Choose word length:</Text>
-      <View style={{ flex: 1, flexDirection: "row" }}>
+      <View style={{ flex: 0.18, flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
           {wordLength == 1 ? (
             <TouchableOpacity
@@ -94,6 +112,30 @@ export default function About() {
           )}
         </View>
       </View>
+      <Text style={globalStyles.homeText}>Choose Languange:</Text>
+      <SelectDropdown
+        data={countries}
+        defaultValueByIndex={0}
+        defaultValue={"en"}
+        onSelect={(selectedItem, index) => {
+          console.log(selectedItem, index);
+          //then tell backend languange changing
+        }}
+        defaultButtonText={"Select country"}
+        buttonTextAfterSelection={(selectedItem, index) => {
+          return selectedItem;
+        }}
+        rowTextForSelection={(item, index) => {
+          return item;
+        }}
+        buttonStyle={globalStyles.dropdown1BtnStyle}
+        buttonTextStyle={globalStyles.dropdown1BtnTxtStyle}
+        //renderDropdownIcon={(isOpened) => {}}
+        dropdownIconPosition={"right"}
+        dropdownStyle={globalStyles.dropdown1DropdownStyle}
+        rowStyle={globalStyles.dropdown1RowStyle}
+        rowTextStyle={globalStyles.dropdown1RowTxtStyle}
+      />
     </View>
   );
 }
