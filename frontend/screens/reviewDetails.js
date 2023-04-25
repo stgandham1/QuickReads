@@ -10,47 +10,48 @@ import {
   Button,
 } from "react-native";
 import { globalStyles } from "../styles/global";
-import Checkbox from "expo-checkbox";
+import { FontAwesome } from "@expo/vector-icons";
 export default function ReviewDetail({ route, navigation }) {
   const { title, content, tags, key } = route.params;
   const [isSelected, setSelection] = useState(false);
-  useEffect(() => {
-    if (isSelected) {
-      postData();
-    }
-  }, [isSelected]);
-  const postData = () => {
-    let state = "DATA I WANT TO SEND";
-    let username = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
-    let feedRoute =
-      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/getBookmarks";
-    fetch(feedRoute + "/" + username, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        state: state,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+  const addBookmark = () => {
+    setSelection(true);
+    console.log("add to bookmark");
+  };
+  const removeBookmark = () => {
+    setSelection(false);
+    console.log("remove from bookmark");
   };
 
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.titleText}>{title}</Text>
-      <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-        <Checkbox
-          value={isSelected}
-          onValueChange={setSelection}
-          color={isSelected ? "#4630EB" : undefined}
-        />
+      <TouchableOpacity
+        style={{ flexDirection: "row", justifyContent: "flex-end" }}
+      >
+        {!isSelected ? (
+          <FontAwesome
+            name="bookmark-o"
+            size={30}
+            color="black"
+            backgroundColor="transparent"
+            borderRadius={10}
+            suppressHighlighting={false}
+            onPress={addBookmark}
+          />
+        ) : (
+          <FontAwesome
+            name="bookmark"
+            size={30}
+            color="blue"
+            backgroundColor="transparent"
+            borderRadius={10}
+            suppressHighlighting={false}
+            onPress={removeBookmark}
+          />
+        )}
         {/* need to import the bookmar icon */}
-      </View>
+      </TouchableOpacity>
       <ScrollView>
         <Text style={globalStyles.paragrph}>{content}</Text>
       </ScrollView>
