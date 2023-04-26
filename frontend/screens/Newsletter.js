@@ -62,6 +62,7 @@ export default function Feed({ navigation }) {
       })
       .catch();
   }
+
   useEffect(() => {
     refreshArticles();
   }, []);
@@ -71,9 +72,10 @@ export default function Feed({ navigation }) {
 
   };
 
-  const [shouldShow, setShouldShow] = useState(true);
+  const printArticles = () => {console.log(reviews); console.log(reviews[0].title); console.log(reviews[0].summary);}
+  const [shouldShow, setShouldShow] = useState(false);
   return (
-    <View style={globalStyles.test}>
+    <View style={globalStyles.container}>
       <FlatList
         data={reviews}
         renderItem={({ item }) => (
@@ -83,15 +85,16 @@ export default function Feed({ navigation }) {
               </Card.Content>
             <TouchableOpacity
               //onPress={() => navigation.navigate("ReviewDetail", item)}
-              onPress={() =>  setShouldShow(!shouldShow)}
+              onPress={() =>  { setShouldShow(!shouldShow);}}
             >
               <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
-            </TouchableOpacity>
+            </TouchableOpacity> 
               <Card.Content>
-                {shouldShow ? (
-                  //console.log(item.title)
-                  <Text variant="titleLarge">{item.title}</Text>
-                ) : null
+                {
+                  shouldShow ? (
+                    //console.log(item.title)
+                    <Text variant="titleLarge">{item.content}</Text>
+                  ) : null
                 }
               </Card.Content>
             </Card>
