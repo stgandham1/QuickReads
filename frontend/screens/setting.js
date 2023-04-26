@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
 import { globalStyles } from "../styles/global";
 import { useNavigation } from "@react-navigation/native";
 import SelectDropdown from "react-native-select-dropdown";
-
+import { FontAwesome } from "@expo/vector-icons";
 export default function About() {
   const navigation = useNavigation();
   const pressHandler = () => {
@@ -12,7 +12,7 @@ export default function About() {
   const BookmarkPressHandler = () => {
     navigation.navigate("Bookmark");
   };
-  const [wordLength, setWordLength] = useState(1);
+  const [wordLength, setWordLength] = useState(2);
   const shortPress = () => {
     setWordLength(1);
     console.log("choose short word length");
@@ -26,9 +26,9 @@ export default function About() {
     console.log("choose long word length");
   };
   const countries = [
-    "en",
-    "de",
     "ar",
+    "de",
+    "en",
     "es",
     "fr",
     "he",
@@ -115,7 +115,7 @@ export default function About() {
       <Text style={globalStyles.homeText}>Choose Languange:</Text>
       <SelectDropdown
         data={countries}
-        defaultValueByIndex={0}
+        defaultValueByIndex={2}
         defaultValue={"en"}
         onSelect={(selectedItem, index) => {
           console.log(selectedItem, index);
@@ -130,7 +130,15 @@ export default function About() {
         }}
         buttonStyle={globalStyles.dropdown1BtnStyle}
         buttonTextStyle={globalStyles.dropdown1BtnTxtStyle}
-        //renderDropdownIcon={(isOpened) => {}}
+        renderDropdownIcon={(isOpened) => {
+          return (
+            <FontAwesome
+              name={isOpened ? "chevron-up" : "chevron-down"}
+              color={"#444"}
+              size={18}
+            />
+          );
+        }}
         dropdownIconPosition={"right"}
         dropdownStyle={globalStyles.dropdown1DropdownStyle}
         rowStyle={globalStyles.dropdown1RowStyle}
