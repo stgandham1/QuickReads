@@ -90,11 +90,18 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     }
   });
   
-  // Remove category
-  app.get('/removecategory/:username/:category', async (req,res) => {
-    pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [req.params.username,req.params.category])
+  // // Remove category
+  // app.get('/removecategory/:username/:category', async (req,res) => {
+  //   pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [req.params.username,req.params.category])
+  //   res.send("Deleted category")
+  // });
+
+  app.post('/removecategory', async (req,res) => {
+    const { username, category } = req.body;
+    pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [username, category])
     res.send("Deleted category")
   });
+
 
   // Add Category
   app.get('/addcategory/:username/:category', async (req,res) => {
