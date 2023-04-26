@@ -53,7 +53,7 @@ export default function Feed({ navigation }) {
         console.log(responseJSON);
         deleteHandler();
         for (var key in responseJSON) {
-          submitHandler({
+          submitHandler({ // Submit handler receives functions
             title: responseJSON[key]["title"],
             content: responseJSON[key]["summary"],
             tags: ["tag1", "tag2", "tag3"],
@@ -63,7 +63,7 @@ export default function Feed({ navigation }) {
       })
       .catch();
   }
-  useEffect(() => {
+  useEffect(() => { // refreshes articles wheh opening page. 
     refreshArticles();
   }, []);
 
@@ -74,7 +74,7 @@ export default function Feed({ navigation }) {
   return (
     <View style={globalStyles.container}>
       <FlatList
-        data={reviews}
+        data={reviews} // we're updating reviews
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => navigation.navigate("ReviewDetail", item)}
