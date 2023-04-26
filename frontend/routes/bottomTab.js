@@ -7,7 +7,7 @@ import {
   NewsletterStackNavigator,
 } from "./homeStack";
 import { Image } from "react-native";
-
+import { Ionicons } from "@expo/vector-icons";
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
@@ -20,19 +20,21 @@ const BottomTabNavigator = () => {
           headerShown: false,
           tabBarShowLabel: true,
           tabBarLabel: "Feed",
-          // showIcon: true,
-          // tabBarIcon:({focused})=>(
-          //   focused?
-          //   <Image source={require("../assets/quickreads_newsletter_icon.png")} style={{width:'40px'}}/>
-          //   : <Image source={require("../assets/quickreads_newsletter_icon.png")} style={{width:'40px'}}/>
-          // ),
+          showIcon: true,
+          tabBarIcon:({focused})=>(
+            <Ionicons name="newspaper-outline" size={28} color = "#4991eb"/>
+            ),
         }}
       />
       <Tab.Screen
         options={{
           headerShown: false,
           tabBarShowLabel: true,
-          tabBarLabel: "Newsletter",
+          tabBarLabel: "Top News",
+          showIcon: true,
+          tabBarIcon:({focused})=>(
+            <Ionicons name="flame-outline" size={28} color = "#4991eb"/>
+            ),
         }}
         name="BottomNewsletter"
         component={NewsletterStackNavigator}
@@ -42,6 +44,10 @@ const BottomTabNavigator = () => {
           headerShown: false,
           tabBarShowLabel: true,
           tabBarLabel: "Categories",
+          showIcon: true,
+          tabBarIcon:({focused})=>(
+            <Ionicons name="duplicate-outline" size={28} color = "#4991eb"/>
+            ),
         }}
         name="BottomCategory"
         component={CategoryStackNavigator}
@@ -51,6 +57,10 @@ const BottomTabNavigator = () => {
           headerShown: false,
           tabBarShowLabel: true,
           tabBarLabel: "Settings",
+          showIcon: true,
+          tabBarIcon:({focused})=>(
+            <Ionicons name="person-circle-outline" size={28} color = "#4991eb"/>
+            ),
         }}
         name="BottomSetting"
         component={SettingStackNavigator}

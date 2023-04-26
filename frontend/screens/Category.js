@@ -1,6 +1,7 @@
 import React, {useState, useEffect } from "react";
 import {Card, Text , List} from 'react-native-paper';
-import { StyleSheet, View, KeyboardAvoidingView, TextInput, TouchableOpacity } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView } from "react-native";
+import { Button, TextInput, Snackbar } from 'react-native-paper';
 import { globalStyles } from "../styles/global";
 
 export default function Category() {
@@ -45,23 +46,20 @@ export default function Category() {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
+
       <View style={styles.inputContainer}> 
         <Text style={globalStyles.titleText}>Add a News Category</Text>
         <TextInput
         placeholder="For example: 'National Football League', 'Videogames', 'Clean Energy' "
         value={keyword}
-        onChangeText={(input) => useKeyword(input)}
-        style={styles.input}
+        onChangeText={(input) => {setKeyword(input);}}
+        style={globalStyles.paperInput}
         />
       </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-        style={[styles.button, styles.buttonOutline]}
-        onPress={handleAddKeyword}
-        >
-          <Text style={styles.button}>Add Category</Text>
-        </TouchableOpacity>
-      </View>
+
+      <Button mode="contained" onPress={handleAddKeyword} style={globalStyles.paperButton}>
+        Add Category
+      </Button>
       <View>
         <Text style={globalStyles.titleText}>Your News Categories:</Text>
         {catlist.map(elem => {
@@ -72,14 +70,10 @@ export default function Category() {
           </Card>;
         })
         }
-
-        <TouchableOpacity
-        style={[styles.button, styles.buttonOutline]}
-        onPress={getUserCategories}
-        >
-          <Text style={styles.button}>Refresh Categories List</Text>
-        </TouchableOpacity>
       </View>
+      <Button mode="contained" onPress={getUserCategories} style={globalStyles.paperButton}>
+        Refresh
+      </Button>
     </KeyboardAvoidingView>
   );
 }

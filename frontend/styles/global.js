@@ -44,7 +44,6 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: "#DDDDDD",
     padding: 10,
   },
-
   dropdown1BtnStyle: {
     width: "80%",
     height: 50,
@@ -60,4 +59,20 @@ export const globalStyles = StyleSheet.create({
     borderBottomColor: "#C5C5C5",
   },
   dropdown1RowTxtStyle: { color: "#444", textAlign: "left" },
+  // NATHANIEL BUTTONS //
+  paperInput: {
+    backgroundColor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    height: 20,
+    color: 'grey'
+  },
+  paperButton: {
+    width:'50%',
+    height: '40px',
+    marginTop:'5px'
+  }
 });

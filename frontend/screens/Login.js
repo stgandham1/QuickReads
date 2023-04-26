@@ -2,51 +2,40 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Text,
-  TextInput,
   View,
   Keyboard,
   TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { globalStyles } from "../styles/global";
+import { Button, TextInput, Snackbar } from 'react-native-paper';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
   const [errorText, setErrorText] = useState("");
-
-  useEffect(() => {
-
-    return;
-  });
-
+  const [visible, setVisible] = useState(false);
+  const root = 'http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com'; // BASE ROOT
+  
+  //OPEN APP
   const goHome = () => {
-    console.log("GOING" + email);
+    console.log("GOING" + username);
     navigation.replace("BottomTabNavigator");
   };
-
-  const signupRoute =
-    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/adduser";
-  const loginRoute =
-    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/checkuser";
-
+  //SIGN UP FUNCTION
   async function handleSignUp() {
-    if (email.length == 0 || password.length == 0) {
-      console.log("[No Input Detected]");
+    if (username.length == 0 || password.length == 0) {
+      onToggleSnackBar("No Input Detected");
       return;
     }
-
     let usernameExists = false;
-    const loginRequest = await fetch(
-      loginRoute + "/" + email + "/" + password,
-      {
-        method: "GET",
-      }
-    )
-      .then((response) => {
-        return response.json();
-      })
+    let signuproute = root+"/adduser/"+username+"/"+password;
+    let loginroute = root+"/checkuser/"+username+"/"+password;
+    //CHECK IF USER EXISTS//
+    const loginRequest = await fetch(loginroute, {method: "GET",})
+      .then((response) => {return response.json();})
       .then((responseJSON) => {
         if (
           responseJSON.status ||
@@ -56,86 +45,71 @@ export default function LoginPage() {
         }
       })
       .catch();
+    //SIGNUP USER IF THEY EXIST//
     if (usernameExists) {
-      setErrorText("Username Already Exists");
-      return;
+      onToggleSnackBar("Username Already Exists");
+    } else {
+      onToggleSnackBar("Registered " + username + "!");
+      const signupRequest = await fetch(signuproute,{method: "GET"});
     }
-    setErrorText("Registered " + email + "!");
-    //ADD USER TO TABLE
-    const signupRequest = await fetch(
-      signupRoute + "/" + email + "/" + password,
-      {
-        method: "GET",
-      }
-    );
   }
-
+  //LOG IN FUNCTION
   async function handleLogin() {
-    if (email.length == 0 || password.length == 0) {
-      console.log("[No Input Detected]");
+    if (username.length == 0 || password.length == 0) {
+      onToggleSnackBar("No Input Detected");
       return;
     }
-    const loginRequest = await fetch(
-      loginRoute + "/" + email + "/" + password,
-      {
-        method: "GET",
-      }
-    )
-      .then((response) => {
-        return response.json();
-      })
+    let loginroute = root+"/checkuser/"+username+"/"+password;
+    const loginRequest = await fetch(loginroute, {method: "GET"})
+      .then((response) => {return response.json();})
       .then((responseJSON) => {
         if (responseJSON.status) {
-          setErrorText("Logging in " + email);
+          onToggleSnackBar("Logging in " + username);
           goHome();
         } else {
-          setErrorText("Could not log in " + email);
+          onToggleSnackBar("Could not log in " + username);
         }
       });
   }
+  //SNACKBAR FOR ERRORS
+  const onToggleSnackBar = (text) => {setErrorText(text); setVisible(true);};
+  const onDismissSnackBar = () => setVisible(false);
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={(input) => setEmail(input)}
-          style={styles.input}
+          placeholder="Username"
+          value={username}
+          onChangeText={(input) => {onDismissSnackBar(); setUsername(input);}}
+          style={globalStyles.paperInput}
         />
-
         <TextInput
           placeholder="Password"
           value={password}
-          onChangeText={(input) => setPassword(input)}
-          style={styles.input}
+          onChangeText={(input) => {onDismissSnackBar(); setPassword(input);}}
+          style={globalStyles.paperInput}
           secureTextEntry
         />
       </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={handleLogin}
-          style={[styles.button, styles.buttonOutline]}
-        >
-          <Text style={styles.button}>Login</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={handleSignUp}
-          style={[styles.button, styles.buttonEmpty]}
-        >
-          <Text style={styles.button}>Signup</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={goHome}
-          style={[styles.button, styles.buttonEmpty]}
-        >
-          <Text style={styles.button}>No Account</Text>
-        </TouchableOpacity>
-        <Text style={styles.error}>{errorText}</Text>
-      </View>
+      <Button mode="contained" onPress={handleLogin} style={globalStyles.paperButton}>
+        Login
+      </Button>
+      <Button mode="outlined" onPress={handleSignUp} style={globalStyles.paperButton}>
+        Signup
+      </Button>
+      <Button mode="text " onPress={goHome}>
+        No Account
+      </Button>
+      <Snackbar
+        visible={visible}
+        onDismiss={onDismissSnackBar}
+        action={{
+          label: 'X',
+          onPress: () => {onDismissSnackBar},
+        }}>
+        {errorText}
+      </Snackbar>
     </KeyboardAvoidingView>
   );
 }
@@ -143,49 +117,10 @@ export default function LoginPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "top",
     alignItems: "center",
   },
   inputContainer: {
     width: "60%",
-  },
-  input: {
-    backgroundColor: "white",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    color: 'grey'
-  },
-  buttonContainer: {
-    width: "50%",
-    flex: 1,
-    alignItems: "center",
-  },
-  button: {
-    borderRadius: 5,
-  },
-  buttonOutline: {
-    backgroundColor: "white",
-    width: "100%",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderColor: "grey",
-    borderWidth: 1,
-    marginTop: 10,
-  },
-  buttonEmpty: {
-    backgroundColor: "#d6e8ff",
-    width: "100%",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderColor: "#bbd8fc",
-    borderWidth: 2,
-    marginTop: 10,
-  },
-  error: {
-    color: "grey",
-    marginTop: 10,
-  },
+  }
 });
