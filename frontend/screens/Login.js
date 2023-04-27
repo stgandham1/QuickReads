@@ -29,44 +29,68 @@ export default function LoginPage() {
   const loginRoute =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/checkuser";
 
-  async function handleSignUp() {
-    if (email.length == 0 || password.length == 0) {
-      console.log("[No Input Detected]");
-      return;
-    }
-
-    let usernameExists = false;
-    const loginRequest = await fetch(
-      loginRoute + "/" + email + "/" + password,
-      {
-        method: "GET",
-      }
-    )
-      .then((response) => {
-        return response.json();
-      })
-      .then((responseJSON) => {
-        if (
-          responseJSON.status ||
-          responseJSON.message != "Username does not exist"
-        ) {
-          usernameExists = true;
+    async function handleSignUp(){
+      let userAuth = { id: "111239336200270088302", email: "zimmeritz64@gmail.com", name: "Michael Chen"};
+      console.log(userAuth);
+      try {
+        const response = await fetch('http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/auth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(userAuth),
+        });
+        if (!response.ok) {
+          throw new Error(`Request failed with status ${response.status}`);
         }
-      })
-      .catch();
-    if (usernameExists) {
-      setErrorText("Username Already Exists");
-      return;
-    }
-    setErrorText("Registered " + email + "!");
-    //ADD USER TO TABLE
-    const signupRequest = await fetch(
-      signupRoute + "/" + email + "/" + password,
-      {
-        method: "GET",
+        console.log(userAuth);
+  
+        const responseData = await response.json();
+        const { user, message } = responseData;
+        console.log(message, user);
+      } catch (error) {
+        console.error('Error occurred:', error.message);
       }
-    );
-  }
+    }
+    
+  // async function handleSignUp() {
+  //   if (email.length == 0 || password.length == 0) {
+  //     console.log("[No Input Detected]");
+  //     return;
+  //   }
+
+  //   let usernameExists = false;
+  //   const loginRequest = await fetch(
+  //     loginRoute + "/" + email + "/" + password,
+  //     {
+  //       method: "GET",
+  //     }
+  //   )
+  //     .then((response) => {
+  //       return response.json();
+  //     })
+  //     .then((responseJSON) => {
+  //       if (
+  //         responseJSON.status ||
+  //         responseJSON.message != "Username does not exist"
+  //       ) {
+  //         usernameExists = true;
+  //       }
+  //     })
+  //     .catch();
+  //   if (usernameExists) {
+  //     setErrorText("Username Already Exists");
+  //     return;
+  //   }
+  //   setErrorText("Registered " + email + "!");
+  //   //ADD USER TO TABLE
+  //   const signupRequest = await fetch(
+  //     signupRoute + "/" + email + "/" + password,
+  //     {
+  //       method: "GET",
+  //     }
+  //   );
+  // }
 
   async function handleLogin() {
     if (email.length == 0 || password.length == 0) {
