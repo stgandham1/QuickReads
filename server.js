@@ -57,11 +57,10 @@ app.get('/checkuser/:username/:password', async (req,res) => {
 
 
   app.post('/auth', async (req, res) => {
-    const {
-      id: authtoken,
-      email,
-      name,
-    } = req.body;
+
+    let authtoken = req.body.id
+    let email = req.body.email
+    let name = req.body.email
   
     if (!authtoken || !email || !name) {
       return res.status(400).json({ error: 'Invalid data received from Google' });
