@@ -2,7 +2,7 @@ const express = require ('express');
 const app = express();
 const {Pool} = require('pg')
 const cors = require('cors');
-
+const bodyParser = require('body-parser');
 app.use(cors());
 const pool = new Pool({
 
@@ -25,6 +25,8 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
+app.use(bodyParser.json());
 
 app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
