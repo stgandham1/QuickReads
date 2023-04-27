@@ -2,40 +2,49 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Text,
+  TextInput,
   View,
   Keyboard,
   TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { globalStyles } from "../styles/global";
-import { Button, TextInput, Snackbar } from 'react-native-paper';
-
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
   const [errorText, setErrorText] = useState("");
-  const [visible, setVisible] = useState(false);
-  const root = 'http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com'; // BASE ROOT
-  
-  //OPEN APP
+
+  useEffect(() => {
+    return;
+  });
+
   const goHome = () => {
-    console.log("GOING" + username);
+    console.log("GOING" + email);
     navigation.replace("BottomTabNavigator");
   };
-  //SIGN UP FUNCTION
+
+  const signupRoute =
+    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/adduser";
+  const loginRoute =
+    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/checkuser";
+
   async function handleSignUp() {
-    if (username.length == 0 || password.length == 0) {
-      onToggleSnackBar("No Input Detected");
+    if (email.length == 0 || password.length == 0) {
+      console.log("[No Input Detected]");
       return;
     }
+
     let usernameExists = false;
-    let signuproute = root+"/adduser/"+username+"/"+password;
-    let loginroute = root+"/checkuser/"+username+"/"+password;
-    //CHECK IF USER EXISTS//
-    const loginRequest = await fetch(loginroute, {method: "GET",})
-      .then((response) => {return response.json();})
+    const loginRequest = await fetch(
+      loginRoute + "/" + email + "/" + password,
+      {
+        method: "GET",
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
       .then((responseJSON) => {
         if (
           responseJSON.status ||
@@ -45,71 +54,86 @@ export default function LoginPage() {
         }
       })
       .catch();
-    //SIGNUP USER IF THEY EXIST//
     if (usernameExists) {
-      onToggleSnackBar("Username Already Exists");
-    } else {
-      onToggleSnackBar("Registered " + username + "!");
-      const signupRequest = await fetch(signuproute,{method: "GET"});
-    }
-  }
-  //LOG IN FUNCTION
-  async function handleLogin() {
-    if (username.length == 0 || password.length == 0) {
-      onToggleSnackBar("No Input Detected");
+      setErrorText("Username Already Exists");
       return;
     }
-    let loginroute = root+"/checkuser/"+username+"/"+password;
-    const loginRequest = await fetch(loginroute, {method: "GET"})
-      .then((response) => {return response.json();})
+    setErrorText("Registered " + email + "!");
+    //ADD USER TO TABLE
+    const signupRequest = await fetch(
+      signupRoute + "/" + email + "/" + password,
+      {
+        method: "GET",
+      }
+    );
+  }
+
+  async function handleLogin() {
+    if (email.length == 0 || password.length == 0) {
+      console.log("[No Input Detected]");
+      return;
+    }
+    const loginRequest = await fetch(
+      loginRoute + "/" + email + "/" + password,
+      {
+        method: "GET",
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
       .then((responseJSON) => {
         if (responseJSON.status) {
-          onToggleSnackBar("Logging in " + username);
+          setErrorText("Logging in " + email);
           goHome();
         } else {
-          onToggleSnackBar("Could not log in " + username);
+          setErrorText("Could not log in " + email);
         }
       });
   }
-  //SNACKBAR FOR ERRORS
-  const onToggleSnackBar = (text) => {setErrorText(text); setVisible(true);};
-  const onDismissSnackBar = () => setVisible(false);
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Username"
-          value={username}
-          onChangeText={(input) => {onDismissSnackBar(); setUsername(input);}}
-          style={globalStyles.paperInput}
+          placeholder="Email"
+          value={email}
+          onChangeText={(input) => setEmail(input)}
+          style={styles.input}
         />
+
         <TextInput
           placeholder="Password"
           value={password}
-          onChangeText={(input) => {onDismissSnackBar(); setPassword(input);}}
-          style={globalStyles.paperInput}
+          onChangeText={(input) => setPassword(input)}
+          style={styles.input}
           secureTextEntry
         />
       </View>
-      <Button mode="contained" onPress={handleLogin} style={globalStyles.paperButton}>
-        Login
-      </Button>
-      <Button mode="outlined" onPress={handleSignUp} style={globalStyles.paperButton}>
-        Signup
-      </Button>
-      <Button mode="text " onPress={goHome}>
-        No Account
-      </Button>
-      <Snackbar
-        visible={visible}
-        onDismiss={onDismissSnackBar}
-        action={{
-          label: 'X',
-          onPress: () => {onDismissSnackBar},
-        }}>
-        {errorText}
-      </Snackbar>
+
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          onPress={handleLogin}
+          style={[styles.button, styles.buttonOutline]}
+        >
+          <Text style={styles.button}>Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={handleSignUp}
+          style={[styles.button, styles.buttonEmpty]}
+        >
+          <Text style={styles.button}>Signup</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={goHome}
+          style={[styles.button, styles.buttonEmpty]}
+        >
+          <Text style={styles.button}>No Account</Text>
+        </TouchableOpacity>
+        <Text style={styles.error}>{errorText}</Text>
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -117,10 +141,49 @@ export default function LoginPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "top",
+    justifyContent: "center",
     alignItems: "center",
   },
   inputContainer: {
     width: "60%",
-  }
+  },
+  input: {
+    backgroundColor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    color: "grey",
+  },
+  buttonContainer: {
+    width: "50%",
+    flex: 1,
+    alignItems: "center",
+  },
+  button: {
+    borderRadius: 5,
+  },
+  buttonOutline: {
+    backgroundColor: "white",
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderColor: "grey",
+    borderWidth: 1,
+    marginTop: 10,
+  },
+  buttonEmpty: {
+    backgroundColor: "#d6e8ff",
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderColor: "#bbd8fc",
+    borderWidth: 2,
+    marginTop: 10,
+  },
+  error: {
+    color: "grey",
+    marginTop: 10,
+  },
 });
