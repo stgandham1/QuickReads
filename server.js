@@ -3,6 +3,7 @@ const app = express();
 const {Pool} = require('pg')
 const cors = require('cors');
 const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 const pool = new Pool({
 
@@ -168,8 +169,9 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     res.send();
   });
   
-  app.post('/addbookmarkpost/:username/:url', async (req,res) => {
-    await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [req.params.username,req.params.url]);
+  app.post('/addbookmarkpost', async (req,res) => {
+    const { username, url } = req.body;
+    await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [username,url]);
     res.send();
   });
 
