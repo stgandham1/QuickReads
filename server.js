@@ -179,6 +179,21 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     res.json(responseList)
   });
 
+    // Receives article info based on category info
+    app.get('/getarticlesbycategory/:username/:category', async (req,res) => {
+      let temp = await pool.query("SELECT * from public.articles WHERE category = $1", [req.params.category]);
+      let responseList = []
+      console.log("SQL add")
+      
+      for (r of temp.rows){
+        console.log(r.title)
+        console.log(r.summary)
+        responseList.push({title: r.title, summary: r.summary,newsurl:r.url,imageurl:r.imageurl,category:r.category})
+      }
+      console.log(responseList)
+      res.json(responseList)
+    });
+
 //get bookmark
   app.get('/getbookmarks/:username', async (req,res) => {
     let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", [req.params.username]);
