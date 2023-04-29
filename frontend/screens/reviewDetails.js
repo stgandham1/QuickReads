@@ -14,12 +14,69 @@ import { FontAwesome } from "@expo/vector-icons";
 export default function ReviewDetail({ route, navigation }) {
   const { title, content, tags, key } = route.params;
   const [isSelected, setSelection] = useState(false);
+
+  async function addToBackend() {
+    let addArticle = {
+      id: key,
+      title: title,
+      content: content,
+      tags: tags,
+    };
+    const url =
+      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/addBookmark";
+    const user = "nat";
+    console.log(addArticle);
+    try {
+      const response = await fetch(url + "/" + user, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(addArticle),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error occurred:", error.message);
+    }
+  }
+
+  async function removeFromBackend() {
+    let removeArticle = {
+      id: key,
+      title: title,
+      content: content,
+      tags: tags,
+    };
+    const url =
+      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/addBookmark";
+    const user = "nat";
+    console.log(removeArticle);
+    try {
+      const response = await fetch(url + "/" + user, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(removeArticle),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error occurred:", error.message);
+    }
+  }
+
   const addBookmark = () => {
     setSelection(true);
+    addToBackend();
     console.log("add to bookmark");
   };
   const removeBookmark = () => {
     setSelection(false);
+    removeFromBackend();
     console.log("remove from bookmark");
   };
 
