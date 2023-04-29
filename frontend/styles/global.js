@@ -32,7 +32,7 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: "#f5f5dc",
     fontSize: 20,
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 100,
   },
   orangeButton: {
     alignItems: "center",
@@ -68,11 +68,11 @@ export const globalStyles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     height: 20,
-    color: 'grey'
+    color: "grey",
   },
   paperButton: {
-    width:'50%',
-    height: '40px',
-    marginTop:'5px'
-  }
+    width: "50%",
+    height: "40px",
+    marginTop: "5px",
+  },
 });

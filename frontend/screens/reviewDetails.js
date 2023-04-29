@@ -12,7 +12,7 @@ import {
 import { globalStyles } from "../styles/global";
 import { FontAwesome } from "@expo/vector-icons";
 export default function ReviewDetail({ route, navigation }) {
-  const { title, content, tags, key } = route.params;
+  const { title, content, tags, URL, key } = route.params;
   const [isSelected, setSelection] = useState(false);
 
   async function refreshBookmark() {
@@ -28,7 +28,7 @@ export default function ReviewDetail({ route, navigation }) {
       .then((responseJSON) => {
         console.log(responseJSON);
         for (var key in responseJSON) {
-          if (responseJSON[key]["url"] == "https://test") {
+          if (responseJSON[key]["url"] == URL) {
             setSelection(true);
             break;
           }
@@ -43,7 +43,7 @@ export default function ReviewDetail({ route, navigation }) {
   async function addToBackend() {
     const url =
       "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/addbookmarkpost";
-    const body = { username: "nat", url: "https://test" };
+    const body = { username: "nat", url: URL };
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -63,7 +63,7 @@ export default function ReviewDetail({ route, navigation }) {
   async function removeFromBackend() {
     const url =
       "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/removebookmarkpost";
-    const body = { username: "nat", url: "https://test" };
+    const body = { username: "nat", url: URL };
     try {
       const response = await fetch(url, {
         method: "POST",
@@ -94,32 +94,7 @@ export default function ReviewDetail({ route, navigation }) {
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.titleText}>{title}</Text>
-      <TouchableOpacity
-        style={{ flexDirection: "row", justifyContent: "flex-end" }}
-      >
-        {!isSelected ? (
-          <FontAwesome
-            name="bookmark-o"
-            size={30}
-            color="black"
-            backgroundColor="transparent"
-            borderRadius={10}
-            suppressHighlighting={false}
-            onPress={addBookmark}
-          />
-        ) : (
-          <FontAwesome
-            name="bookmark"
-            size={30}
-            color="blue"
-            backgroundColor="transparent"
-            borderRadius={10}
-            suppressHighlighting={false}
-            onPress={removeBookmark}
-          />
-        )}
-        {/* need to import the bookmar icon */}
-      </TouchableOpacity>
+
       <ScrollView>
         <Text style={globalStyles.paragrph}>{content}</Text>
       </ScrollView>
@@ -129,18 +104,32 @@ export default function ReviewDetail({ route, navigation }) {
           marginBottom: 0,
         }}
       >
-        <FlatList
-          horizontal={false}
-          numColumns={10}
-          data={tags}
-          keyExtractor={(item, index) => index.toString()}
-          //contentContainerStyle={globalStyles.scrollTags}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={{ padding: 5 }}>
-              <Text style={globalStyles.tagText}>{item}</Text>
-            </TouchableOpacity>
+        <Text style={globalStyles.tagText}>{tags}</Text>
+        <TouchableOpacity
+          style={{ flexDirection: "row", justifyContent: "flex-end" }}
+        >
+          {!isSelected ? (
+            <FontAwesome
+              name="bookmark-o"
+              size={30}
+              color="black"
+              backgroundColor="transparent"
+              borderRadius={10}
+              suppressHighlighting={false}
+              onPress={addBookmark}
+            />
+          ) : (
+            <FontAwesome
+              name="bookmark"
+              size={30}
+              color="blue"
+              backgroundColor="transparent"
+              borderRadius={10}
+              suppressHighlighting={false}
+              onPress={removeBookmark}
+            />
           )}
-        />
+        </TouchableOpacity>
       </View>
     </View>
   );

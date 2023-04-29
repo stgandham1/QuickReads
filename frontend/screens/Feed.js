@@ -53,17 +53,21 @@ export default function Feed({ navigation }) {
         console.log(responseJSON);
         deleteHandler();
         for (var key in responseJSON) {
-          submitHandler({ // Submit handler receives functions
+          submitHandler({
+            // Submit handler receives functions
             title: responseJSON[key]["title"],
             content: responseJSON[key]["summary"],
-            tags: ["tag1", "tag2", "tag3"],
+            tags: responseJSON[key]["category"],
+            imageURL: responseJSON[key]["imageurl"],
+            URL: responseJSON[key]["newsurl"],
             key: key,
           });
         }
       })
       .catch();
   }
-  useEffect(() => { // refreshes articles wheh opening page. 
+  useEffect(() => {
+    // refreshes articles wheh opening page.
     refreshArticles();
   }, []);
 
