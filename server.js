@@ -100,13 +100,13 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     }
   });
   
-  // // Remove category
-  // app.get('/removecategory/:username/:category', async (req,res) => {
-  //   pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [req.params.username,req.params.category])
-  //   res.send("Deleted category")
-  // });
+  // Remove category
+  app.get('/removecategory/:username/:category', async (req,res) => {
+    pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [req.params.username,req.params.category])
+    res.send("Deleted category")
+  });
 
-  app.post('/removecategory', async (req,res) => {
+  app.post('/removecategorypost', async (req,res) => {
     const { username, category } = req.body;
     pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [username, category])
     res.send("Deleted category")
@@ -117,6 +117,16 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   app.get('/addcategory/:username/:category', async (req,res) => {
     const { username, category } = req.params;
 
+      const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE username=$1", [username]);
+      let currentCategories = currentCategoriesResult.rows[0].category;
+      currentCategories.push(category);
+      await pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [JSON.stringify(currentCategories), username]);
+      res.send(currentCategories)
+      
+  });
+
+  app.post('/addcategorypost/', async (req,res) => {
+    const { username, category } = req.body;
       const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE username=$1", [username]);
       let currentCategories = currentCategoriesResult.rows[0].category;
       currentCategories.push(category);
@@ -166,6 +176,12 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   // remove bookmark
   app.get('/removebookmark/:username/:url', async (req,res) => {
     await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [req.params.username,req.params.url]);
+    res.send();
+  });
+
+  app.post('/removebookmarkpost', async (req, res) => {
+    const { username, url } = req.body;
+    await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [username, url]);
     res.send();
   });
   
