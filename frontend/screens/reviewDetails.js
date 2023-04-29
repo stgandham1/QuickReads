@@ -15,24 +15,42 @@ export default function ReviewDetail({ route, navigation }) {
   const { title, content, tags, key } = route.params;
   const [isSelected, setSelection] = useState(false);
 
+  async function refreshBookmark() {
+    let username = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+    let feedRoute =
+      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/getBookmarks";
+    const articleRequest = await fetch(feedRoute + "/" + username, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseJSON) => {
+        console.log(responseJSON);
+        for (var key in responseJSON) {
+          if (responseJSON[key]["url"] == "https://test") {
+            setSelection(true);
+            break;
+          }
+        }
+      })
+      .catch();
+  }
+  useEffect(() => {
+    refreshBookmark();
+  }, []);
+
   async function addToBackend() {
-    let addArticle = {
-      id: key,
-      title: title,
-      content: content,
-      tags: tags,
-    };
     const url =
-      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/addBookmark";
-    const user = "nat";
-    console.log(addArticle);
+      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/addbookmarkpost";
+    const body = { username: "nat", url: "https://test" };
     try {
-      const response = await fetch(url + "/" + user, {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(addArticle),
+        body: JSON.stringify(body),
       });
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
@@ -43,23 +61,16 @@ export default function ReviewDetail({ route, navigation }) {
   }
 
   async function removeFromBackend() {
-    let removeArticle = {
-      id: key,
-      title: title,
-      content: content,
-      tags: tags,
-    };
     const url =
-      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/addBookmark";
-    const user = "nat";
-    console.log(removeArticle);
+      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/removebookmarkpost";
+    const body = { username: "nat", url: "https://test" };
     try {
-      const response = await fetch(url + "/" + user, {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(removeArticle),
+        body: JSON.stringify(body),
       });
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);

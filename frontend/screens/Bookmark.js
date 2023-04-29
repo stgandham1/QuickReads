@@ -9,7 +9,7 @@ import {
 import { globalStyles } from "../styles/global";
 import { articles } from "../articles";
 export default function Bookmark({ navigation }) {
-  const [bookmark, setBookmark] = useState(articles);
+  const [bookmark, setBookmark] = useState("");
 
   const submitHandler = (text) => {
     setBookmark((preText) => {
@@ -37,10 +37,7 @@ export default function Bookmark({ navigation }) {
         deleteHandler();
         for (var key in responseJSON) {
           submitHandler({
-            title: responseJSON[key]["title"],
-            content: responseJSON[key]["summary"],
-            tags: ["tag1", "tag2", "tag3"],
-            key: key,
+            url: responseJSON[key]["url"],
           });
         }
       })
@@ -64,11 +61,7 @@ export default function Bookmark({ navigation }) {
       <FlatList
         data={bookmark}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ReviewDetail", item)}
-          >
-            <Text style={globalStyles.homeText}>{item.title}</Text>
-          </TouchableOpacity>
+          <Text style={globalStyles.homeText}>{item.url}</Text>
         )}
         ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
       />
