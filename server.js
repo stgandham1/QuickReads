@@ -157,7 +157,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   // Get Categories
   app.get('/getcategory/:username', async (req,res) => {
     let results = await pool.query("SELECT category from public.categories WHERE username = $1", [req.params.username]);
-    res.send(results);
+    res.send(results["rows"][0]["category"]);
   });
 
   // Receives article info based on category info
