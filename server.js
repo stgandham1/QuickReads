@@ -168,6 +168,10 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     res.send();
   });
   
+  app.post('/addbookmarkpost/:username/:url', async (req,res) => {
+    await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [req.params.username,req.params.url]);
+    res.send();
+  });
 
   app.listen(8080, () => {console.log("Running")});
 
