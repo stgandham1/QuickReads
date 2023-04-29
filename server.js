@@ -33,12 +33,6 @@ app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
   });
 
-// Adding new user
-  app.get('/adduser/:username/:password', async (req,res) => {
-    pool.query("INSERT INTO public.authentication (username, password) VALUES ($1,$2)", [req.params.username,req.params.password])
-    pool.query("INSERT INTO public.categories (username) VALUES ($1)", [req.params.username])
-  });
-
   app.post('/adduserpost', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -131,10 +125,6 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   });
   
   // Remove category
-  app.get('/removecategory/:username/:category', async (req,res) => {
-    pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [req.params.username,req.params.category])
-    res.send("Deleted category")
-  });
 
   app.post('/removecategorypost', async (req, res) => {
     try {
@@ -149,17 +139,6 @@ app.get('/checkuser/:username/:password', async (req,res) => {
 
 
   // Add Category
-  app.get('/addcategory/:username/:category', async (req,res) => {
-    const { username, category } = req.params;
-
-      const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE username=$1", [username]);
-      let currentCategories = currentCategoriesResult.rows[0].category;
-      currentCategories.push(category);
-      await pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [JSON.stringify(currentCategories), username]);
-      res.send(currentCategories)
-      
-  });
-
   app.post('/addcategorypost/', async (req, res) => {
     try {
       const { username, category } = req.body;
@@ -194,7 +173,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     for (r of temp.rows){
       console.log(r.title)
       console.log(r.summary)
-      responseList.push({title: r.title, summary: r.summary})
+      responseList.push({title: r.title, summary: r.summary,newsurl:r.url,imageurl:r.imageurl,category:r.category})
     }
     console.log(responseList)
     res.json(responseList)
@@ -206,17 +185,6 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     res.send(results.rows);
   });
 
-  // add bookmark
-  app.get('/addbookmark/:username/:url', async (req,res) => {
-    await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [req.params.username,req.params.url]);
-    res.send();
-  });
-
-  // remove bookmark
-  app.get('/removebookmark/:username/:url', async (req,res) => {
-    await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [req.params.username,req.params.url]);
-    res.send();
-  });
 
   app.post('/removebookmarkpost', async (req, res) => {
     try {
@@ -241,7 +209,3 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   });
 
   app.listen(8080, () => {console.log("Running")});
-
-
-
-
