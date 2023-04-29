@@ -180,7 +180,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   });
 
     // Receives article info based on category info
-    app.get('/getarticlesbycategory/:username/:category', async (req,res) => {
+    app.get('/getarticlesbycategory/:category', async (req,res) => {
       let temp = await pool.query("SELECT * from public.articles WHERE category = $1", [req.params.category]);
       let responseList = []
       console.log("SQL add")
