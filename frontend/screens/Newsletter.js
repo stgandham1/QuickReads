@@ -3,14 +3,19 @@ import {
   StyleSheet,
   View,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  Button
 } from "react-native";
-import { Avatar, Button, Card, Text, List} from 'react-native-paper';
+import { Avatar, Card, Text, List} from 'react-native-paper';
 import { globalStyles } from "../styles/global";
 import { articles } from "../articles";
 
 export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState(articles);
+  const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; 
+  let accessToken = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+
+
   //GET ARTICLES FROM BACKEND
 
   const submitHandler = (text) => {
@@ -39,10 +44,7 @@ export default function Feed({ navigation }) {
   //deletinng all the articles
 
   async function refreshArticles() {
-    let username = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
-    let feedRoute =
-      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/getarticles";
-    const articleRequest = await fetch(feedRoute + "/" + username, {
+    const articleRequest = await fetch(root+"/getarticles/"+ accessToken, {
       method: "GET",
     })
       .then((response) => {
@@ -74,6 +76,21 @@ export default function Feed({ navigation }) {
 
   const printArticles = () => {console.log(reviews); console.log(reviews[0].title); console.log(reviews[0].summary);}
   const [shouldShow, setShouldShow] = useState(false);
+
+  async function handleAddBookmark(bookmarkURL) {
+    let body = {url: bookmarkURL, username: accessToken};
+    console.log(body);
+    const request = await fetch(root+"/addbookmarkpost", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+      })
+      .catch();
+      console.log("Adding " + bookmarkURL + " to Bookmarks");
+  }
+
   return (
     <View style={globalStyles.container}>
       <FlatList
@@ -97,6 +114,11 @@ export default function Feed({ navigation }) {
                   ) : null
                 }
               </Card.Content>
+              <Button
+                title="Bookmark"
+                onPress={() => {console.log(item)}}
+                style={globalStyles.button}
+              ></Button>
             </Card>
         )}
         ItemSeparatorComponent={() => <View style={{ height: 30 }} />}

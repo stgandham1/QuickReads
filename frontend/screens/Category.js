@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Card, Text, List } from "react-native-paper";
-import { StyleSheet, View, KeyboardAvoidingView, Button } from "react-native";
-import { TextInput } from "react-native-paper";
+import { TextInput, StyleSheet, View, KeyboardAvoidingView, Button } from "react-native";
 import { globalStyles } from "../styles/global";
 
 export default function Category() {
@@ -11,50 +10,56 @@ export default function Category() {
   let root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; // SHOULD BE SAME ON ALL PAGES: MAKE GLOBAL?
 
-  const handleAddKeyword = () => {
-    console.log("Adding " + keyword + " to user list of Categories");
-  };
-  const getUserCategories = () => {
-    let callback = (response) => {
-      let cats = response["rows"][0]["category"];
-      setCatlist((oldArr) => cats);
-    };
-    getRequestHelper(root, "getCategory", accessToken, callback);
-  };
-
-  async function getRequestHelper(_root, _table, _accessToken, callback) {
-    //RETURNS WHATEVER THE REQUEST RETURNS
-    let returned = {};
-    const request = await fetch(_root + "/" + _table + "/" + _accessToken, {
+  async function getUserCategories() {
+    const request = await fetch(root + "/getCategory/" + accessToken, {
       method: "GET",
     })
       .then((response) => {
         return response.json();
       })
       .then((responseJSON) => {
-        returned = responseJSON;
-        return;
+        let cats = responseJSON;
+        setCatlist((oldArr) => cats);
       })
       .catch();
-    callback(returned);
-    return returned;
+    return;
   }
-  async function postRequestHelper(_root, _table, _accessToken, callback) {
-    //RETURNS WHATEVER THE REQUEST RETURNS
-    let returned = {};
-    const request = await fetch(_root + "/" + _table + "/" + _accessToken, {
-      method: "GET",
-    })
-      .then((response) => {
-        return response.json();
+  async function handleAddKeyword() {
+    setKeyword(keyword.trim()); 
+    if (keyword.length == 0) {
+      console.log("Keyword is Empty!");
+      return; 
+    }
+    let body = {category: keyword, username: accessToken};
+    console.log(body);
+    const request = await fetch(root+"/addcategorypost", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
       })
-      .then((responseJSON) => {
-        returned = responseJSON;
-        return;
+      .then((response) => {
+        console.log(response.json());
+      })
+      .catch((error) => {console.log(error);});
+      console.log("Adding " + keyword + " to user list of Categories");
+      getUserCategories();
+  }
+
+  async function handleRemoveKeyword(removedKeyword) {
+    let body = {category: removedKeyword, username: accessToken};
+    console.log(body);
+    const request = await fetch(root+"/removecategorypost", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
       })
       .catch();
-    callback(returned);
-    return returned;
+      console.log("Removing " + removedKeyword + " from user list of Categories");
+      getUserCategories();
   }
 
   return (
@@ -62,12 +67,12 @@ export default function Category() {
       <View style={styles.inputContainer}>
         <Text style={globalStyles.titleText}>Add a News Category</Text>
         <TextInput
-          placeholder="For example: 'National Football League', 'Videogames', 'Clean Energy' "
+          placeholder="Eg: Major Baseball League, Clean Energy"
           value={keyword}
           onChangeText={(input) => {
             setKeyword(input);
           }}
-          style={globalStyles.paperInput}
+          style={globalStyles.input}
         />
       </View>
 
@@ -80,10 +85,15 @@ export default function Category() {
         <Text style={globalStyles.titleText}>Your News Categories:</Text>
         {catlist.map((elem) => {
           return (
-            <Card>
+            <Card key={elem+"_card"}>
               <Card.Content>
                 <Text variant="titleLarge">{elem}</Text>
               </Card.Content>
+              <Button
+                title="X"
+                onPress={() => {handleRemoveKeyword(elem)}}
+                style={globalStyles.button}
+              ></Button>
             </Card>
           );
         })}
@@ -102,15 +112,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  input: {
-    backgroundColor: "white",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    color: "grey",
   },
   inputContainer: {
     width: "60%",

@@ -75,4 +75,13 @@ export const globalStyles = StyleSheet.create({
     height: "40px",
     marginTop: "5px",
   },
+  input: {
+    backgroundColor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    color: "grey",
+  }
 });
