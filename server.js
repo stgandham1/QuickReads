@@ -219,7 +219,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       res.send();
     } catch (error) {
       console.error(error);
-      res.status(500).send('Server error');
+      res.status(500).send(error);
     }
   });
 
@@ -238,7 +238,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       res.send(results.rows); 
     } catch (error) {
       console.error(error);
-      res.status(500).send('Server error');
+      res.status(500).send(error);
     }
   });
 
