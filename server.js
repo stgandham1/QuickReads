@@ -234,7 +234,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       const { username, url } = req.body;
       await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [username,url]);
       await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [username,url]);
-      let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", ['accountName']);
+      let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", [username]);
       res.send(results.rows); 
     } catch (error) {
       console.error(error);
