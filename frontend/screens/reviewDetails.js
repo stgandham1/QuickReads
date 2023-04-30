@@ -104,7 +104,19 @@ export default function ReviewDetail({ route, navigation }) {
           marginBottom: 0,
         }}
       >
-        <Text style={globalStyles.tagText}>{tags}</Text>
+        {/* <Text style={globalStyles.tagText}>{tags}</Text> */}
+        <FlatList
+          horizontal={false}
+          numColumns={10}
+          data={[tags]}
+          keyExtractor={(item, index) => index.toString()}
+          //contentContainerStyle={globalStyles.scrollTags}
+          renderItem={({ item }) => (
+            <TouchableOpacity style={{ padding: 5 }}>
+              <Text style={globalStyles.tagText}>{item}</Text>
+            </TouchableOpacity>
+          )}
+        />
         <TouchableOpacity
           style={{ flexDirection: "row", justifyContent: "flex-end" }}
         >

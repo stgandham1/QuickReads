@@ -3,7 +3,7 @@ export const articles = [
     title: "article 1",
     content:
       "article 1 content\naaaa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa",
-    tags: ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6"],
+    tags: "tag",
     key: "1",
   },
   {
