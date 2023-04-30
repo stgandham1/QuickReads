@@ -153,6 +153,18 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     }
   });
 
+  // Add Category
+  app.get('/addcategory/:username/:category', async (req,res) => {
+    const { username, category } = req.params;
+      const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE username=$1", [username]);
+      let currentCategories = currentCategoriesResult.rows[0].category;
+      currentCategories.push(category);
+      await pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [JSON.stringify(currentCategories), username]);
+      res.send(currentCategories)
+      
+  });
+
+
 
   // Get Categories
   app.get('/getcategory/:username', async (req,res) => {
