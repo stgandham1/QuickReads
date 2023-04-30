@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Card, Text, List } from "react-native-paper";
-import { TextInput, StyleSheet, View, KeyboardAvoidingView, Button } from "react-native";
+import { TextInput, StyleSheet, View, KeyboardAvoidingView, Button, TouchableOpacity } from "react-native";
 import { globalStyles } from "../styles/global";
 
 export default function Category() {
   const [keyword, setKeyword] = useState(""); //Keyword to Search.
   const [catlist, setCatlist] = useState([]); //User's categories
   let accessToken = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
-  let root =
-    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; // SHOULD BE SAME ON ALL PAGES: MAKE GLOBAL?
+  let root ="http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; // SHOULD BE SAME ON ALL PAGES: MAKE GLOBAL?
 
   async function getUserCategories() {
     const request = await fetch(root + "/getCategory/" + accessToken, {
@@ -25,6 +24,8 @@ export default function Category() {
     return;
   }
   async function handleAddKeyword() {
+
+    
     setKeyword(keyword.trim()); 
     if (keyword.length == 0) {
       console.log("Keyword is Empty!");
@@ -46,7 +47,6 @@ export default function Category() {
       console.log("Adding " + keyword + " to user list of Categories");
       getUserCategories();
   }
-
   async function handleRemoveKeyword(removedKeyword) {
     let body = {category: removedKeyword, username: accessToken};
     console.log(body);
@@ -67,7 +67,7 @@ export default function Category() {
       <View style={styles.inputContainer}>
         <Text style={globalStyles.titleText}>Add a News Category</Text>
         <TextInput
-          placeholder="Eg: Major Baseball League, Clean Energy"
+          placeholder="Eg: Major League Baseball, Clean Energy"
           value={keyword}
           onChangeText={(input) => {
             setKeyword(input);
@@ -89,11 +89,12 @@ export default function Category() {
               <Card.Content>
                 <Text variant="titleLarge">{elem}</Text>
               </Card.Content>
-              <Button
-                title="X"
-                onPress={() => {handleRemoveKeyword(elem)}}
-                style={globalStyles.button}
-              ></Button>
+              <TouchableOpacity
+              onPress={() => {handleRemoveKeyword(elem)}}
+              style={globalStyles.outlinedButton}
+              >
+              <Text style={styles.button}>Remove</Text>
+              </TouchableOpacity>
             </Card>
           );
         })}

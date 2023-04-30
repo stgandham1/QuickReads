@@ -9,96 +9,87 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { globalStyles } from "../styles/global";
+
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
   const [errorText, setErrorText] = useState("");
-
-  useEffect(() => {
-    return;
-  });
+  // FOR LOGIN
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
+  const root = 'http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com';
 
   const goHome = () => {
     console.log("GOING" + email);
     navigation.replace("BottomTabNavigator");
   };
 
-  const signupRoute =
-    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/adduser";
-  const loginRoute =
-    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/checkuser";
+  async function testGoogleAuth() {
+    const myAuthtoken = "111239336200270088302"
+    const myEmail = "zimmeritz64@gmail.com"
+    const myName = "Michael Chen"
 
-    async function handleSignUp(){
-      let userAuth = { id: "111239336200270088302", email: "zimmeritz64@gmail.com", name: "Michael Chen"};
-      console.log(userAuth);
-      try {
-        const response = await fetch('http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/auth', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userAuth),
-        });
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-        console.log(userAuth);
-  
-        const responseData = await response.json();
-        const { user, message } = responseData;
-        console.log(message, user);
-      } catch (error) {
-        console.error('Error occurred:', error.message);
-      }
+    let userAuth = { authtoken: myAuthtoken, email: myEmail, name: myName};
+    console.log(userAuth);
+    const request = await fetch(root+"/auth", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userAuth),
+      })
+      .catch(error => console.log(error));
+      console.log("Signing Up " + (userAuth.name));
+  }
+
+  async function handleSignUp() {
+    if (email.length == 0 || password.length == 0) {
+      setErrorText("[No Input Detected]");
+      return;
     }
-    
-  // async function handleSignUp() {
-  //   if (email.length == 0 || password.length == 0) {
-  //     console.log("[No Input Detected]");
-  //     return;
-  //   }
-
-  //   let usernameExists = false;
-  //   const loginRequest = await fetch(
-  //     loginRoute + "/" + email + "/" + password,
-  //     {
-  //       method: "GET",
-  //     }
-  //   )
-  //     .then((response) => {
-  //       return response.json();
-  //     })
-  //     .then((responseJSON) => {
-  //       if (
-  //         responseJSON.status ||
-  //         responseJSON.message != "Username does not exist"
-  //       ) {
-  //         usernameExists = true;
-  //       }
-  //     })
-  //     .catch();
-  //   if (usernameExists) {
-  //     setErrorText("Username Already Exists");
-  //     return;
-  //   }
-  //   setErrorText("Registered " + email + "!");
-  //   //ADD USER TO TABLE
-  //   const signupRequest = await fetch(
-  //     signupRoute + "/" + email + "/" + password,
-  //     {
-  //       method: "GET",
-  //     }
-  //   );
-  // }
+    let usernameExists = false;
+    const request = await fetch(route+'/adduser/'+email,
+      {
+        method: "GET",
+      }
+    )
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseJSON) => {
+        if (
+          responseJSON.status ||
+          responseJSON.message != "Username does not exist"
+        ) {
+          usernameExists = true;
+        }
+      })
+      .catch();
+    if (usernameExists) {
+      setErrorText("Username Already Exists");
+      return;
+    }
+    setErrorText("Registered " + email + "!");
+    //ADD USER TO TABLE
+    const signupRequest = await fetch(root+'/adduser/'+email+'/'+password,
+      {
+        method: "GET",
+      }
+    );
+  }
 
   async function handleLogin() {
     if (email.length == 0 || password.length == 0) {
-      console.log("[No Input Detected]");
+      setErrorText("[No Input Detected]");
       return;
     }
-    const loginRequest = await fetch(
-      loginRoute + "/" + email + "/" + password,
+    const request = await fetch(root+'/checkuser/'+email+'/'+password,
       {
         method: "GET",
       }
@@ -123,14 +114,14 @@ export default function LoginPage() {
           placeholder="Email"
           value={email}
           onChangeText={(input) => setEmail(input)}
-          style={styles.input}
+          style={globalStyles.input}
         />
 
         <TextInput
           placeholder="Password"
           value={password}
           onChangeText={(input) => setPassword(input)}
-          style={styles.input}
+          style={globalStyles.input}
           secureTextEntry
         />
       </View>
@@ -138,24 +129,31 @@ export default function LoginPage() {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={handleLogin}
-          style={[styles.button, styles.buttonOutline]}
+          style={globalStyles.outlinedButton}
         >
           <Text style={styles.button}>Login</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={handleSignUp}
-          style={[styles.button, styles.buttonEmpty]}
+          style={globalStyles.filledButton}
         >
           <Text style={styles.button}>Signup</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
+          onPress={testGoogleAuth}
+          style={globalStyles.outlinedButton}
+        >
+          <Text style={styles.button}>Test Google Auth</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={goHome}
-          style={[styles.button, styles.buttonEmpty]}
+          style={globalStyles.filledButton}
         >
           <Text style={styles.button}>No Account</Text>
         </TouchableOpacity>
+
         <Text style={styles.error}>{errorText}</Text>
       </View>
     </KeyboardAvoidingView>
@@ -171,43 +169,16 @@ const styles = StyleSheet.create({
   inputContainer: {
     width: "60%",
   },
-  input: {
-    backgroundColor: "white",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    color: "grey",
-  },
   buttonContainer: {
     width: "50%",
     flex: 1,
     alignItems: "center",
   },
-  button: {
-    borderRadius: 5,
-  },
-  buttonOutline: {
-    backgroundColor: "white",
-    width: "100%",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderColor: "grey",
-    borderWidth: 1,
-    marginTop: 10,
-  },
-  buttonEmpty: {
-    backgroundColor: "#d6e8ff",
-    width: "100%",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderColor: "#bbd8fc",
-    borderWidth: 2,
-    marginTop: 10,
-  },
   error: {
     color: "grey",
     marginTop: 10,
   },
+  button: {
+
+  }
 });

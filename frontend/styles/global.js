@@ -60,21 +60,6 @@ export const globalStyles = StyleSheet.create({
   },
   dropdown1RowTxtStyle: { color: "#444", textAlign: "left" },
   // NATHANIEL BUTTONS //
-  paperInput: {
-    backgroundColor: "white",
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 10,
-    height: 20,
-    color: "grey",
-  },
-  paperButton: {
-    width: "50%",
-    height: "40px",
-    marginTop: "5px",
-  },
   input: {
     backgroundColor: "white",
     paddingVertical: 10,
@@ -83,5 +68,25 @@ export const globalStyles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     color: "grey",
-  }
+  }, 
+  outlinedButton: {
+    borderRadius: 5,
+    backgroundColor: "white",
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderColor: "grey",
+    borderWidth: 1,
+    marginTop: 10,
+  },
+  filledButton: {
+    borderRadius: 5,
+    backgroundColor: "#d6e8ff",
+    width: "100%",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderColor: "#bbd8fc",
+    borderWidth: 2,
+    marginTop: 10,
+  },
 });
