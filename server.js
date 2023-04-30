@@ -95,7 +95,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   
     try {
     
-      const userQuery = 'SELECT * FROM public.authentication WHERE authtoken = $1';
+      const userQuery = 'SELECT * FROM public.authorization WHERE authtoken = $1';
       const { rows } = await pool.query(userQuery, [authtoken]);
   
       let user;
@@ -103,7 +103,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       if (rows.length === 0) {
         
         const insertQuery =
-          'INSERT INTO  public.authentication (authtoken, email, name) VALUES ($1, $2, $3) RETURNING *';
+          'INSERT INTO  public.authorization (authtoken, email, name) VALUES ($1, $2, $3) RETURNING *';
         const result = await pool.query(insertQuery, [
           authtoken,
           email,
