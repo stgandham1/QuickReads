@@ -85,9 +85,9 @@ app.get('/checkuser/:username/:password', async (req,res) => {
 
   app.post('/auth', async (req, res) => {
 
-    let authtoken = req.body.id
+    let authtoken = req.body.authtoken
     let email = req.body.email
-    let name = req.body.email
+    let name = req.body.name
   
     if (!authtoken || !email || !name) {
       return res.status(400).json({ error: 'Invalid data received from Google' });
@@ -103,11 +103,11 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       if (rows.length === 0) {
         
         const insertQuery =
-          'INSERT INTO  public.authentication (email, name, authtoken) VALUES ($1, $2, $3) RETURNING *';
+          'INSERT INTO  public.authentication (authtoken, email, name) VALUES ($1, $2, $3) RETURNING *';
         const result = await pool.query(insertQuery, [
+          authtoken,
           email,
           name,
-          authtoken,
         ]);
         user = result.rows[0];
       } else {
@@ -227,5 +227,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", ['accountName']);
     res.send(results.rows); 
   });
+
+  
 
   app.listen(8080, () => {console.log("Running")});
