@@ -228,6 +228,18 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     res.send(results.rows); 
   });
 
-  
+  // black box test for duplicate entries
+  app.post('/blackboxtestingaddbookmarkpost', async (req, res) => {
+    try {
+      const { username, url } = req.body;
+      await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [username,url]);
+      await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [username,url]);
+      let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", ['accountName']);
+      res.send(results.rows); 
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Server error');
+    }
+  });
 
   app.listen(8080, () => {console.log("Running")});
