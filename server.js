@@ -223,4 +223,9 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     }
   });
 
+  app.get('/stubtestinggetbookmarks/', async (req,res) => {
+    let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", ['accountName']);
+    res.send(results.rows); 
+  });
+
   app.listen(8080, () => {console.log("Running")});
