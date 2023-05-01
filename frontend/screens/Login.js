@@ -44,6 +44,7 @@ export default function LoginPage() {
       },
       body: JSON.stringify(userAuth),
       })
+      .then(response => console.log(response))
       .catch(error => console.log(error));
       console.log("Signing Up " + (userAuth.name));
   }
@@ -54,7 +55,7 @@ export default function LoginPage() {
       return;
     }
     let usernameExists = false;
-    const request = await fetch(route+'/adduser/'+email,
+    const request = await fetch(root+'/adduser/'+email,
       {
         method: "GET",
       }
