@@ -143,6 +143,8 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     try {
       const { username, category } = req.body;
       const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE username=$1", [username]);
+      console.log(currentCategoriesResult)
+      console.log(currentCategoriesResult.rows[0])
       let currentCategories = currentCategoriesResult.rows[0].category;
       currentCategories.push(category);
       await pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [JSON.stringify(currentCategories), username]);
