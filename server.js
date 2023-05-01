@@ -5,6 +5,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+const axios = require('axios');
 const pool = new Pool({
 
   host: process.env.RDS_HOSTNAME,
@@ -166,6 +167,22 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       
   });
 
+  app.post('/ask', async (req, res) => {
+    const question = req.body.question;
+  
+    // replace YOUR_API_KEY with your actual OpenAI API key
+    const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
+      prompt: question,
+      max_tokens: 150,
+      n: 1,
+      stop: ['\n']
+    }, {
+      headers: {'Content-Type': 'application/json',
+                'Authorization': 'Bearer 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'}
+    });
+    const answer = response.data.choices[0].text.trim();
+    res.send(answer);
+  });
 
 
   // Get Categories
