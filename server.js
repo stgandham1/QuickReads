@@ -179,7 +179,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       }, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer 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'
+          'Authorization': 'Bearer ${process.env.OPENAI_API_KEY}'
         }
       });
   
