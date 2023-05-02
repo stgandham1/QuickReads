@@ -111,16 +111,20 @@ app.get('/addarticles', async (req,res) => {
     for (var i = 0; i < a.length; i++) {
       categories.push(a[i].category);
     }
-    res.send(categories)
-//     let articles = []
-//     categories.forEach(element => {
-//     fetchArticles(element).then(result => {
-//       articles.concat(result)
-//     }).catch(error => {
-//       console.error(error);
-//     });
-//   });
-//   res.send(articles);
+    let articles = []
+  //   categories.forEach(element => {
+  //   fetchArticles(element).then(result => {
+  //     articles.concat(result)
+  //   }).catch(error => {
+  //     console.error(error);
+  //   });
+  // });
+  fetchArticles("Finance").then(result => {
+        articles.concat(result)
+        res.send(result)
+        console.log(result)
+      })
+  res.send(articles);
 } catch{
   console.error(error);
   res.send(error);
