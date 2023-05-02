@@ -104,9 +104,10 @@ async function fetchArticles(topic) {
 }
 
 app.get('/addarticles', async (req,res) => {
+  try{
   let categories = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
   let articles = []
-  categories.array.forEach(element => {
+  categories.forEach(element => {
     fetchArticles(element).then(result => {
       articles.concat(result)
     }).catch(error => {
@@ -114,6 +115,11 @@ app.get('/addarticles', async (req,res) => {
     });
   });
   res.send(articles);
+} catch{
+  console.error(error);
+  res.status(500).send('Server error');
+}
+
 });
 
   app.post('/adduserpost', async (req, res) => {
