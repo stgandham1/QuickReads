@@ -199,7 +199,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   });
 
   app.get('/getcategories', async (req,res) => {
-    let results = await pool.query("SELECT DISTINCT jsonb_array_elements_text(categories) AS category from public.categories");
+    let results = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
     res.send(results);
   });
 
