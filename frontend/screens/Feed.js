@@ -13,7 +13,7 @@ import { AccessTokenRequest } from "expo-auth-session";
 
 export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState(articles);
-  let accessToken = "baz"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  let accessToken = "foo"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
   const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
 
 
@@ -41,10 +41,10 @@ export default function Feed({ navigation }) {
       return [];
     });
   };
-  //deletinng all the articles
 
   async function refreshArticles() {
-    const articleRequest = await fetch(root+"/getarticles/"+accessToken, {
+    console.log(root+"/getArticles/"+accessToken)
+    const articleRequest = await fetch(root+"/getArticles/"+accessToken, {
       method: "GET",
     })
       .then((response) => {
@@ -68,6 +68,7 @@ export default function Feed({ navigation }) {
   }
 
   useEffect(() => { // refreshes articles wheh opening page.
+    console.log("refreshing articles")
     refreshArticles();
   }, []);
 
@@ -77,6 +78,11 @@ export default function Feed({ navigation }) {
 
   return (
     <View style={globalStyles.container}>
+      <TouchableOpacity
+            onPress={refreshArticles}
+          >
+            <Text style={globalStyles.homeText}>Refresh</Text>
+      </TouchableOpacity>
       <FlatList
         data={reviews} // we're updating reviews
         renderItem={({ item }) => (

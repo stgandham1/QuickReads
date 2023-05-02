@@ -14,7 +14,7 @@ export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState(articles);
   const [shouldShow, setShouldShow] = useState(false);
   const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; 
-  let accessToken = "baz"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  let accessToken = "foo"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
 
 
   //GET ARTICLES FROM BACKEND
@@ -34,7 +34,7 @@ export default function Feed({ navigation }) {
   useEffect(() => {
     refreshArticles();
   }, []);
-  //deleting all the articles
+  // deleting all the articles
 
   async function refreshArticles() {
     const articleRequest = await fetch(root+"/getarticles/"+ accessToken, {

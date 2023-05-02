@@ -14,7 +14,7 @@ import { FontAwesome } from "@expo/vector-icons";
 export default function ReviewDetail({ route, navigation }) {
   const { title, content, tags, URL, key } = route.params;
   const [isSelected, setSelection] = useState(false);
-  const accessToken = "baz"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  const accessToken = "foo"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
   const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"
 
   async function refreshBookmark() {
@@ -35,9 +35,9 @@ export default function ReviewDetail({ route, navigation }) {
       })
       .catch();
   }
-  useEffect(() => {
-    refreshBookmark();
-  }, []);
+  // useEffect(() => {
+  //   refreshBookmark();
+  // }, []);
 
   async function addToBackend() {
 

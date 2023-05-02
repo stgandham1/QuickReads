@@ -10,7 +10,7 @@ import { globalStyles } from "../styles/global";
 import { articles } from "../articles";
 export default function Bookmark({ navigation }) {
   const [bookmark, setBookmark] = useState("");
-  let accessToken = "baz"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  let accessToken = "foo"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
   const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
 
   const submitHandler = (text) => {
@@ -25,6 +25,7 @@ export default function Bookmark({ navigation }) {
   };
   //need to create getBookmark website.
   async function refreshBookmark() {
+    console.log(root + "/getBookmarks/" + accessToken); 
     const articleRequest = await fetch(root + "/getBookmarks/" + accessToken, {
       method: "GET",
     })
