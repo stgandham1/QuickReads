@@ -288,7 +288,12 @@ app.get('/checkuser/:username/:password', async (req,res) => {
 
   app.get('/getcategories', async (req,res) => {
     let results = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
-    res.send(results);
+    var a = results["rows"];
+    var valuesOnly = [];
+    for (var i = 0; i < a.length; i++) {
+      valuesOnly.push(a[i].category);
+    }
+    res.send(valuesOnly);
   });
 
   // Receives article info based on category info
