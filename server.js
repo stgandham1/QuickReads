@@ -198,6 +198,11 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     res.send(results["rows"][0]["category"]);
   });
 
+  app.get('/getcategories', async (req,res) => {
+    let results = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
+    res.send(results);
+  });
+
   // Receives article info based on category info
   app.get('/getarticles/:username', async (req,res) => {
     let results = await pool.query("SELECT category FROM public.categories WHERE username = $1", [req.params.username])
