@@ -15,10 +15,11 @@ export default function ReviewDetail({ route, navigation }) {
   const { title, content, tags, URL, key } = route.params;
   const [isSelected, setSelection] = useState(false);
   const accessToken = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
-  const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"
+  const root =
+    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
 
   async function refreshBookmark() {
-    const articleRequest = await fetch(root+"/getBookmarks/"+accessToken, {
+    const articleRequest = await fetch(root + "/getBookmarks/" + accessToken, {
       method: "GET",
     })
       .then((response) => {
@@ -40,10 +41,9 @@ export default function ReviewDetail({ route, navigation }) {
   // }, []);
 
   async function addToBackend() {
-
     const body = { username: accessToken, url: URL };
     try {
-      const response = await fetch(root+"/addbookmarkpost", {
+      const response = await fetch(root + "/addbookmarkpost", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export default function ReviewDetail({ route, navigation }) {
   async function removeFromBackend() {
     const body = { username: accessToken, url: URL };
     try {
-      const response = await fetch(root+"/addbookmarkpost", {
+      const response = await fetch(root + "/removebookmarkpost", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

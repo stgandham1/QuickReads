@@ -9,16 +9,84 @@ import {
 import { Avatar, Card, Text, List } from "react-native-paper";
 import { globalStyles } from "../styles/global";
 import { articles } from "../articles";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState();
   const [refresh, setRefresh] = React.useState(false);
-
+  const [selectedBookmark, setselectedBookmark] = useState(false);
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
   let accessToken = "hi"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  async function refreshBookmark() {
+    const articleRequest = await fetch(root + "/getBookmarks/" + accessToken, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseJSON) => {
+        //console.log(responseJSON);
+        for (var key in responseJSON) {
+          console.log(responseJSON[key]["url"]);
+          if (
+            responseJSON[key]["url"] ==
+            "https://www.causal.app/blog/the-ultimate-guide-to-finance-for-seed-series-a-companies"
+          ) {
+            console.log("yes");
+            setselectedBookmark(true);
+            break;
+          }
+        }
+      })
+      .catch();
+  }
+  async function addToBackend(item) {
+    const body = { username: accessToken, url: item.newsurl };
+    try {
+      const response = await fetch(root + "/addbookmarkpost", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error occurred:", error.message);
+    }
+  }
 
+  async function removeFromBackend(item) {
+    const body = { username: accessToken, url: item.newsurl };
+    try {
+      const response = await fetch(root + "/removebookmarkpost", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error occurred:", error.message);
+    }
+  }
   //GET ARTICLES FROM BACKEND
+  const addBookmark = (item) => {
+    item.isSelected = true;
+    addToBackend(item);
+    console.log("add to bookmark");
+  };
+  const removeBookmark = (item) => {
+    item.isSelected = false;
+    removeFromBackend(item);
+    console.log("remove from bookmark");
+  };
 
   const submitHandler = (text) => {
     setReviews((preText) => {
@@ -45,16 +113,23 @@ export default function Feed({ navigation }) {
         return response.json();
       })
       .then((responseJSON) => {
-        console.log(responseJSON);
+        //console.log(responseJSON);
         deleteHandler();
         for (var key in responseJSON) {
+          const url = responseJSON[key]["newsurl"];
+          // refreshBookmark(url);
+          //console.log(url);
           submitHandler({
             title: responseJSON[key]["title"],
             content: responseJSON[key]["summary"],
             tags: ["tag1", "tag2", "tag3"],
             key: key,
+            imgURL: responseJSON[key]["imageurl"],
+            newsurl: responseJSON[key]["newsurl"],
             shouldShow: false,
+            isSelected: selectedBookmark,
           });
+          setselectedBookmark(false);
         }
       })
       .catch();
@@ -97,25 +172,51 @@ export default function Feed({ navigation }) {
             <TouchableOpacity
               //onPress={() => navigation.navigate("ReviewDetail", item)}
               onPress={() => {
-                console.log(item.shouldShow);
+                //console.log(item.imgURL);
                 item.shouldShow = !item.shouldShow;
                 setRefresh(!refresh);
               }}
             >
-              <Card.Cover source={{ uri: "https://picsum.photos/700" }} />
+              <Card.Cover source={{ uri: item.imgURL }} />
             </TouchableOpacity>
             <Card.Content>
               {item.shouldShow ? (
-                <Text variant="titleLarge">{item.content}</Text>
+                <View>
+                  <Text variant="titleLarge">{item.content}</Text>
+                  <TouchableOpacity
+                    style={{ flexDirection: "row", justifyContent: "flex-end" }}
+                  >
+                    {!item.isSelected ? (
+                      <FontAwesome
+                        name="bookmark-o"
+                        size={30}
+                        color="black"
+                        backgroundColor="transparent"
+                        borderRadius={10}
+                        suppressHighlighting={false}
+                        onPress={() => {
+                          addBookmark(item);
+                          setRefresh(!refresh);
+                        }}
+                      />
+                    ) : (
+                      <FontAwesome
+                        name="bookmark"
+                        size={30}
+                        color="blue"
+                        backgroundColor="transparent"
+                        borderRadius={10}
+                        suppressHighlighting={false}
+                        onPress={() => {
+                          removeBookmark(item);
+                          setRefresh(!refresh);
+                        }}
+                      />
+                    )}
+                  </TouchableOpacity>
+                </View>
               ) : null}
             </Card.Content>
-            <Button
-              title="Bookmark"
-              onPress={() => {
-                console.log(item);
-              }}
-              style={globalStyles.button}
-            ></Button>
           </Card>
         )}
         ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
