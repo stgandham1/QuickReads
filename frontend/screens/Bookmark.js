@@ -10,7 +10,7 @@ import { globalStyles } from "../styles/global";
 import { articles } from "../articles";
 export default function Bookmark({ navigation }) {
   const [bookmark, setBookmark] = useState("");
-  let accessToken = "foo"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  let accessToken = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
   const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
 
   const submitHandler = (text) => {

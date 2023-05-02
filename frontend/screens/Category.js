@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Card, Text, List } from "react-native-paper";
-import { TextInput, StyleSheet, View, KeyboardAvoidingView, Button, TouchableOpacity } from "react-native";
+import { TextInput, StyleSheet, View, KeyboardAvoidingView, Button, TouchableOpacity, FlatList, ScrollView } from "react-native";
 import { globalStyles } from "../styles/global";
 
 export default function Category() {
   const [keyword, setKeyword] = useState(""); //Keyword to Search.
   const [catlist, setCatlist] = useState([]); //User's categories
-  let accessToken = "foo"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  let accessToken = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
   let root ="http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; // SHOULD BE SAME ON ALL PAGES: MAKE GLOBAL?
 
   async function getUserCategories() {
@@ -25,11 +25,15 @@ export default function Category() {
     return;
   }
   async function handleAddKeyword() {
-
-    
     setKeyword(keyword.trim()); 
     if (keyword.length == 0) {
       console.log("Keyword is Empty!");
+      setKeyword(""); 
+      return; 
+    }
+    if (catlist.includes(keyword)) {
+      console.log("Keyword Already Exists!");
+      setKeyword(""); 
       return; 
     }
     let body = {category: keyword, username: accessToken};
@@ -46,6 +50,7 @@ export default function Category() {
       })
       .catch((error) => {console.log(error);});
       console.log("Adding " + keyword + " to user list of Categories");
+      setKeyword("");
       getUserCategories();
   }
   async function handleRemoveKeyword(removedKeyword) {
@@ -84,6 +89,7 @@ export default function Category() {
       ></Button>
       <View>
         <Text style={globalStyles.titleText}>Your News Categories:</Text>
+        <ScrollView>
         {catlist.map((elem) => {
           return (
             <Card key={elem+"_card"}>
@@ -99,6 +105,7 @@ export default function Category() {
             </Card>
           );
         })}
+        </ScrollView>
       </View>
       <Button
         title="Refresh"
