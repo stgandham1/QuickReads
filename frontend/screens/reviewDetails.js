@@ -14,12 +14,11 @@ import { FontAwesome } from "@expo/vector-icons";
 export default function ReviewDetail({ route, navigation }) {
   const { title, content, tags, URL, key } = route.params;
   const [isSelected, setSelection] = useState(false);
+  const accessToken = "baz"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"
 
   async function refreshBookmark() {
-    let username = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
-    let feedRoute =
-      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/getBookmarks";
-    const articleRequest = await fetch(feedRoute + "/" + username, {
+    const articleRequest = await fetch(root+"/getBookmarks/"+accessToken, {
       method: "GET",
     })
       .then((response) => {
@@ -41,11 +40,10 @@ export default function ReviewDetail({ route, navigation }) {
   }, []);
 
   async function addToBackend() {
-    const url =
-      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/addbookmarkpost";
-    const body = { username: "nat", url: URL };
+
+    const body = { username: accessToken, url: URL };
     try {
-      const response = await fetch(url, {
+      const response = await fetch(root+"/addbookmarkpost", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,11 +59,9 @@ export default function ReviewDetail({ route, navigation }) {
   }
 
   async function removeFromBackend() {
-    const url =
-      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/removebookmarkpost";
-    const body = { username: "nat", url: URL };
+    const body = { username: accessToken, url: URL };
     try {
-      const response = await fetch(url, {
+      const response = await fetch(root+"/addbookmarkpost", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

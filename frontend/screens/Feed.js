@@ -9,16 +9,20 @@ import {
 } from "react-native";
 import { globalStyles } from "../styles/global";
 import { articles } from "../articles";
+import { AccessTokenRequest } from "expo-auth-session";
 
 export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState(articles);
-  //GET ARTICLES FROM BACKEND
+  let accessToken = "baz"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
+
 
   const submitHandler = (text) => {
     setReviews((preText) => {
       return [text, ...preText];
     });
   };
+
   //Passing an article constent to the submitHandler
   //adds it to the article holder
   //below is an example
@@ -40,10 +44,7 @@ export default function Feed({ navigation }) {
   //deletinng all the articles
 
   async function refreshArticles() {
-    let username = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
-    let feedRoute =
-      "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/getarticles";
-    const articleRequest = await fetch(feedRoute + "/" + username, {
+    const articleRequest = await fetch(root+"/getarticles/"+accessToken, {
       method: "GET",
     })
       .then((response) => {
@@ -53,8 +54,7 @@ export default function Feed({ navigation }) {
         console.log(responseJSON);
         deleteHandler();
         for (var key in responseJSON) {
-          submitHandler({
-            // Submit handler receives functions
+          submitHandler({ // Submit handler receives functions
             title: responseJSON[key]["title"],
             content: responseJSON[key]["summary"],
             tags: responseJSON[key]["category"],
@@ -66,8 +66,8 @@ export default function Feed({ navigation }) {
       })
       .catch();
   }
-  useEffect(() => {
-    // refreshes articles wheh opening page.
+
+  useEffect(() => { // refreshes articles wheh opening page.
     refreshArticles();
   }, []);
 

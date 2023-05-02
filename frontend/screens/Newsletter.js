@@ -12,8 +12,9 @@ import { articles } from "../articles";
 
 export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState(articles);
+  const [shouldShow, setShouldShow] = useState(false);
   const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; 
-  let accessToken = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  let accessToken = "baz"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
 
 
   //GET ARTICLES FROM BACKEND
@@ -23,25 +24,17 @@ export default function Feed({ navigation }) {
       return [text, ...preText];
     });
   };
-  //Passing an article constent to the submitHandler
-  //adds it to the article holder
-  //below is an example
-  // const pressHandler2 = () => {
-  //   submitHandler({
-  //     title: "article 1",
-  //     content:
-  //       "article 1 content\naaaa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa",
-  //     tags: ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6"],
-  //     key: "1",
-  //   });
-  // };
 
   const deleteHandler = () => {
     setReviews((preText) => {
       return [];
     });
   };
-  //deletinng all the articles
+
+  useEffect(() => {
+    refreshArticles();
+  }, []);
+  //deleting all the articles
 
   async function refreshArticles() {
     const articleRequest = await fetch(root+"/getarticles/"+ accessToken, {
@@ -65,17 +58,12 @@ export default function Feed({ navigation }) {
       .catch();
   }
 
-  useEffect(() => {
-    refreshArticles();
-  }, []);
-
   const pressHandler = () => {
     navigation.navigate("ReviewDetail");
 
   };
 
   const printArticles = () => {console.log(reviews); console.log(reviews[0].title); console.log(reviews[0].summary);}
-  const [shouldShow, setShouldShow] = useState(false);
 
   async function handleAddBookmark(bookmarkURL) {
     let body = {url: bookmarkURL, username: accessToken};

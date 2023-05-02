@@ -6,11 +6,11 @@ import { globalStyles } from "../styles/global";
 export default function Category() {
   const [keyword, setKeyword] = useState(""); //Keyword to Search.
   const [catlist, setCatlist] = useState([]); //User's categories
-  let accessToken = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  let accessToken = "baz"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
   let root ="http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; // SHOULD BE SAME ON ALL PAGES: MAKE GLOBAL?
 
   async function getUserCategories() {
-    const request = await fetch(root + "/getCategory/" + accessToken, {
+    const request = await fetch(root + "/getcategory/" + accessToken, {
       method: "GET",
     })
       .then((response) => {
