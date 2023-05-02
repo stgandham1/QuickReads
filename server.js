@@ -1,4 +1,10 @@
 const express = require ('express');
+const { Configuration, OpenAIApi } = require("openai");
+const config = new Configuration({
+	apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(config);
+
 const app = express();
 const {Pool} = require('pg')
 const cors = require('cors');
@@ -18,6 +24,8 @@ const pool = new Pool({
 }
 });
 
+
+
 pool.connect()
 
 // CORS middleware
@@ -33,6 +41,80 @@ app.use(bodyParser.json());
 app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
   });
+
+
+var runPrompt = async (url) => {
+	const prompt = `
+    Summarize this article in 3 different lengths, one short, one medium, and one long: ${url}
+    `;
+
+	const response = await openai.createCompletion({
+		model: "text-davinci-003",
+		prompt: prompt,
+		max_tokens: 2048,
+		temperature: 1,
+	});
+    article = response.data.choices[0].text
+    const shortSummary = article.split("Short: ")[1].split("\n")[0];
+    const mediumSummary = article.split("Medium: ")[1].split("\n")[0];
+    const longSummary = article.split("Long: ")[1].split("\n")[0];
+  return {shortSummary, mediumSummary, longSummary};
+};
+
+async function fetchArticles(topic) {
+  try {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayFormatted = `${year}-${month}-${day}`;
+    const lastWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const lastyear = lastWeek.getFullYear();
+    const lastmonth = String(lastWeek.getMonth() + 1).padStart(2, '0');
+    const lastday = String(lastWeek.getDate()).padStart(2, '0');
+    const lastWeekFormatted = `${lastyear}-${lastmonth}-${lastday}`;
+    let arr = [];
+    const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${lastWeekFormatted}&sortBy=popularity&apiKey=${NEWS_API_KEY}`);
+    const data = await response.json();
+    let articles = data.articles;
+    for(let i=0; i<5; i++) {
+      let shortSummary,mediumSummary,longSummary;
+      try {
+        const result = await runPrompt(articles[i].url);
+        shortSummary = result.shortSummary;
+        mediumSummary = result.mediumSummary;
+        longSummary = result.longSummary;
+      } catch(error) {
+        console.error(error);
+      }
+      arr.push({
+        title: articles[i].title,
+        category: topic,
+        url: articles[i].url,
+        imageurl: articles[i].urlToImage,
+        shortsummary: shortSummary,
+        mediumsummary: mediumSummary,
+        longsummary: longSummary
+      });
+    }
+    return arr;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+app.get('/addarticles', async (req,res) => {
+  let categories = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
+  let articles = []
+  categories.array.forEach(element => {
+    fetchArticles(element).then(result => {
+      articles.concat(result)
+    }).catch(error => {
+      console.error(error);
+    });
+  });
+  res.send(articles);
+});
 
   app.post('/adduserpost', async (req, res) => {
     const { username, password } = req.body;

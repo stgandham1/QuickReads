@@ -11,11 +11,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "newsapi": "^2.4.1",
+    "openai": "^3.2.1",
     "pg": "^8.10.0",
-    "pg-pool": "^3.6.0",
-    "axios": "^1.4.0"
+    "pg-pool": "^3.6.0"
   }
 }
