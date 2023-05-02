@@ -86,27 +86,27 @@ app.get('/checkuser/:username/:password', async (req,res) => {
 
   app.post('/auth', async (req, res) => {
 
-    let authtoken = req.body.authtoken
+    let id = req.body.id
     let email = req.body.email
     let name = req.body.name
   
-    if (!authtoken || !email || !name) {
+    if (!id || !email || !name) {
       return res.status(400).json({ error: 'Invalid data received from Google' });
     }
   
     try {
     
-      const userQuery = 'SELECT * FROM public.authorization WHERE authtoken = $1';
-      const { rows } = await pool.query(userQuery, [authtoken]);
+      const userQuery = 'SELECT * FROM public.authorization WHERE id = $1';
+      const { rows } = await pool.query(userQuery, [id]);
   
       let user;
   
       if (rows.length === 0) {
         
         const insertQuery =
-          'INSERT INTO  public.authorization (authtoken, email, name) VALUES ($1, $2, $3) RETURNING *';
+          'INSERT INTO  public.authorization (id, email, name) VALUES ($1, $2, $3) RETURNING *';
         const result = await pool.query(insertQuery, [
-          authtoken,
+          id,
           email,
           name,
         ]);
