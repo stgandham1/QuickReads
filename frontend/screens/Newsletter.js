@@ -12,11 +12,12 @@ import { articles } from "../articles";
 import { FontAwesome } from "@expo/vector-icons";
 
 export default function Feed({ navigation }) {
-  const [reviews, setReviews] = useState();
+  const [reviews, setReviews] = useState([]);
   const [refresh, setRefresh] = React.useState(false);
   const [selectedBookmark, setselectedBookmark] = useState(false);
-  const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
-  let accessToken = global.id; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  const root =
+    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
+  let accessToken = "109514402886947340000"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
   async function refreshBookmark() {
     const articleRequest = await fetch(root + "/getBookmarks/" + accessToken, {
       method: "GET",
@@ -27,15 +28,7 @@ export default function Feed({ navigation }) {
       .then((responseJSON) => {
         //console.log(responseJSON);
         for (var key in responseJSON) {
-          console.log(responseJSON[key]["url"]);
-          if (
-            responseJSON[key]["url"] ==
-            "https://www.causal.app/blog/the-ultimate-guide-to-finance-for-seed-series-a-companies"
-          ) {
-            console.log("yes");
-            setselectedBookmark(true);
-            break;
-          }
+          addToBookmark(responseJSON[key]["url"]);
         }
       })
       .catch();
@@ -83,6 +76,9 @@ export default function Feed({ navigation }) {
   const removeBookmark = (item) => {
     item.isSelected = false;
     removeFromBackend(item);
+    setselectedBookmark((bookmark) => {
+      return bookmark.filter((mark) => mark != item.newsurl);
+    });
     console.log("remove from bookmark");
   };
   const submitHandler = (text) => {
@@ -96,7 +92,13 @@ export default function Feed({ navigation }) {
     });
   };
   useEffect(() => {
-    refreshArticles();
+    async function wait() {
+      refreshArticles();
+      refreshBookmark();
+      setRefresh(!refresh);
+      await delay(1000);
+    }
+    wait();
   }, []);
   // deleting all the articles
   async function refreshArticles() {
@@ -110,9 +112,6 @@ export default function Feed({ navigation }) {
         //console.log(responseJSON);
         deleteHandler();
         for (var key in responseJSON) {
-          const url = responseJSON[key]["newsurl"];
-          // refreshBookmark(url);
-          //console.log(url);
           submitHandler({
             title: responseJSON[key]["title"],
             content: responseJSON[key]["summary"],
@@ -121,9 +120,8 @@ export default function Feed({ navigation }) {
             imgURL: responseJSON[key]["imageurl"],
             newsurl: responseJSON[key]["newsurl"],
             shouldShow: false,
-            isSelected: selectedBookmark,
+            isSelected: false,
           });
-          setselectedBookmark(false);
         }
       })
       .catch();
@@ -167,6 +165,7 @@ export default function Feed({ navigation }) {
               //onPress={() => navigation.navigate("ReviewDetail", item)}
               onPress={() => {
                 //console.log(item.imgURL);
+                changeBookmark();
                 item.shouldShow = !item.shouldShow;
                 setRefresh(!refresh);
               }}
