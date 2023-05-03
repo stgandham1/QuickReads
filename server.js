@@ -200,7 +200,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       let user;
   
       if (rows.length === 0) {
-        
+        await pool.query("INSERT INTO public.categories(id) VALUES ($1)", [id]);
         const insertQuery =
           'INSERT INTO  public.authorization (id, email, name) VALUES ($1, $2, $3) RETURNING *';
         const result = await pool.query(insertQuery, [
@@ -208,7 +208,6 @@ app.get('/checkuser/:username/:password', async (req,res) => {
           email,
           name,
         ]);
-        await pool.query("INSERT INTO public.categories (id) VALUES ($1)", [id]);
         user = result.rows[0];
       } else {
        
