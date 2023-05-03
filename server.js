@@ -208,6 +208,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
           email,
           name,
         ]);
+        await pool.query("INSERT INTO public.categories (id) VALUES ($1)", [id]);
         user = result.rows[0];
       } else {
        
@@ -215,7 +216,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       }
   
      
-  
+      
       res.status(200).json({ message: 'User signed in successfully', user });
     } catch (err) {
       console.error(err);
@@ -227,8 +228,8 @@ app.get('/checkuser/:username/:password', async (req,res) => {
 
   app.post('/removecategorypost', async (req, res) => {
     try {
-      const { username, category } = req.body;
-      await pool.query("UPDATE public.categories SET category = category - $2 WHERE username = $1", [username, category]);
+      const { id, category } = req.body;
+      await pool.query("UPDATE public.categories SET category = category - $2 WHERE id = $1", [id, category]);
       res.send("Deleted category");
     } catch (error) {
       console.error(error);
@@ -240,13 +241,13 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   // Add Category
   app.post('/addcategorypost/', async (req, res) => {
     try {
-      const { username, category } = req.body;
-      const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE username=$1", [username]);
+      const { id, category } = req.body;
+      const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE id=$1", [id]);
       console.log(currentCategoriesResult)
       console.log(currentCategoriesResult.rows[0])
       let currentCategories = currentCategoriesResult.rows[0].category;
       currentCategories.push(category);
-      await pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [JSON.stringify(currentCategories), username]);
+      await pool.query("UPDATE public.categories SET category = $1 WHERE id = $2", [JSON.stringify(currentCategories), id]);
       res.send(currentCategories);
     } catch (error) {
       console.error(error);
@@ -291,8 +292,8 @@ app.get('/checkuser/:username/:password', async (req,res) => {
 
 
   // Get Categories
-  app.get('/getcategory/:username', async (req,res) => {
-    let results = await pool.query("SELECT category from public.categories WHERE username = $1", [req.params.username]);
+  app.get('/getcategory/:id', async (req,res) => {
+    let results = await pool.query("SELECT category from public.categories WHERE id = $1", [req.params.id]);
     res.send(results["rows"][0]["category"]);
   });
 
@@ -307,8 +308,8 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   });
 
   // Receives article info based on category info
-  app.get('/getarticles/:username', async (req,res) => {
-    let results = await pool.query("SELECT category FROM public.categories WHERE username = $1", [req.params.username])
+  app.get('/getarticles/:id', async (req,res) => {
+    let results = await pool.query("SELECT category FROM public.categories WHERE id = $1", [req.params.id])
 
     let listofcategories = results.rows[0].category
 
@@ -341,16 +342,16 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     });
 
 //get bookmark
-  app.get('/getbookmarks/:username', async (req,res) => {
-    let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", [req.params.username]);
+  app.get('/getbookmarks/:id', async (req,res) => {
+    let results = await pool.query("SELECT url from public.bookmarks WHERE id = $1", [req.params.id]);
     res.send(results.rows);
   });
 
 
   app.post('/removebookmarkpost', async (req, res) => {
     try {
-      const { username, url } = req.body;
-      await pool.query("DELETE FROM public.bookmarks WHERE username = $1 and url = $2", [username, url]);
+      const { id, url } = req.body;
+      await pool.query("DELETE FROM public.bookmarks WHERE id = $1 and url = $2", [id, url]);
       res.send();
     } catch (error) {
       console.error(error);
@@ -360,8 +361,8 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   
   app.post('/addbookmarkpost', async (req, res) => {
     try {
-      const { username, url } = req.body;
-      await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [username,url]);
+      const { id, url } = req.body;
+      await pool.query("INSERT INTO public.bookmarks(id,url) VALUES ($1,$2)", [id,url]);
       res.send();
     } catch (error) {
       console.error(error);
