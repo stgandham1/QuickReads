@@ -130,7 +130,7 @@ export default function Category() {
       /> */}
       </View>
       <Button
-        title="Refresh"
+        title="Get Categories"
         onPress={getUserCategories}
         style={globalStyles.button}
       ></Button>
