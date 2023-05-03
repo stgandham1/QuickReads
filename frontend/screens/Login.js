@@ -1,4 +1,131 @@
 
+import { useEffect, useState } from "react";
+import {  
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Keyboard,
+  TouchableOpacity,Button } from "react-native";
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import { useNavigation } from "@react-navigation/native";
+
+WebBrowser.maybeCompleteAuthSession();
+
+export default function LoginPage() {
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
+  const navigation = useNavigation();
+  const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; 
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: "872073890696-78hvopdpiup20e0c0jmpe28ocpum9iq1.apps.googleusercontent.com",
+    webClientId: "872073890696-o39iuubklkdqprs44b2qthk31uab2dsv.apps.googleusercontent.com",
+    androidClientId: "872073890696-e96q462alifn6hemd1rtb3us5bfng5a4.apps.googleusercontent.com"
+  });
+
+  const goHome = () => {
+    console.log("login successful");
+    navigation.replace("BottomTabNavigator");
+  };
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      setToken(response.authentication.accessToken);
+      console.log("access token: " + response.authentication.accessToken);
+      getUserInfo();
+    }
+  }, [response, token]);
+
+  // sending user info to the back end
+  async function serverAuth(userAuth) {
+    console.log("Calling SeverAuth"); 
+    const response = await fetch(root+"/auth", {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userAuth),
+    }).then(response => {
+      if (!response.ok) { throw new Error(`Request failed with status ${response.status}`);}
+      const responseData = response.json();
+      const { user, message } = responseData;
+      console.log(message, user);
+      console.log("USERUSERUSERUSER");
+    }).catch(error => {
+      console.log("ERRERRERRERRERRERRERRERRERRERRERRERRERR");
+      console.error('Error occurred:', error.message);
+    });
+  }
+
+  const getUserInfo = async () => {
+    console.log("Calling getUserInfo"); 
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const user = await response.json();
+      setUserInfo(user);
+      // console.log("A");
+      // console.log(user);
+      // global.user = user;
+      // console.log("B");
+      // console.log(user);
+      // console.log("C");
+      // global.number = (global.user).id
+      // console.log((global.user).id);
+      // console.log(user);
+      // console.log("D");
+      // console.log(global.number);
+      // export const user  = user;
+      console.log(user);
+      // console.log("E");
+      serverAuth(user);
+    } catch (error) {
+      console.log("Error occured getting user info: " + error);
+    }
+  };
+
+
+  return (
+    <View style={styles.container}>
+      <View >
+      {userInfo === null ? (
+        <Button
+          title="Sign in with Google"
+          disabled={!request}
+          onPress={() => {
+            promptAsync();
+          }}
+        />
+      ) : (
+        goHome()
+      )}
+      </View>
+      <Button title="No Account" onPress={() => goHome()}/>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+});
+
 // import {
 //   KeyboardAvoidingView,
 //   StyleSheet,
@@ -184,114 +311,3 @@
 
 //   }
 // });
-
-
-
-import { useEffect, useState } from "react";
-import {  
-  KeyboardAvoidingView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-  Keyboard,
-  TouchableOpacity,Button } from "react-native";
-import * as WebBrowser from "expo-web-browser";
-import * as Google from "expo-auth-session/providers/google";
-import { useNavigation } from "@react-navigation/native";
-
-WebBrowser.maybeCompleteAuthSession();
-
-export default function LoginPage() {
-  const [token, setToken] = useState("");
-  const [userInfo, setUserInfo] = useState(null);
-  const navigation = useNavigation();
-
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: "872073890696-78hvopdpiup20e0c0jmpe28ocpum9iq1.apps.googleusercontent.com",
-    webClientId: "872073890696-o39iuubklkdqprs44b2qthk31uab2dsv.apps.googleusercontent.com",
-    androidClientId: "872073890696-e96q462alifn6hemd1rtb3us5bfng5a4.apps.googleusercontent.com"
-  });
-
-  const goHome = () => {
-    console.log("login successful");
-    navigation.replace("BottomTabNavigator");
-  };
-
-  useEffect(() => {
-    if (response?.type === "success") {
-      setToken(response.authentication.accessToken);
-      console.log("access token: " + response.authentication.accessToken);
-      getUserInfo();
-    }
-  }, [response, token]);
-
-  // sending user info to the back end
-  async function serverAuth(userAuth) {
-    try {
-      const response = await fetch("http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com/auth", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userAuth),
-      });
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-      const responseData = await response.json();
-      const { user, message } = responseData;
-      console.log(message, user);
-    } catch (error) {
-      console.error('Error occurred:', error.message);
-    }
-  }
-
-  const getUserInfo = async () => {
-    try {
-      const response = await fetch(
-        "https://www.googleapis.com/userinfo/v2/me",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      const user = await response.json();
-      setUserInfo(user);
-      console.log(user);
-      serverAuth(user);
-    } catch (error) {
-      console.log("Error occured getting user info: " + error);
-    }
-  };
-
-
-  return (
-    <View style={styles.container}>
-      {userInfo === null ? (
-        <Button
-          title="Sign in with Google"
-          disabled={!request}
-          onPress={() => {
-            promptAsync();
-          }}
-        />
-      ) : (
-        goHome()
-      )}
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-});

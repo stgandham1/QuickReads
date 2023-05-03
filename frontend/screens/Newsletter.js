@@ -17,7 +17,7 @@ export default function Feed({ navigation }) {
   const [selectedBookmark, setselectedBookmark] = useState(false);
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
-  let accessToken = "hi"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  let accessToken = "109514402886947340000"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
   async function refreshBookmark() {
     const articleRequest = await fetch(root + "/getBookmarks/" + accessToken, {
       method: "GET",
@@ -42,7 +42,7 @@ export default function Feed({ navigation }) {
       .catch();
   }
   async function addToBackend(item) {
-    const body = { username: accessToken, url: item.newsurl };
+    const body = { id: accessToken, url: item.newsurl };
     try {
       const response = await fetch(root + "/addbookmarkpost", {
         method: "POST",
@@ -58,9 +58,8 @@ export default function Feed({ navigation }) {
       console.error("Error occurred:", error.message);
     }
   }
-
   async function removeFromBackend(item) {
-    const body = { username: accessToken, url: item.newsurl };
+    const body = { id: accessToken, url: item.newsurl };
     try {
       const response = await fetch(root + "/removebookmarkpost", {
         method: "POST",
@@ -87,24 +86,20 @@ export default function Feed({ navigation }) {
     removeFromBackend(item);
     console.log("remove from bookmark");
   };
-
   const submitHandler = (text) => {
     setReviews((preText) => {
       return [text, ...preText];
     });
   };
-
   const deleteHandler = () => {
     setReviews((preText) => {
       return [];
     });
   };
-
   useEffect(() => {
     refreshArticles();
   }, []);
   // deleting all the articles
-
   async function refreshArticles() {
     const articleRequest = await fetch(root + "/getarticles/" + accessToken, {
       method: "GET",
@@ -146,7 +141,7 @@ export default function Feed({ navigation }) {
   };
 
   async function handleAddBookmark(bookmarkURL) {
-    let body = { url: bookmarkURL, username: accessToken };
+    let body = { url: bookmarkURL, id: accessToken };
     console.log(body);
     const request = await fetch(root + "/addbookmarkpost", {
       method: "POST",

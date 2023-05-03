@@ -13,8 +13,12 @@ import { AccessTokenRequest } from "expo-auth-session";
 
 export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState(articles);
-  let accessToken = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  let accessToken = "109514402886947340000"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
   const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
+  
+  console.log("GLOBAL IN FEED"); 
+  console.log(global.number);
+  console.log("GLOBAL IN FEED"); 
 
   const submitHandler = (text) => {
     setReviews((preText) => {
@@ -77,11 +81,11 @@ export default function Feed({ navigation }) {
 
   return (
     <View style={globalStyles.container}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
             onPress={refreshArticles}
           >
             <Text style={globalStyles.homeText}>{"REFRESH"}</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <FlatList
         data={reviews} // we're updating reviews
         renderItem={({ item }) => (

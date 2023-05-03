@@ -14,7 +14,7 @@ import { FontAwesome } from "@expo/vector-icons";
 export default function ReviewDetail({ route, navigation }) {
   const { title, content, tags, URL, key } = route.params;
   const [isSelected, setSelection] = useState(false);
-  const accessToken = "nat"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  const accessToken = "109514402886947340000"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
 
@@ -41,7 +41,7 @@ export default function ReviewDetail({ route, navigation }) {
   // }, []);
 
   async function addToBackend() {
-    const body = { username: accessToken, url: URL };
+    const body = { id: accessToken, url: URL };
     try {
       const response = await fetch(root + "/addbookmarkpost", {
         method: "POST",
@@ -59,7 +59,7 @@ export default function ReviewDetail({ route, navigation }) {
   }
 
   async function removeFromBackend() {
-    const body = { username: accessToken, url: URL };
+    const body = { id: accessToken, url: URL };
     try {
       const response = await fetch(root + "/removebookmarkpost", {
         method: "POST",

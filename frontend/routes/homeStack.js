@@ -48,7 +48,7 @@ const SettingStackNavigator = () => {
 const NewsletterStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Newsletter" component={Newsletter} />
+      <Stack.Screen name="Top News" component={Newsletter} />
     </Stack.Navigator>
   );
 };
