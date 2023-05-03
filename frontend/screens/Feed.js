@@ -16,9 +16,8 @@ export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState();
   const [refresh, setRefresh] = React.useState(false);
   const [selectedBookmark, setselectedBookmark] = useState(false);
-  const root =
-    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
-  let accessToken = "109514402886947340000"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
+  let accessToken = global.id; 
   async function refreshBookmark() {
     const articleRequest = await fetch(root + "/getBookmarks/" + accessToken, {
       method: "GET",
@@ -156,6 +155,7 @@ export default function Feed({ navigation }) {
 
   return (
     <View style={globalStyles.container}>
+      <Text style={globalStyles.titleText}>Welcome {global.name}!</Text>
       <FlatList
         data={reviews}
         renderItem={({ item }) => (

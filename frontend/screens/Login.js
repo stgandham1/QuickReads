@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext} from "react";
 import {  
   KeyboardAvoidingView,
   StyleSheet,
@@ -11,6 +11,7 @@ import {
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { useNavigation } from "@react-navigation/native";
+
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -25,15 +26,19 @@ export default function LoginPage() {
     androidClientId: "872073890696-e96q462alifn6hemd1rtb3us5bfng5a4.apps.googleusercontent.com"
   });
 
-  const goHome = () => {
-    console.log("login successful");
-    navigation.replace("BottomTabNavigator");
+
+  const goHome = (userObj) => {
+    if (userObj.email == "NO ACCOUNT"){ // DEFAULT USER: {email: "NO ACCOUNT"}
+      userObj = {email: "ilikesomensalad@gmail.com", given_name: "Kai W", id: "109514402886947340000", locale: "en", name: "Kai W", picture: "https://lh3.googleusercontent.com/a/AGNmyxZcrle_Ah-6rioWIXRN_0eZEbTfoFWcaPEs9zeaSg=s96-c", verified_email: true};
+    }
+    global.id = userObj.id;
+    global.name = userObj.name;
+    navigation.replace("BottomTabNavigator", {userInfo: userObj});
   };
 
   useEffect(() => {
     if (response?.type === "success") {
       setToken(response.authentication.accessToken);
-      console.log("access token: " + response.authentication.accessToken);
       getUserInfo();
     }
   }, [response, token]);
@@ -41,21 +46,25 @@ export default function LoginPage() {
   // sending user info to the back end
   async function serverAuth(userAuth) {
     console.log("Calling SeverAuth"); 
-    const response = await fetch(root+"/auth", {
+    const response = await fetch(root+"/Auth", {
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(userAuth),
     }).then(response => {
-      if (!response.ok) { throw new Error(`Request failed with status ${response.status}`);}
-      const responseData = response.json();
-      const { user, message } = responseData;
-      console.log(message, user);
-      console.log("USERUSERUSERUSER");
+      if (!response.ok) { 
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+      else {
+        const responseData = response.json();
+        const { user, message } = responseData;
+        console.log(message, user);
+        console.log("Server Authentication Succeeded");
+        goHome(userAuth);
+      }
     }).catch(error => {
-      console.log("ERRERRERRERRERRERRERRERRERRERRERRERRERR");
+      console.log("Server Authentication Failed");
       console.error('Error occurred:', error.message);
     });
   }
@@ -72,20 +81,7 @@ export default function LoginPage() {
 
       const user = await response.json();
       setUserInfo(user);
-      // console.log("A");
-      // console.log(user);
-      // global.user = user;
-      // console.log("B");
-      // console.log(user);
-      // console.log("C");
-      // global.number = (global.user).id
-      // console.log((global.user).id);
-      // console.log(user);
-      // console.log("D");
-      // console.log(global.number);
-      // export const user  = user;
       console.log(user);
-      // console.log("E");
       serverAuth(user);
     } catch (error) {
       console.log("Error occured getting user info: " + error);
@@ -95,8 +91,14 @@ export default function LoginPage() {
 
   return (
     <View style={styles.container}>
-      <View >
-      {userInfo === null ? (
+        <Button
+          title="Sign in with Google"
+          disabled={!request}
+          onPress={() => {promptAsync();}}
+        />
+      
+      {/* <View >
+      {'error' in userInfo ? (
         <Button
           title="Sign in with Google"
           disabled={!request}
@@ -105,10 +107,11 @@ export default function LoginPage() {
           }}
         />
       ) : (
-        goHome()
+        goHome(userInfo)
       )}
-      </View>
-      <Button title="No Account" onPress={() => goHome()}/>
+      </View> */}
+      
+      <Button title="No Account" onPress={() => goHome({email: "NO ACCOUNT"})}/>
     </View>
   );
 }

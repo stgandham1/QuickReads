@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useContext} from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   HomeStackNavigator,
@@ -10,7 +10,8 @@ import { Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 const Tab = createBottomTabNavigator();
 
-const BottomTabNavigator = () => {
+const BottomTabNavigator = ({route}) => {
+  const { userInfo } = route.params;
   return (
     <Tab.Navigator>
       <Tab.Screen

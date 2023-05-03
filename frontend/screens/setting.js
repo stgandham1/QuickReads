@@ -44,6 +44,7 @@ export default function About() {
   return (
     <View style={globalStyles.container}>
       <Text style={globalStyles.titleText}>Settings</Text>
+      <Text>Current User: {global.name}</Text>
       <View style={{ flex: 0.1, marginBottom: 10 }}>
         <Button
           title="Log Out"
