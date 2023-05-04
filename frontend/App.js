@@ -11,6 +11,8 @@ import { LoginStackNavigator } from "./routes/loginStack";
 // import Home from "./screens/home";
 // import ReviewDetail from "./screens/reviewDetails";
 
+
+
 export default function App() {
   const [loaded] = useFonts({
     "n-regular": require("./assets/fonts/Nunito-Regular.ttf"),
@@ -20,9 +22,9 @@ export default function App() {
     return null;
   }
   return (
-    <NavigationContainer>
-      <LoginStackNavigator />
-    </NavigationContainer>
+      <NavigationContainer>
+        <LoginStackNavigator />
+      </NavigationContainer>
   );
 }
 

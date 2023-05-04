@@ -11,6 +11,7 @@ import {
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { useNavigation } from "@react-navigation/native";
+import { globalStyles } from "../styles/global";
 
 
 WebBrowser.maybeCompleteAuthSession();
@@ -95,6 +96,7 @@ export default function LoginPage() {
           title="Sign in with Google"
           disabled={!request}
           onPress={() => {promptAsync();}}
+          color="#2776d9"
         />
       
       {/* <View >
@@ -111,7 +113,7 @@ export default function LoginPage() {
       )}
       </View> */}
       
-      <Button title="No Account" onPress={() => goHome({email: "NO ACCOUNT"})}/>
+      <Button title="No Account" onPress={() => goHome({email: "NO ACCOUNT"})} color="#2776d9"/>
     </View>
   );
 }

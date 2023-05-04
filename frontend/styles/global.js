@@ -2,6 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
   container: {
+    backgroundColor: '#fdfcff',
     flex: 1,
     padding: 20,
   },
@@ -70,14 +71,16 @@ export const globalStyles = StyleSheet.create({
     color: "grey",
   }, 
   outlinedButton: {
-    borderRadius: 5,
-    backgroundColor: "white",
+    borderRadius: 10,
+    backgroundColor: "#eeebf2",
     width: "100%",
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderColor: "grey",
     borderWidth: 1,
     marginTop: 10,
+    textAlign:'center',
+    alignItems:'center'
   },
   filledButton: {
     borderRadius: 5,

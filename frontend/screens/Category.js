@@ -88,13 +88,14 @@ export default function Category() {
         title="Add Category"
         onPress={handleAddKeyword}
         style={globalStyles.button}
+        color="#2776d9"
       ></Button>
       <View>
         <Text style={globalStyles.titleText}>Your News Categories:</Text>
         <ScrollView>
         {catlist.map((elem) => {
           return (
-            <Card key={elem+"_card"}>
+            <Card key={elem+"_card"} >
               <Card.Content>
                 <Text variant="titleLarge">{elem}</Text>
               </Card.Content>
@@ -130,6 +131,7 @@ export default function Category() {
       /> */}
       </View>
       <Button
+        color="#2776d9"
         title="Get Categories"
         onPress={getUserCategories}
         style={globalStyles.button}
@@ -143,6 +145,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: '#e5e3e8'
   },
   inputContainer: {
     width: "60%",

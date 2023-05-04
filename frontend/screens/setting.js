@@ -42,7 +42,7 @@ export default function About() {
     "zh",
   ];
   return (
-    <View style={globalStyles.container}>
+    <View style={[globalStyles.container] }>
       <Text style={globalStyles.titleText}>Settings</Text>
       <Text>Current User: {global.name}</Text>
       <View style={{ flex: 0.1, marginBottom: 10 }}>
@@ -50,6 +50,7 @@ export default function About() {
           title="Log Out"
           onPress={pressHandler}
           style={{ marginTop: 505 }}
+          color="#2776d9"
         />
       </View>
       <View style={{ flex: 0.1, marginBottom: 10 }}>
@@ -57,6 +58,7 @@ export default function About() {
           title="Bookmark"
           onPress={BookmarkPressHandler}
           style={{ marginTop: 505 }}
+          color="#2776d9"
         />
       </View>
       <Text style={globalStyles.homeText}>Choose word length:</Text>
