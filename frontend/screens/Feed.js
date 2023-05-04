@@ -13,11 +13,27 @@ import { FontAwesome } from "@expo/vector-icons";
 import { AccessTokenRequest } from "expo-auth-session";
 
 export default function Feed({ navigation }) {
-  const [reviews, setReviews] = useState();
+  const [reviews, setReviews] = useState([]);
   const [refresh, setRefresh] = React.useState(false);
-  const [selectedBookmark, setselectedBookmark] = useState(false);
-  const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
-  let accessToken = global.id; 
+  const [selectedBookmark, setselectedBookmark] = useState([]);
+  const root =
+    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
+  let accessToken = global.id; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  const addToBookmark = (url) => {
+    setselectedBookmark((preText) => {
+      return [url, ...preText];
+    });
+  };
+  const changeBookmark = () => {
+    //console.log(reviews);
+    reviews.forEach((element) => {
+      selectedBookmark.forEach((bookmark) => {
+        if (bookmark == element.newsurl) {
+          element.isSelected = true;
+        }
+      });
+    });
+  };
   async function refreshBookmark() {
     const articleRequest = await fetch(root + "/getBookmarks/" + accessToken, {
       method: "GET",
@@ -28,15 +44,7 @@ export default function Feed({ navigation }) {
       .then((responseJSON) => {
         //console.log(responseJSON);
         for (var key in responseJSON) {
-          console.log(responseJSON[key]["url"]);
-          if (
-            responseJSON[key]["url"] ==
-            "https://www.causal.app/blog/the-ultimate-guide-to-finance-for-seed-series-a-companies"
-          ) {
-            console.log("yes");
-            setselectedBookmark(true);
-            break;
-          }
+          addToBookmark(responseJSON[key]["url"]);
         }
       })
       .catch();
@@ -84,6 +92,9 @@ export default function Feed({ navigation }) {
   const removeBookmark = (item) => {
     item.isSelected = false;
     removeFromBackend(item);
+    setselectedBookmark((bookmark) => {
+      return bookmark.filter((mark) => mark != item.newsurl);
+    });
     console.log("remove from bookmark");
   };
   const submitHandler = (text) => {
@@ -97,7 +108,12 @@ export default function Feed({ navigation }) {
     });
   };
   useEffect(() => {
-    refreshArticles();
+    async function wait() {
+      refreshArticles();
+      refreshBookmark();
+      setRefresh(!refresh);
+    }
+    wait();
   }, []);
   // deleting all the articles
   async function refreshArticles() {
@@ -111,9 +127,6 @@ export default function Feed({ navigation }) {
         //console.log(responseJSON);
         deleteHandler();
         for (var key in responseJSON) {
-          const url = responseJSON[key]["newsurl"];
-          // refreshBookmark(url);
-          //console.log(url);
           submitHandler({
             title: responseJSON[key]["title"],
             content: responseJSON[key]["summary"],
@@ -122,9 +135,8 @@ export default function Feed({ navigation }) {
             imgURL: responseJSON[key]["imageurl"],
             newsurl: responseJSON[key]["newsurl"],
             shouldShow: false,
-            isSelected: selectedBookmark,
+            isSelected: false,
           });
-          setselectedBookmark(false);
         }
       })
       .catch();
@@ -155,7 +167,6 @@ export default function Feed({ navigation }) {
 
   return (
     <View style={globalStyles.container}>
-      <Text style={globalStyles.titleText}>Welcome {global.name}!</Text>
       <FlatList
         data={reviews}
         renderItem={({ item }) => (
@@ -169,6 +180,7 @@ export default function Feed({ navigation }) {
               //onPress={() => navigation.navigate("ReviewDetail", item)}
               onPress={() => {
                 //console.log(item.imgURL);
+                changeBookmark();
                 item.shouldShow = !item.shouldShow;
                 setRefresh(!refresh);
               }}
@@ -219,87 +231,4 @@ export default function Feed({ navigation }) {
       />
     </View>
   );
-  // const [reviews, setReviews] = useState(articles);
-  // let accessToken = "109514402886947340000"; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
-  // const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
-  
-  // const submitHandler = (text) => {
-  //   setReviews((preText) => {
-  //     return [text, ...preText];
-  //   });
-  // };
-
-  // //Passing an article constent to the submitHandler
-  // //adds it to the article holder
-  // //below is an example
-  // // const pressHandler2 = () => {
-  // //   submitHandler({
-  // //     title: "article 1",
-  // //     content:
-  // //       "article 1 content\naaaa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa\naa",
-  // //     tags: ["tag1", "tag2", "tag3", "tag4", "tag5", "tag6"],
-  // //     key: "1",
-  // //   });
-  // // };
-
-  // const deleteHandler = () => {
-  //   setReviews((preText) => {
-  //     return [];
-  //   });
-  // };
-
-  // async function refreshArticles() {
-  //   console.log(root+"/getArticles/"+accessToken)
-  //   const articleRequest = await fetch(root+"/getArticles/"+accessToken, {
-  //     method: "GET",
-  //   })
-  //     .then((response) => {
-  //       return response.json();
-  //     })
-  //     .then((responseJSON) => {
-  //       console.log(responseJSON);
-  //       deleteHandler();
-  //       for (var key in responseJSON) {
-  //         submitHandler({ // Submit handler receives functions
-  //           title: responseJSON[key]["title"],
-  //           content: responseJSON[key]["summary"],
-  //           tags: responseJSON[key]["category"],
-  //           imageURL: responseJSON[key]["imageurl"],
-  //           URL: responseJSON[key]["newsurl"],
-  //           key: key,
-  //         });
-  //       }
-  //     })
-  //     .catch();
-  // }
-
-  // useEffect(() => { // refreshes articles wheh opening page.
-  //   console.log("refreshing articles")
-  //   refreshArticles();
-  // }, []);
-
-  // const pressHandler = () => {
-  //   navigation.navigate("ReviewDetail");
-  // };
-
-  // return (
-  //   <View style={globalStyles.container}>
-  //     {/* <TouchableOpacity
-  //           onPress={refreshArticles}
-  //         >
-  //           <Text style={globalStyles.homeText}>{"REFRESH"}</Text>
-  //     </TouchableOpacity> */}
-  //     <FlatList
-  //       data={reviews} // we're updating reviews
-  //       renderItem={({ item }) => (
-  //         <TouchableOpacity
-  //           onPress={() => navigation.navigate("ReviewDetail", item)}
-  //         >
-  //           <Text style={globalStyles.homeText}>{item.title}</Text>
-  //         </TouchableOpacity>
-  //       )}
-  //       ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-  //     />
-  //   </View>
-  // );
 }
