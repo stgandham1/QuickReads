@@ -14,10 +14,25 @@ import { FontAwesome } from "@expo/vector-icons";
 export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState([]);
   const [refresh, setRefresh] = React.useState(false);
-  const [selectedBookmark, setselectedBookmark] = useState(false);
+  const [selectedBookmark, setselectedBookmark] = useState([]);
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
   let accessToken = global.id; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  const addToBookmark = (url) => {
+    setselectedBookmark((preText) => {
+      return [url, ...preText];
+    });
+  };
+  const changeBookmark = () => {
+    //console.log(reviews);
+    reviews.forEach((element) => {
+      selectedBookmark.forEach((bookmark) => {
+        if (bookmark == element.newsurl) {
+          element.isSelected = true;
+        }
+      });
+    });
+  };
   async function refreshBookmark() {
     const articleRequest = await fetch(root + "/getBookmarks/" + accessToken, {
       method: "GET",
@@ -96,7 +111,6 @@ export default function Feed({ navigation }) {
       refreshArticles();
       refreshBookmark();
       setRefresh(!refresh);
-      await delay(1000);
     }
     wait();
   }, []);
