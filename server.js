@@ -80,8 +80,8 @@ app.get('/', async (req,res) => {
     const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
     let arr = [];
     try {
-      excludedDomains = "news.google.com"
-      const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&sortBy=relevancy&excludeDomains=&apiKey=b96538face724581aae3298f379c3895`);
+      const excludedDomain = 'consent.google.com,news.google.com'; // replace with your desired excluded domain(s)
+      const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&sortBy=popularity&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`);
       const data = await response.json();
       let articles = data.articles;
       for(let i=0; i<5; i++) {
