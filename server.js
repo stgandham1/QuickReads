@@ -139,7 +139,7 @@ app.get('/', async (req,res) => {
           await pool.query('INSERT INTO public.updatedarticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary) VALUES ($1,$2,$3,$4,$5,$6,$7);',[article.title,category,article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary]);
         }
       }
-      res.send('Articles added successfully');
+      res.send('Articles added successfully');  
     } catch(error) {
       console.error(error);
       res.status(500).send('Server Error');
@@ -357,31 +357,25 @@ app.get('/checkuser/:username/:password', async (req,res) => {
 
     let listofcategories = results.rows[0].category
 
-    let temp = await pool.query("SELECT * from public.articles WHERE category = ANY($1::varchar[])", [listofcategories]);
+    let temp = await pool.query("SELECT * from public.updatedarticles WHERE category = ANY($1::varchar[])", [listofcategories]);
     let responseList = []
-    console.log("SQL add")
     
     for (r of temp.rows){
-      console.log(r.title)
-      console.log(r.summary)
-      responseList.push({title: r.title, summary: r.summary,newsurl:r.url,imageurl:r.imageurl,category:r.category})
+      responseList.push({title: r.title,category:r.category, newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
     }
-    console.log(responseList)
     res.json(responseList)
   });
 
     // Receives article info based on category info
     app.get('/getarticlesbycategory/:category', async (req,res) => {
-      let temp = await pool.query("SELECT * from public.articles WHERE category = $1", [req.params.category]);
+      let temp = await pool.query("SELECT * from public.updatedarticles WHERE category = $1", [req.params.category]);
       let responseList = []
-      console.log("SQL add")
       
       for (r of temp.rows){
         console.log(r.title)
         console.log(r.summary)
-        responseList.push({title: r.title, summary: r.summary,newsurl:r.url,imageurl:r.imageurl,category:r.category})
+        responseList.push({title: r.title,category:r.category, newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
       }
-      console.log(responseList)
       res.json(responseList)
     });
 
