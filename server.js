@@ -67,18 +67,21 @@ app.get('/', async (req,res) => {
   
   async function fetchArticles(topic) {
     const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const todayFormatted = `${year}-${month}-${day}`;
-    const lastWeek = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const lastyear = lastWeek.getFullYear();
-    const lastmonth = String(lastWeek.getMonth() + 1).padStart(2, '0');
-    const lastday = String(lastWeek.getDate()).padStart(2, '0');
-    const lastWeekFormatted = `${lastyear}-${lastmonth}-${lastday}`;
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yearToday = today.getFullYear();
+    const monthToday = String(today.getMonth() + 1).padStart(2, '0');
+    const dayToday = String(today.getDate()).padStart(2, '0');
+    const todayFormatted = `${yearToday}-${monthToday}-${dayToday}`;
+    
+    const yearYesterday = yesterday.getFullYear();
+    const monthYesterday = String(yesterday.getMonth() + 1).padStart(2, '0');
+    const dayYesterday = String(yesterday.getDate()).padStart(2, '0');
+    const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
     let arr = [];
     try {
-      const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${lastWeekFormatted}&sortBy=popularity&apiKey=b96538face724581aae3298f379c3895`);
+      excludedDomains = "news.google.com"
+      const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&sortBy=relevancy&excludeDomains=&apiKey=b96538face724581aae3298f379c3895`);
       const data = await response.json();
       let articles = data.articles;
       for(let i=0; i<5; i++) {
