@@ -81,7 +81,7 @@ app.get('/', async (req,res) => {
       const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${lastWeekFormatted}&sortBy=popularity&apiKey=b96538face724581aae3298f379c3895`);
       const data = await response.json();
       let articles = data.articles;
-      for(let i=0; i<1; i++) {
+      for(let i=0; i<5; i++) {
         let shortSummary,mediumSummary,longSummary;
         try {
           const result = await runPrompt(articles[i].url);
@@ -127,20 +127,13 @@ app.get('/', async (req,res) => {
         categories.push(a[i].category);
       }
       for (const category of categories){
+        await new Promise(resolve => setTimeout(resolve, 60000));
         const searchResult = await doSearch(category); // Wait for doSearch() to complete
         for (const article of searchResult) {
           const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
           await pool.query('INSERT INTO public.updatedarticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary) VALUES ($1,$2,$3,$4,$5,$6,$7);',[article.title,category,article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary]);
         }
       }
-  
-      // Add the search result to the array
-
-  
-      // Do other things with the search result and the array
-      console.log(searchResult);
-      console.log(categories);
-  
       res.send('Articles added successfully');
     } catch(error) {
       console.error(error);
