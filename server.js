@@ -132,7 +132,7 @@ app.get('/addarticles', async (req,res) => {
 
 });
 
-app.get('/addarticles', async (req,res) => {
+app.get('/addarticlestest', async (req,res) => {
   try{
     var categories = ["Finance"];
     let articlePromises = categories.map(element => fetchArticles(element));
