@@ -43,26 +43,29 @@ app.get('/', async (req,res) => {
   });
 
 
-var runPrompt = async (url) => {
-	const prompt = `
-    Summarize this article in 3 different lengths, one short, one medium, and one long: ${url}
-    `;
-
-	const response = await openai.createCompletion({
-		model: "text-davinci-003",
-		prompt: prompt,
-		max_tokens: 2048,
-		temperature: 1,
-	});
-    article = response.data.choices[0].text
-    const shortSummary = article.split("Short: ")[1].split("\n")[0];
-    const mediumSummary = article.split("Medium: ")[1].split("\n")[0];
-    const longSummary = article.split("Long: ")[1].split("\n")[0];
-  return {shortSummary, mediumSummary, longSummary};
-};
-
-async function fetchArticles(topic) {
-  try {
+  const runPrompt = async (url) => {
+    const prompt = `
+      Summarize this article in 3 different lengths, one short, one medium, and one long: ${url}
+      `;
+  
+    const response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: prompt,
+      max_tokens: 2048,
+      temperature: 1,
+    });
+      article = response.data.choices[0].text
+      const shortSummary = article.split("Short: ")[1].split("\n")[0];
+      const mediumSummary = article.split("Medium: ")[1].split("\n")[0];
+      const longSummary = article.split("Long: ")[1].split("\n")[0];
+    return {shortSummary, mediumSummary, longSummary};
+  };
+   
+  
+  
+  
+  
+  async function fetchArticles(topic) {
     const today = new Date();
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0');
@@ -74,34 +77,67 @@ async function fetchArticles(topic) {
     const lastday = String(lastWeek.getDate()).padStart(2, '0');
     const lastWeekFormatted = `${lastyear}-${lastmonth}-${lastday}`;
     let arr = [];
-    const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${lastWeekFormatted}&sortBy=popularity&apiKey=${NEWS_API_KEY}`);
-    const data = await response.json();
-    let articles = data.articles;
-    for(let i=0; i<2; i++) {
-      let shortSummary,mediumSummary,longSummary;
-      try {
-        const result = await runPrompt(articles[i].url);
-        shortSummary = result.shortSummary;
-        mediumSummary = result.mediumSummary;
-        longSummary = result.longSummary;
-      } catch(error) {
-        console.error(error);
+    try {
+      const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${lastWeekFormatted}&sortBy=popularity&apiKey=b96538face724581aae3298f379c3895`);
+      const data = await response.json();
+      let articles = data.articles;
+      for(let i=0; i<1; i++) {
+        let shortSummary,mediumSummary,longSummary;
+        try {
+          const result = await runPrompt(articles[i].url);
+          shortSummary = result.shortSummary;
+          mediumSummary = result.mediumSummary;
+          longSummary = result.longSummary;
+        } catch(error) {
+          console.error(error);
+        }
+        arr.push({
+          title: articles[i].title,
+          category: topic,
+          url: articles[i].url,
+          imageurl: articles[i].urlToImage,
+          shortsummary: shortSummary,
+          mediumsummary: mediumSummary,
+          longsummary: longSummary
+        });
       }
-      arr.push({
-        title: articles[i].title,
-        category: topic,
-        url: articles[i].url,
-        imageurl: articles[i].urlToImage,
-        shortsummary: shortSummary,
-        mediumsummary: mediumSummary,
-        longsummary: longSummary
-      });
+      return arr;
+    } catch(error) {
+      console.error(error);
+      throw error; // re-throw the error so that it can be caught by an outer try/catch block if necessary
     }
-    return arr;
-  } catch(error) {
-    console.error(error);
   }
-}
+  
+  async function doSearch(topic) {
+    try {
+      const result = await fetchArticles(topic);
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error; // re-throw the error so that it can be caught by an outer try/catch block if necessary
+    }
+  }
+
+  app.get('/addarticlestest', async (req, res) => {
+    try {
+      var categories = ["Finance"];
+      const searchResult = await doSearch(); // Wait for doSearch() to complete
+  
+      // Add the search result to the array
+      for (const article of searchResult) {
+        await pool.query('INSERT INTO public.updatedarticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary) VALUES ($1,$2,$3,$4,$5,$6,$7);',[article.title,article.category,article.url,article.imageurl,article.shortsummary,article.mediumsummary,article.longsummary]);
+      }
+  
+      // Do other things with the search result and the array
+      console.log(searchResult);
+      console.log(categories);
+  
+      res.send('Articles added successfully');
+    } catch(error) {
+      console.error(error);
+      res.status(500).send('Server Error');
+    }
+  });
 
 app.get('/addarticles', async (req,res) => {
   try{
@@ -132,18 +168,7 @@ app.get('/addarticles', async (req,res) => {
 
 });
 
-app.get('/addarticlestest', async (req,res) => {
-  try{
-    var categories = ["Finance"];
-    let articlePromises = categories.map(element => fetchArticles(element));
-    let articles = await Promise.all(articlePromises);
-    res.send(articles);
-  }
- catch{
-  console.error(error);
-  res.send(error);
-  }
-});
+
 
   app.post('/adduserpost', async (req, res) => {
     const { username, password } = req.body;
