@@ -246,6 +246,7 @@ app.get('/checkuser/:username/:password', async (req,res) => {
   
       if (rows.length === 0) {
         await pool.query("INSERT INTO public.categories(id) VALUES ($1)", [id]);
+        await pool.query("INSERT INTO public.country(id,country) VALUES ($1)", [id,"en"]);
         const insertQuery =
           'INSERT INTO  public.authorization (id, email, name) VALUES ($1, $2, $3) RETURNING *';
         const result = await pool.query(insertQuery, [
@@ -278,6 +279,17 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     } catch (error) {
       console.error(error);
       res.status(500).send('Server error');
+    }
+  });
+
+  app.post('/changecountry/', async (req, res) => {
+    try {
+      const { id, country } = req.body;
+      await pool.query("UPDATE public.changecountry SET country = $1 WHERE id = $2", [country, id]);
+      res.send("Updated successfully");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
     }
   });
 
