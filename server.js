@@ -120,13 +120,22 @@ app.get('/', async (req,res) => {
 
   app.get('/addarticlestest', async (req, res) => {
     try {
-      var categories = ["Finance"];
-      const searchResult = await doSearch(); // Wait for doSearch() to complete
+      let results = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
+      var a = results["rows"];
+      var categories = [];
+      for (var i = 0; i < a.length; i++) {
+        categories.push(a[i].category);
+      }
+      for (const category of categories){
+        const searchResult = await doSearch(category); // Wait for doSearch() to complete
+        for (const article of searchResult) {
+          const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
+          await pool.query('INSERT INTO public.updatedarticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary) VALUES ($1,$2,$3,$4,$5,$6,$7);',[article.title,category,article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary]);
+        }
+      }
   
       // Add the search result to the array
-      for (const article of searchResult) {
-        await pool.query('INSERT INTO public.updatedarticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary) VALUES ($1,$2,$3,$4,$5,$6,$7);',[article.title,article.category,article.url,article.imageurl,article.shortsummary,article.mediumsummary,article.longsummary]);
-      }
+
   
       // Do other things with the search result and the array
       console.log(searchResult);
