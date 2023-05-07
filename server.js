@@ -77,7 +77,7 @@ async function fetchArticles(topic) {
     const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${lastWeekFormatted}&sortBy=popularity&apiKey=${NEWS_API_KEY}`);
     const data = await response.json();
     let articles = data.articles;
-    for(let i=0; i<5; i++) {
+    for(let i=0; i<2; i++) {
       let shortSummary,mediumSummary,longSummary;
       try {
         const result = await runPrompt(articles[i].url);
@@ -119,17 +119,30 @@ app.get('/addarticles', async (req,res) => {
   //     console.error(error);
   //   });
   // });
-  fetchArticles("Finance").then(result => {
-        articles.concat(result)
-        res.send(result)
-        console.log(result)
-      })
+  // fetchArticles("Finance").then(result => {
+  //       articles.concat(result)
+  //       res.send(result)
+  //       console.log(result)
+  //     })
   res.send(articles);
 } catch{
   console.error(error);
   res.send(error);
 }
 
+});
+
+app.get('/addarticles', async (req,res) => {
+  try{
+    var categories = ["Finance"];
+    let articlePromises = categories.map(element => fetchArticles(element));
+    let articles = await Promise.all(articlePromises);
+    res.send(articles);
+  }
+ catch{
+  console.error(error);
+  res.send(error);
+  }
 });
 
   app.post('/adduserpost', async (req, res) => {
