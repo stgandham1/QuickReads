@@ -130,7 +130,6 @@ app.get('/', async (req,res) => {
         categories.push(a[i].category);
       }
       for (const category of categories){
-        await new Promise(resolve => setTimeout(resolve, 60000));
         const searchResult = await doSearch(category); // Wait for doSearch() to complete
         for (const article of searchResult) {
           const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
