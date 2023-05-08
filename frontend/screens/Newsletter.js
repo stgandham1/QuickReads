@@ -17,7 +17,10 @@ export default function Feed({ navigation }) {
   const [selectedBookmark, setselectedBookmark] = useState([]);
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
-  let accessToken = global.id; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  let accessToken = global.id; 
+  let userLength  = "shortsummary"
+  console.log("Entering Top News")
+
   const addToBookmark = (url) => {
     setselectedBookmark((preText) => {
       return [url, ...preText];
@@ -116,7 +119,7 @@ export default function Feed({ navigation }) {
   }, []);
   // deleting all the articles
   async function refreshArticles() {
-    const articleRequest = await fetch(root + "/getarticles/" + accessToken, {
+    const articleRequest = await fetch(root + "/gettopnews/" + accessToken, {
       method: "GET",
     })
       .then((response) => {
@@ -128,7 +131,7 @@ export default function Feed({ navigation }) {
         for (var key in responseJSON) {
           submitHandler({
             title: responseJSON[key]["title"],
-            shortsummary: responseJSON[key]["summary"],
+            summary: responseJSON[key][userLength],
             tags: ["tag1", "tag2", "tag3"],
             key: key,
             imgURL: responseJSON[key]["imageurl"],

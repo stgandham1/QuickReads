@@ -30,6 +30,8 @@ export default function LoginPage() {
     androidClientId: "872073890696-e96q462alifn6hemd1rtb3us5bfng5a4.apps.googleusercontent.com"
   });
   const imagePaths = ['../assets/hero_reader.jpg','../assets/hero_reel.jpg','../assets/hero_stack.jpg']
+  console.log("Entering Categories")
+
 
   const goHome = (userObj) => {
     if (userObj.email == "NO ACCOUNT"){ // DEFAULT USER: {email: "NO ACCOUNT"}
@@ -99,25 +101,28 @@ export default function LoginPage() {
       <Image style={styles.logo} source={require('../assets/QuickReadsLogo.png')}/>
       <Text style={styles.text}>Your source of bite-sized news</Text>
       
-      <View style={styles.googleButtonContainer}>
-        <Ionicons name="logo-google"
-          size={30} color = "#134F5C" 
-          style={styles.googleG}/>
-        <Button
-          title="Sign in with Google"
-          disabled={!request}
-          onPress={() => {promptAsync();}}
-          color="#134F5C"
-          style={styles.loginButton}
-        />
+      <View style= {styles.loginSection}>
+        <View style={styles.googleButtonContainer}>
+          <Ionicons name="logo-google"
+            size={30} color = "#134F5C" 
+            style={styles.googleG}/>
+          <Button
+            title="Sign in with Google"
+            disabled={!request}
+            onPress={() => {promptAsync();}}
+            color="#134F5C"
+            style={styles.loginButton}
+          />
+        </View>
+        <View>
+          <Button 
+              title="No Account"
+              onPress={() => goHome({email: "NO ACCOUNT"})}
+              color="#A2C4C9"
+              style={styles.noAccountButton}
+            />
+        </View>
       </View>
-      <Button 
-          title="No Account"
-          onPress={() => goHome({email: "NO ACCOUNT"})}
-          color="#A2C4C9"
-          style={styles.noAccountButton}
-        />
-      
     </View>
   );
 }
@@ -150,14 +155,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   }, 
+  loginSection: { 
+    flex: 1,
+    backgroundColor: "#E3F3F3",
+    alignItems: "center",
+    padding: '50',
+    width: "90%",
+    margin: 10,
+    justifyContent: "space-around"
+  },
   loginButton: {
     width: '40%'
   }, 
   googleG: {
     marginHorizontal: '10px',
   },
-  noAccountButton: { 
-    width: '40%',
-    marginBottom: '40'
-  }
 });

@@ -19,6 +19,8 @@ export default function Feed({ navigation }) {
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
   let accessToken = global.id; 
+  let userLength = "longsummary"
+  console.log("Entering Feed")
   const addToBookmark = (url) => {
     setselectedBookmark((preText) => {
       return [url, ...preText];
@@ -128,7 +130,7 @@ export default function Feed({ navigation }) {
         for (var key in responseJSON) {
           submitHandler({
             title: responseJSON[key]["title"],
-            summary: responseJSON[key]["shortsummary"],
+            summary: responseJSON[key][userLength],
             tags: ["tag1", "tag2", "tag3"],
             key: key,
             imgURL: responseJSON[key]["imageurl"],
@@ -169,7 +171,7 @@ export default function Feed({ navigation }) {
       <FlatList
         data={reviews}
         renderItem={({ item }) => (
-          <Card style={{backgroundColor: "#f2f7f7"}}>
+          <Card style={globalStyles.newsCard}>
             <Card.Content>
               <Text variant="titleLarge" style={globalStyles.homeText}>
                 {item.title}
@@ -184,7 +186,7 @@ export default function Feed({ navigation }) {
                 setRefresh(!refresh);
               }}
             >
-              <Card.Cover source={{ uri: item.imgURL }} />
+              <Card.Cover borderRadius={0} source={{ uri: item.imgURL }} />
             </TouchableOpacity>
             <Card.Content>
               {item.shouldShow ? (

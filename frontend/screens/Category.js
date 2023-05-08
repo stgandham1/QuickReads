@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Card, Text, List,} from "react-native-paper";
-import { TextInput, StyleSheet, View, KeyboardAvoidingView, Button, TouchableOpacity, FlatList, ScrollView } from "react-native";
+import { Card, Text, List, shadow,} from "react-native-paper";
+import { TextInput, StyleSheet, View, SafeAreaView, KeyboardAvoidingView, Button, FlatList } from "react-native";
 import { globalStyles } from "../styles/global";
 // import CardActions from "react-native-paper/lib/typescript/src/components/Card/CardActions";
 
 export default function Category() {
   const [keyword, setKeyword] = useState(""); //Keyword to Search.
   const [catlist, setCatlist] = useState([]); //User's categories
+  const [objlist, setObjlist] = useState([]); //User's categories
+
   let accessToken = global.id; 
   let root ="http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; // SHOULD BE SAME ON ALL PAGES: MAKE GLOBAL?
+  console.log("Entering Categories")
 
   async function getUserCategories() {
     console.log(root+"/getcategory/"+accessToken); 
@@ -21,6 +24,7 @@ export default function Category() {
       .then((responseJSON) => {
         let cats = responseJSON;
         setCatlist((oldArr) => cats);
+        setObjlist((oldArr) => cats.map(elem => {return {title: elem, id: elem};}))
       })
       .catch();
     return;
@@ -70,8 +74,8 @@ export default function Category() {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.inputContainer}>
+    <View style={styles.container}>
+      <KeyboardAvoidingView style={styles.inputContainer} behavior="padding">
         <Text style={globalStyles.titleText}>Add a News Category</Text>
         <TextInput
           placeholder="Eg: Major League Baseball, Clean Energy"
@@ -79,58 +83,77 @@ export default function Category() {
           onChangeText={(input) => {
             setKeyword(input);
           }}
-          style={globalStyles.input}
+          style={styles.catInput}
         />
-      </View>
+      </KeyboardAvoidingView>
 
       <Button
         title="Add Category"
         onPress={handleAddKeyword}
         style={globalStyles.button}
+        width="50%"
         color="#134F5C"
       ></Button>
-      <View>
-        <Text style={globalStyles.titleText}>Your News Categories:</Text>
-        <ScrollView>
-        {catlist.map((elem) => {
-          return (
-            <Card key={elem+"_card"} >
-              <Card.Content>
-                <Text variant="titleLarge">{elem}</Text>
+      <View style={styles.categoryContainer}>
+        <Text style={globalStyles.titleText}>Your News Categories</Text>
+        <FlatList
+          data={objlist}
+          renderItem={({item}) => (
+            <Card style={{backgroundColor:"#E3F3F3", borderRadius:"0"}} mode="elevated" elevation={3}>
+              <Card.Content style={{width:"100%"}}>
+                <Text variant="titleLarge">{item.title}</Text>
               </Card.Content>
-              <TouchableOpacity
-              onPress={() => {handleRemoveKeyword(elem)}}
-              style={globalStyles.outlinedButton}
-              >
-              <Text style={styles.button}>Remove</Text>
-              </TouchableOpacity>
+              <Button
+                title="Remove"
+                onPress={() => {handleRemoveKeyword(item.title)}}
+                style={styles.removeButton}
+                color="#76A5AF"
+                borderBottomLeftRadius={10}
+                borderBottomRightRadius={10}
+              />
             </Card>
-          );
-        })}
-        </ScrollView>
+          )}
+          keyExtractor={item => item.title}
+          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+          nestedScrollEnabled={true}
+        />
       </View>
-      <Button
-        color="#134F5C"
-        title="Get Categories"
-        onPress={getUserCategories}
-        style={globalStyles.button}
-      ></Button>
-    </KeyboardAvoidingView>
+      <View style={{marginBottom:"5"}}>
+        <Button
+            color="#134F5C"
+            title="Refresh"
+            onPress={getUserCategories}
+            marginBottom={5}
+        ></Button>
+      </View>
+    </View >    
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: '#FAFAFA',
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: '#fafafa'
+    padding:20,
+    alignItems:"center"
+  },
+  categoryContainer: {
+    backgroundColor: '#F2F7F7',
+    flex: 1,
+    padding: 10,
+    width: "80%",
+    borderColor:"#76A5AF",
+    margin:5,
+    borderRadius: 5,
   },
   inputContainer: {
-    width: "60%",
+    width: "90%",
   },
-  button: {
-    borderRadius: 5,
+  removeButton: {
+    width:'50%',
+    borderRadius:20,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   buttonOutline: {
     backgroundColor: "white",
@@ -146,4 +169,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
+  refreshButton: {
+    marginBottom: 10,
+    marginTop: 10
+  },
+  catInput: {
+    backgroundColor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
+    marginTop: 10,
+    marginBottom: 10,
+    color: "grey",
+    borderWidth: 2, 
+    borderColor: "grey"
+  }
 });

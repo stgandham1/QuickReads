@@ -7,12 +7,14 @@ import { FontAwesome } from "@expo/vector-icons";
 export default function About() {
   const navigation = useNavigation();
   const pressHandler = () => {
-    navigation.replace("Welcome to QuickReads!");
+    navigation.replace("Login");
   };
   const BookmarkPressHandler = () => {
     navigation.navigate("Bookmark");
   };
   const [wordLength, setWordLength] = useState(2);
+  console.log("Entering Settings")
+
   const shortPress = () => {
     setWordLength(1);
     console.log("choose short word length");
