@@ -419,6 +419,33 @@ app.get('/checkuser/:username/:password', async (req,res) => {
       res.status(500).send(error);
     }
   });
+  
+  app.get('/getblacklist/:id', async (req,res) => {
+    let results = await pool.query("SELECT site from public.blacklist WHERE id = $1", [req.params.id]);
+    res.send(results.rows);
+  });
+
+  app.post('/addblacklist', async (req, res) => {
+    try {
+      const { id, site } = req.body;
+      await pool.query("INSERT INTO public.blacklist(id,site) VALUES ($1,$2)", [id,site]);
+      res.send();
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+    }
+  });
+
+  app.post('/removeblacklist', async (req, res) => {
+    try {
+      const { id, site } = req.body;
+      await pool.query("DELETE FROM public.blacklist WHERE id = $1 and site = $2", [id, site]);
+      res.send();
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Server error');
+    }
+  });
 
   app.get('/stubtestinggetbookmarks/', async (req,res) => {
     let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", ['accountName']);
