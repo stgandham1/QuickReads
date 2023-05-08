@@ -18,14 +18,13 @@ export default function Feed({ navigation }) {
   const [selectedBookmark, setselectedBookmark] = useState([]);
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
-  let accessToken = global.id; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN;
+  let accessToken = global.id; 
   const addToBookmark = (url) => {
     setselectedBookmark((preText) => {
       return [url, ...preText];
     });
   };
   const changeBookmark = () => {
-    //console.log(reviews);
     reviews.forEach((element) => {
       selectedBookmark.forEach((bookmark) => {
         if (bookmark == element.newsurl) {
@@ -129,7 +128,7 @@ export default function Feed({ navigation }) {
         for (var key in responseJSON) {
           submitHandler({
             title: responseJSON[key]["title"],
-            content: responseJSON[key]["summary"],
+            summary: responseJSON[key]["shortsummary"],
             tags: ["tag1", "tag2", "tag3"],
             key: key,
             imgURL: responseJSON[key]["imageurl"],
@@ -170,7 +169,7 @@ export default function Feed({ navigation }) {
       <FlatList
         data={reviews}
         renderItem={({ item }) => (
-          <Card>
+          <Card style={{backgroundColor: "#f2f7f7"}}>
             <Card.Content>
               <Text variant="titleLarge" style={globalStyles.homeText}>
                 {item.title}
@@ -190,7 +189,7 @@ export default function Feed({ navigation }) {
             <Card.Content>
               {item.shouldShow ? (
                 <View>
-                  <Text variant="titleLarge">{item.content}</Text>
+                  <Text variant="titleLarge">{item.summary}</Text>
                   <TouchableOpacity
                     style={{ flexDirection: "row", justifyContent: "flex-end" }}
                   >
@@ -198,7 +197,7 @@ export default function Feed({ navigation }) {
                       <FontAwesome
                         name="bookmark-o"
                         size={30}
-                        color="black"
+                        color="#134F5C"
                         backgroundColor="transparent"
                         borderRadius={10}
                         suppressHighlighting={false}
@@ -211,7 +210,7 @@ export default function Feed({ navigation }) {
                       <FontAwesome
                         name="bookmark"
                         size={30}
-                        color="blue"
+                        color="#134F5C"
                         backgroundColor="transparent"
                         borderRadius={10}
                         suppressHighlighting={false}

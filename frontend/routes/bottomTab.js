@@ -12,11 +12,15 @@ import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { globalStyles } from "../styles/global";
 
 const Tab = createBottomTabNavigator();
-
 const BottomTabNavigator = ({route}) => {
   const { userInfo } = route.params;
+  //GETS THE USER SUMMARY LENGTH//
   return (
-      <Tab.Navigator>
+      <Tab.Navigator 
+        screenOptions={{
+          tabBarStyle: {backgroundColor: "#A2C4C9"},
+        }}
+      >
         <Tab.Screen
           name="BottomHome"
           component={HomeStackNavigator}
@@ -25,11 +29,13 @@ const BottomTabNavigator = ({route}) => {
             tabBarShowLabel: true,
             tabBarLabel: "Feed",
             showIcon: true,
-            tabBarIcon:({focused})=>(
-              <Ionicons name="newspaper-outline" size={28} color = "#4991eb"/>
+            tabBarIcon:({color})=>(
+              <Ionicons name="newspaper-outline" size={28} color = {color}/>
               ),
+              tabBarActiveTintColor: "#FFFFFF",
+              tabBarInactiveTintColor: "#134F5C"
           }}
-          style={{ color: '#9489a3' }}
+          style={{ color: '#A2C4C9' }}
         />
         <Tab.Screen
           options={{
@@ -37,9 +43,11 @@ const BottomTabNavigator = ({route}) => {
             tabBarShowLabel: true,
             tabBarLabel: "Top News",
             showIcon: true,
-            tabBarIcon:({focused})=>(
-              <Ionicons name="flame-outline" size={28} color = "#4991eb"/>
+            tabBarIcon:({color})=>(
+              <Ionicons name="flame-outline" size={28} color = {color}/>
               ),
+              tabBarActiveTintColor: "#FFFFFF",
+              tabBarInactiveTintColor: "#134F5C"
           }}
           name="BottomNewsletter"
           component={NewsletterStackNavigator}
@@ -50,9 +58,11 @@ const BottomTabNavigator = ({route}) => {
             tabBarShowLabel: true,
             tabBarLabel: "Categories",
             showIcon: true,
-            tabBarIcon:({focused})=>(
-              <Ionicons name="duplicate-outline" size={28} color = "#4991eb"/>
+            tabBarIcon:({color})=>(
+              <Ionicons name="duplicate-outline" size={28} color = {color}/>
               ),
+              tabBarActiveTintColor: "#FFFFFF",
+              tabBarInactiveTintColor: "#134F5C"
           }}
           name="BottomCategory"
           component={CategoryStackNavigator}
@@ -63,9 +73,11 @@ const BottomTabNavigator = ({route}) => {
             tabBarShowLabel: true,
             tabBarLabel: "Settings",
             showIcon: true,
-            tabBarIcon:({focused})=>(
-              <Ionicons name="person-circle-outline" size={28} color = "#4991eb"/>
+            tabBarIcon:({color})=>(
+              <Ionicons name="person-circle-outline" size={28} color = {color}/>
               ),
+            tabBarActiveTintColor: "#FFFFFF",
+            tabBarInactiveTintColor: "#134F5C"
           }}
           name="BottomSetting"
           component={SettingStackNavigator}

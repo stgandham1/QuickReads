@@ -7,11 +7,10 @@ import { globalStyles } from "../styles/global";
 export default function Category() {
   const [keyword, setKeyword] = useState(""); //Keyword to Search.
   const [catlist, setCatlist] = useState([]); //User's categories
-  let accessToken = global.id; //PLACEHOLDER UNTIL USERNAME PROP CAN BE PASSED IN
+  let accessToken = global.id; 
   let root ="http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; // SHOULD BE SAME ON ALL PAGES: MAKE GLOBAL?
 
   async function getUserCategories() {
-    // setCatlist(["Foo", "Bar", "Baz", "Flee", "Flam", "Frim", "Fram"])
     console.log(root+"/getcategory/"+accessToken); 
     const request = await fetch(root+"/getcategory/"+accessToken, {
       method: "GET",
@@ -88,7 +87,7 @@ export default function Category() {
         title="Add Category"
         onPress={handleAddKeyword}
         style={globalStyles.button}
-        color="#2776d9"
+        color="#134F5C"
       ></Button>
       <View>
         <Text style={globalStyles.titleText}>Your News Categories:</Text>
@@ -109,29 +108,9 @@ export default function Category() {
           );
         })}
         </ScrollView>
-        {/* <FlatList
-        data={catlist}
-        renderItem={({cat, index}) => {
-          console.log(cat);
-          return (
-          <Card>
-            <Card.Content>
-              <Text style={globalStyles.homeText}>{index}</Text>
-            </Card.Content>
-            <Card.Actions>
-              <TouchableOpacity onPress={() => {handleRemoveKeyword(cat)}} style={globalStyles.outlinedButton}>
-                <Text style={styles.button}>Remove</Text>
-              </TouchableOpacity>
-            </Card.Actions>
-          </Card> );
-        }
-      
-      }
-        ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
-      /> */}
       </View>
       <Button
-        color="#2776d9"
+        color="#134F5C"
         title="Get Categories"
         onPress={getUserCategories}
         style={globalStyles.button}
@@ -145,7 +124,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: '#e5e3e8'
+    backgroundColor: '#fafafa'
   },
   inputContainer: {
     width: "60%",

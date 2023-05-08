@@ -8,11 +8,12 @@ import Setting from "../screens/setting";
 import Newsletter from "../screens/Newsletter";
 import Bookmark from "../screens/Bookmark";
 
+
 const Stack = createNativeStackNavigator();
 
 const screenOptionStyle = {
   headerStyle: {
-    backgroundColor: "#9AC4F8",
+    backgroundColor: "#A2C4C9",
   },
   headerTintColor: "white",
   headerBackTitle: "Back",

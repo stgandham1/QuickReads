@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
   container: {
-    backgroundColor: '#fdfcff',
+    backgroundColor: '#fafafa',
     flex: 1,
     padding: 20,
   },
@@ -37,7 +37,7 @@ export const globalStyles = StyleSheet.create({
   },
   orangeButton: {
     alignItems: "center",
-    backgroundColor: "coral",
+    backgroundColor: "#76A5AF",
     padding: 10,
   },
   grayButton: {
@@ -61,6 +61,9 @@ export const globalStyles = StyleSheet.create({
   },
   dropdown1RowTxtStyle: { color: "#444", textAlign: "left" },
   // NATHANIEL BUTTONS //
+  newsCard: {
+    backgroundColor: "#f2f7f7"
+  },
   input: {
     backgroundColor: "white",
     paddingVertical: 10,

@@ -50,7 +50,7 @@ export default function About() {
           title="Log Out"
           onPress={pressHandler}
           style={{ marginTop: 505 }}
-          color="#2776d9"
+          color="#A2C4C9"
         />
       </View>
       <View style={{ flex: 0.1, marginBottom: 10 }}>
@@ -58,10 +58,10 @@ export default function About() {
           title="Bookmark"
           onPress={BookmarkPressHandler}
           style={{ marginTop: 505 }}
-          color="#2776d9"
+          color="#A2C4C9"
         />
       </View>
-      <Text style={globalStyles.homeText}>Choose word length:</Text>
+      <Text style={globalStyles.homeText}>Choose Summary length:</Text>
       <View style={{ flex: 0.18, flexDirection: "row" }}>
         <View style={{ flex: 1 }}>
           {wordLength == 1 ? (

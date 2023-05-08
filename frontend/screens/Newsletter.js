@@ -128,7 +128,7 @@ export default function Feed({ navigation }) {
         for (var key in responseJSON) {
           submitHandler({
             title: responseJSON[key]["title"],
-            content: responseJSON[key]["summary"],
+            shortsummary: responseJSON[key]["summary"],
             tags: ["tag1", "tag2", "tag3"],
             key: key,
             imgURL: responseJSON[key]["imageurl"],
@@ -169,7 +169,7 @@ export default function Feed({ navigation }) {
       <FlatList
         data={reviews}
         renderItem={({ item }) => (
-          <Card>
+          <Card style={globalStyles.newsCard}>
             <Card.Content>
               <Text variant="titleLarge" style={globalStyles.homeText}>
                 {item.title}
@@ -197,7 +197,7 @@ export default function Feed({ navigation }) {
                       <FontAwesome
                         name="bookmark-o"
                         size={30}
-                        color="black"
+                        color="#134F5C"
                         backgroundColor="transparent"
                         borderRadius={10}
                         suppressHighlighting={false}
@@ -210,7 +210,7 @@ export default function Feed({ navigation }) {
                       <FontAwesome
                         name="bookmark"
                         size={30}
-                        color="blue"
+                        color="#134F5C"
                         backgroundColor="transparent"
                         borderRadius={10}
                         suppressHighlighting={false}

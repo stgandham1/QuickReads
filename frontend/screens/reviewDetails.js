@@ -15,8 +15,7 @@ export default function ReviewDetail({ route, navigation }) {
   const { title, content, tags, URL, key } = route.params;
   const [isSelected, setSelection] = useState(false);
   const accessToken = global.id;
-  const root =
-    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
+  const root = "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
 
   async function refreshBookmark() {
     const articleRequest = await fetch(root + "/getBookmarks/" + accessToken, {

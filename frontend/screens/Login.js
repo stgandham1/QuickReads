@@ -2,6 +2,7 @@
 import { useEffect, useState, createContext} from "react";
 import {  
   KeyboardAvoidingView,
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -12,6 +13,8 @@ import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import { useNavigation } from "@react-navigation/native";
 import { globalStyles } from "../styles/global";
+import { Ionicons } from "@expo/vector-icons";
+
 
 
 WebBrowser.maybeCompleteAuthSession();
@@ -26,7 +29,7 @@ export default function LoginPage() {
     webClientId: "872073890696-o39iuubklkdqprs44b2qthk31uab2dsv.apps.googleusercontent.com",
     androidClientId: "872073890696-e96q462alifn6hemd1rtb3us5bfng5a4.apps.googleusercontent.com"
   });
-
+  const imagePaths = ['../assets/hero_reader.jpg','../assets/hero_reel.jpg','../assets/hero_stack.jpg']
 
   const goHome = (userObj) => {
     if (userObj.email == "NO ACCOUNT"){ // DEFAULT USER: {email: "NO ACCOUNT"}
@@ -92,28 +95,29 @@ export default function LoginPage() {
 
   return (
     <View style={styles.container}>
+      <Image style={styles.heroimg} source={require('../assets/hero_stack.jpg')}/>
+      <Image style={styles.logo} source={require('../assets/QuickReadsLogo.png')}/>
+      <Text style={styles.text}>Your source of bite-sized news</Text>
+      
+      <View style={styles.googleButtonContainer}>
+        <Ionicons name="logo-google"
+          size={30} color = "#134F5C" 
+          style={styles.googleG}/>
         <Button
           title="Sign in with Google"
           disabled={!request}
           onPress={() => {promptAsync();}}
-          color="#2776d9"
+          color="#134F5C"
+          style={styles.loginButton}
+        />
+      </View>
+      <Button 
+          title="No Account"
+          onPress={() => goHome({email: "NO ACCOUNT"})}
+          color="#A2C4C9"
+          style={styles.noAccountButton}
         />
       
-      {/* <View >
-      {'error' in userInfo ? (
-        <Button
-          title="Sign in with Google"
-          disabled={!request}
-          onPress={() => {
-            promptAsync();
-          }}
-        />
-      ) : (
-        goHome(userInfo)
-      )}
-      </View> */}
-      
-      <Button title="No Account" onPress={() => goHome({email: "NO ACCOUNT"})} color="#2776d9"/>
     </View>
   );
 }
@@ -127,192 +131,33 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    fontWeight: "bold",
+    color: "#76A5AF",
+    fontWeight: "normal",
+    fontStyle: "italic"
   },
+  heroimg: {
+    width: '100%',
+    height: '50%',
+    resizeMode: 'cover',
+  }, 
+  logo: {
+    width: '90%',
+    height: '15%',
+    resizeMode: 'contain',
+  },
+  googleButtonContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  }, 
+  loginButton: {
+    width: '40%'
+  }, 
+  googleG: {
+    marginHorizontal: '10px',
+  },
+  noAccountButton: { 
+    width: '40%',
+    marginBottom: '40'
+  }
 });
-
-// import {
-//   KeyboardAvoidingView,
-//   StyleSheet,
-//   Text,
-//   TextInput,
-//   View,
-//   Keyboard,
-//   TouchableOpacity,
-// } from "react-native";
-// import React, { useState, useEffect } from "react";
-// import { useNavigation } from "@react-navigation/native";
-// import { globalStyles } from "../styles/global";
-
-// import * as WebBrowser from "expo-web-browser";
-// import * as Google from "expo-auth-session/providers/google";
-
-
-// export default function LoginPage() {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const navigation = useNavigation();
-//   const [errorText, setErrorText] = useState("");
-//   // FOR LOGIN
-//   const [token, setToken] = useState("");
-//   const [userInfo, setUserInfo] = useState(null);
-//   const root = 'http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com';
-
-//   const goHome = () => {
-//     console.log("GOING" + email);
-//     navigation.replace("BottomTabNavigator");
-//   };
-
-//   async function testGoogleAuth() {
-//     const myAuthtoken = "111239336200270088302"
-//     const myEmail = "zimmeritz64@gmail.com"
-//     const myName = "Michael Chen"
-
-//     let userAuth = { authtoken: myAuthtoken, email: myEmail, name: myName};
-//     console.log(userAuth);
-//     const request = await fetch(root+"/auth", {
-//       method: "POST",
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify(userAuth),
-//       })
-//       .then(response => console.log(response))
-//       .catch(error => console.log(error));
-//       console.log("Signing Up " + (userAuth.name));
-//   }
-
-//   async function handleSignUp() {
-//     if (email.length == 0 || password.length == 0) {
-//       setErrorText("[No Input Detected]");
-//       return;
-//     }
-//     let usernameExists = false;
-//     const request = await fetch(root+'/adduser/'+email,
-//       {
-//         method: "GET",
-//       }
-//     )
-//       .then((response) => {
-//         return response.json();
-//       })
-//       .then((responseJSON) => {
-//         if (
-//           responseJSON.status ||
-//           responseJSON.message != "Username does not exist"
-//         ) {
-//           usernameExists = true;
-//         }
-//       })
-//       .catch();
-//     if (usernameExists) {
-//       setErrorText("Username Already Exists");
-//       return;
-//     }
-//     setErrorText("Registered " + email + "!");
-//     //ADD USER TO TABLE
-//     const signupRequest = await fetch(root+'/adduser/'+email+'/'+password,
-//       {
-//         method: "GET",
-//       }
-//     );
-//   }
-
-//   async function handleLogin() {
-//     if (email.length == 0 || password.length == 0) {
-//       setErrorText("[No Input Detected]");
-//       return;
-//     }
-//     const request = await fetch(root+'/checkuser/'+email+'/'+password,
-//       {
-//         method: "GET",
-//       }
-//     )
-//       .then((response) => {
-//         return response.json();
-//       })
-//       .then((responseJSON) => {
-//         if (responseJSON.status) {
-//           setErrorText("Logging in " + email);
-//           goHome();
-//         } else {
-//           setErrorText("Could not log in " + email);
-//         }
-//       });
-//   }
-
-//   return (
-//     <KeyboardAvoidingView style={styles.container} behavior="padding">
-//       <View style={styles.inputContainer}>
-//         <TextInput
-//           placeholder="Email"
-//           value={email}
-//           onChangeText={(input) => setEmail(input)}
-//           style={globalStyles.input}
-//         />
-
-//         <TextInput
-//           placeholder="Password"
-//           value={password}
-//           onChangeText={(input) => setPassword(input)}
-//           style={globalStyles.input}
-//           secureTextEntry
-//         />
-//       </View>
-
-//       <View style={styles.buttonContainer}>
-//         <TouchableOpacity
-//           onPress={handleLogin}
-//           style={globalStyles.outlinedButton}
-//         >
-//           <Text style={styles.button}>Login</Text>
-//         </TouchableOpacity>
-
-//         <TouchableOpacity
-//           onPress={handleSignUp}
-//           style={globalStyles.filledButton}
-//         >
-//           <Text style={styles.button}>Signup</Text>
-//         </TouchableOpacity>
-
-//         <TouchableOpacity
-//           onPress={testGoogleAuth}
-//           style={globalStyles.outlinedButton}
-//         >
-//           <Text style={styles.button}>Test Google Auth</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity
-//           onPress={goHome}
-//           style={globalStyles.filledButton}
-//         >
-//           <Text style={styles.button}>No Account</Text>
-//         </TouchableOpacity>
-
-//         <Text style={styles.error}>{errorText}</Text>
-//       </View>
-//     </KeyboardAvoidingView>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   inputContainer: {
-//     width: "60%",
-//   },
-//   buttonContainer: {
-//     width: "50%",
-//     flex: 1,
-//     alignItems: "center",
-//   },
-//   error: {
-//     color: "grey",
-//     marginTop: 10,
-//   },
-//   button: {
-
-//   }
-// });
