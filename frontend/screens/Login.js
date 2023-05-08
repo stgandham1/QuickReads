@@ -15,8 +15,6 @@ import { useNavigation } from "@react-navigation/native";
 import { globalStyles } from "../styles/global";
 import { Ionicons } from "@expo/vector-icons";
 
-
-
 WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginPage() {
@@ -30,9 +28,6 @@ export default function LoginPage() {
     androidClientId: "872073890696-e96q462alifn6hemd1rtb3us5bfng5a4.apps.googleusercontent.com"
   });
   const imagePaths = ['../assets/hero_reader.jpg','../assets/hero_reel.jpg','../assets/hero_stack.jpg']
-  console.log("Entering Categories")
-
-
   const goHome = (userObj) => {
     if (userObj.email == "NO ACCOUNT"){ // DEFAULT USER: {email: "NO ACCOUNT"}
       userObj = {email: "ilikesomensalad@gmail.com", given_name: "Kai W", id: "109514402886947340000", locale: "en", name: "Kai W", picture: "https://lh3.googleusercontent.com/a/AGNmyxZcrle_Ah-6rioWIXRN_0eZEbTfoFWcaPEs9zeaSg=s96-c", verified_email: true};

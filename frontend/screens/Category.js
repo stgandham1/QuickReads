@@ -8,6 +8,7 @@ export default function Category() {
   const [keyword, setKeyword] = useState(""); //Keyword to Search.
   const [catlist, setCatlist] = useState([]); //User's categories
   const [objlist, setObjlist] = useState([]); //User's categories
+  const [refresh, setRefresh] = React.useState(false);
 
   let accessToken = global.id; 
   let root ="http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; // SHOULD BE SAME ON ALL PAGES: MAKE GLOBAL?
@@ -73,6 +74,13 @@ export default function Category() {
       getUserCategories();
   }
 
+  useEffect(() => {
+    async function wait() {
+      getUserCategories();
+    }
+    wait();
+  }, []);
+
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView style={styles.inputContainer} behavior="padding">
@@ -119,12 +127,12 @@ export default function Category() {
         />
       </View>
       <View style={{marginBottom:"5"}}>
-        <Button
+        {/* <Button
             color="#134F5C"
             title="Refresh"
             onPress={getUserCategories}
             marginBottom={5}
-        ></Button>
+        ></Button> */}
       </View>
     </View >    
   );

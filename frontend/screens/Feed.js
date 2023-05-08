@@ -11,6 +11,8 @@ import { globalStyles } from "../styles/global";
 import { articles } from "../articles";
 import { FontAwesome } from "@expo/vector-icons";
 import { AccessTokenRequest } from "expo-auth-session";
+import SelectDropdown from "react-native-select-dropdown";
+
 
 export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState([]);
@@ -20,6 +22,23 @@ export default function Feed({ navigation }) {
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
   let accessToken = global.id; 
   let userLength = "longsummary"
+  const [catlist, setCatlist] = useState([])
+  async function getUserCategories() {
+    console.log(root+"/getcategory/"+accessToken); 
+    const request = await fetch(root+"/getcategory/"+accessToken, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseJSON) => {
+        let cats = responseJSON;
+        setCatlist((oldArr) => [...cats, "-All Categories-"]);
+      })
+      .catch();
+    return catlist;
+  }
+
   console.log("Entering Feed")
   const addToBookmark = (url) => {
     setselectedBookmark((preText) => {
@@ -108,10 +127,12 @@ export default function Feed({ navigation }) {
       return [];
     });
   };
+  
   useEffect(() => {
     async function wait() {
       refreshArticles();
       refreshBookmark();
+      getUserCategories();
       setRefresh(!refresh);
     }
     wait();
@@ -119,6 +140,37 @@ export default function Feed({ navigation }) {
   // deleting all the articles
   async function refreshArticles() {
     const articleRequest = await fetch(root + "/getarticles/" + accessToken, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseJSON) => {
+        //console.log(responseJSON);
+        deleteHandler();
+        for (var key in responseJSON) {
+          submitHandler({
+            title: responseJSON[key]["title"],
+            summary: responseJSON[key][userLength],
+            tags: ["tag1", "tag2", "tag3"],
+            key: key,
+            imgURL: responseJSON[key]["imageurl"],
+            newsurl: responseJSON[key]["newsurl"],
+            shouldShow: false,
+            isSelected: false,
+          });
+        }
+      })
+      .catch();
+  }
+
+  async function refreshCategoryArticles(cat) {
+    if (cat=="-All Categories-") { //RETURN IF SEE ALL IS SELECTED
+      refreshArticles();
+      return;
+    }
+    console.log(root + "/getarticlesbycategory/" + cat)
+    const articleRequest = await fetch(root + "/getarticlesbycategory/" + cat, {
       method: "GET",
     })
       .then((response) => {
@@ -168,6 +220,40 @@ export default function Feed({ navigation }) {
 
   return (
     <View style={globalStyles.container}>
+        <Text>Sort by:</Text>
+        <SelectDropdown
+          data={catlist}
+          defaultValueByIndex={2}
+          defaultValue={"-All Categories-"}
+          onSelect={(selectedItem, index) => {
+            console.log(selectedItem, index);
+            refreshCategoryArticles(selectedItem);
+            //then tell backend languange changing
+          }}
+          defaultButtonText={"-All Categories-"}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            return selectedItem;
+          }}
+          rowTextForSelection={(item, index) => {
+            return item;
+          }}
+          buttonStyle={globalStyles.dropdown1BtnStyle}
+          buttonTextStyle={globalStyles.dropdown1BtnTxtStyle}
+          renderDropdownIcon={(isOpened) => {
+            return (
+              <FontAwesome
+                name={isOpened ? "chevron-up" : "chevron-down"}
+                color={"#444"}
+                size={18}
+              />
+            );
+          }}
+          dropdownIconPosition={"right"}
+          dropdownStyle={globalStyles.dropdown1DropdownStyle}
+          rowStyle={globalStyles.dropdown1RowStyle}
+          rowTextStyle={globalStyles.dropdown1RowTxtStyle}
+        />
+
       <FlatList
         data={reviews}
         renderItem={({ item }) => (
