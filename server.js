@@ -145,7 +145,31 @@ app.get('/', async (req,res) => {
       res.status(500).send('Server Error');
     }
   });
+  
+  app.post('/updatelang', async (req, res) => {
+    try {
+      let id = req.body.id
+      let lang = req.body.lang
 
+  
+      if (!id || !lang) {
+        return res.status(400).json({ error: 'Missing required fields: id and lang' });
+      }
+  
+      const updateQuery = `
+        UPDATE public.authorization
+        SET lang = $1
+        WHERE id = $2;
+      `;
+  
+      await pool.query(updateQuery, [lang, id]);
+      res.status(200).json({ message: `Lang successfully updated for id: ${id}` });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+  
 app.get('/addarticles', async (req,res) => {
   try{
     let results = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
