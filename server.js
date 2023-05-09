@@ -256,7 +256,7 @@ app.get('/', async (req,res) => {
       const { id, country } = req.body;
       console.log(id,country)
       await pool.query("UPDATE public.country SET country = $1 WHERE id = $2", [country, id]);
-      res.send("Updated successfully");
+      res.send(req.body);
     } catch (error) {
       console.error(error);
       res.status(500).send(error);
