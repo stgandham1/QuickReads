@@ -42,6 +42,49 @@ app.get('/', async (req,res) => {
     res.send("Welcome to the Quickreads")
   });
 
+  app.post('/auth', async (req, res) => {
+
+    let id = req.body.id
+    let email = req.body.email
+    let name = req.body.name
+  
+    if (!id || !email || !name) {
+      return res.status(400).json({ error: 'Invalid data received from Google' });
+    }
+  
+    try {
+    
+      const userQuery = 'SELECT * FROM public.authorization WHERE id = $1';
+      const { rows } = await pool.query(userQuery, [id]);
+  
+      let user;
+  
+      if (rows.length === 0) {
+        await pool.query("INSERT INTO public.categories(id) VALUES ($1)", [id]);
+        await pool.query("INSERT INTO public.country(id,country) VALUES ($1)", [id,"en"]);
+        await pool.query("INSERT INTO public.blacklist(id) VALUES ($1)",[id])
+        await pool.query
+        const insertQuery =
+          'INSERT INTO  public.authorization (id, email, name) VALUES ($1, $2, $3) RETURNING *';
+        const result = await pool.query(insertQuery, [
+          id,
+          email,
+          name,
+        ]);
+        user = result.rows[0];
+      } else {
+       
+        user = rows[0];
+      }
+  
+     
+      
+      res.status(200).json({ message: 'User signed in successfully', user });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'An error occurred while processing the request' });
+    }
+  });
 
   const runPrompt = async (url) => {
     const prompt = `
@@ -195,140 +238,16 @@ app.get('/', async (req,res) => {
     }
   });
   
-app.get('/addarticles', async (req,res) => {
-  try{
-    let results = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
-    var a = results["rows"];
-    var categories = [];
-    for (var i = 0; i < a.length; i++) {
-      categories.push(a[i].category);
-    }
-    let articles = []
-  //   categories.forEach(element => {
-  //   fetchArticles(element).then(result => {
-  //     articles.concat(result)
-  //   }).catch(error => {
-  //     console.error(error);
-  //   });
-  // });
-  // fetchArticles("Finance").then(result => {
-  //       articles.concat(result)
-  //       res.send(result)
-  //       console.log(result)
-  //     })
-  res.send(articles);
-} catch{
-  console.error(error);
-  res.send(error);
-}
 
-});
-
-
-
-  app.post('/adduserpost', async (req, res) => {
-    const { username, password } = req.body;
-    try {
-      await pool.query("INSERT INTO public.authentication (username, password) VALUES ($1,$2)", [username,password])
-      await pool.query("INSERT INTO public.categories (username) VALUES ($1)", [username])
-      res.send('User created');
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Server error');
-    }
-  });
-
-  // Check if the username and password are correct
-app.get('/checkuser/:username/:password', async (req,res) => {
-    let results = await pool.query("SELECT * FROM public.authentication WHERE username = $1", [req.params.username])
-    if (results.rowCount == 0){
-      console.log("false")
-      res.json({status: false, message: "Username does not exist"})
-    }else  if (results.rows[0].password == req.params.password){
-      console.log("true")
-      res.json({status: true, message: "User exists and password matches"})
-
-    }else{
-      console.log("false")
-      res.json({status: false, message: "Username does not exist"})
-    }
-    
-  });
-
-  app.get('/checkuserpost/:username/:password', async (req, res) => {
-    try {
-      const results = await pool.query("SELECT * FROM public.authentication WHERE username = $1", [req.params.username]);
-      if (results.rowCount == 0) {
-        console.log("false");
-        res.json({ status: false, message: "Username does not exist" });
-      } else if (results.rows[0].password == req.params.password) {
-        console.log("true");
-        res.json({ status: true, message: "User exists and password matches" });
-      } else {
-        console.log("false");
-        res.json({ status: false, message: "Invalid password" });
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Server error');
-    }
-  });
-
-
-
-  app.post('/auth', async (req, res) => {
-
-    let id = req.body.id
-    let email = req.body.email
-    let name = req.body.name
-  
-    if (!id || !email || !name) {
-      return res.status(400).json({ error: 'Invalid data received from Google' });
-    }
-  
-    try {
-    
-      const userQuery = 'SELECT * FROM public.authorization WHERE id = $1';
-      const { rows } = await pool.query(userQuery, [id]);
-  
-      let user;
-  
-      if (rows.length === 0) {
-        await pool.query("INSERT INTO public.categories(id) VALUES ($1)", [id]);
-        await pool.query("INSERT INTO public.country(id,country) VALUES ($1)", [id,"en"]);
-        const insertQuery =
-          'INSERT INTO  public.authorization (id, email, name) VALUES ($1, $2, $3) RETURNING *';
-        const result = await pool.query(insertQuery, [
-          id,
-          email,
-          name,
-        ]);
-        user = result.rows[0];
-      } else {
-       
-        user = rows[0];
-      }
-  
-     
-      
-      res.status(200).json({ message: 'User signed in successfully', user });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: 'An error occurred while processing the request' });
-    }
-  });
   
   // Remove category
 
-  app.post('/removecategorypost', async (req, res) => {
-    try {
-      const { id, category } = req.body;
-      await pool.query("UPDATE public.categories SET category = category - $2 WHERE id = $1", [id, category]);
-      res.send("Deleted category");
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Server error');
-    }
+
+
+
+  app.get('/getcountry/:id', async (req,res) => {
+    let results = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
+    res.send(results["rows"][0]);
   });
 
   app.post('/changecountry/', async (req, res) => {
@@ -360,41 +279,17 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     }
   });
 
-  // Add Category
-  app.get('/addcategory/:username/:category', async (req,res) => {
-    const { username, category } = req.params;
-      const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE username=$1", [username]);
-      let currentCategories = currentCategoriesResult.rows[0].category;
-      currentCategories.push(category);
-      await pool.query("UPDATE public.categories SET category = $1 WHERE username = $2", [JSON.stringify(currentCategories), username]);
-      res.send(currentCategories)
-      
-  });
-
-  app.post('/ask', async (req, res) => {
+  // Remove categories
+  app.post('/removecategorypost', async (req, res) => {
     try {
-      const question = req.body.question;
-  
-      const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
-        prompt: question,
-        max_tokens: 150,
-        n: 1,
-        stop: ['\n']
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ${process.env.OPENAI_API_KEY}'
-        }
-      });
-  
-      const answer = response.data.choices[0].text.trim();
-      res.send(answer);
+      const { id, category } = req.body;
+      await pool.query("UPDATE public.categories SET category = category - $2 WHERE id = $1", [id, category]);
+      res.send("Deleted category");
     } catch (error) {
       console.error(error);
-      res.status(500).send(error);
+      res.status(500).send('Server error');
     }
   });
-
 
   // Get Categories
   app.get('/getcategory/:id', async (req,res) => {
@@ -402,15 +297,6 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     res.send(results["rows"][0]["category"]);
   });
 
-  app.get('/getcategories', async (req,res) => {
-    let results = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
-    var a = results["rows"];
-    var valuesOnly = [];
-    for (var i = 0; i < a.length; i++) {
-      valuesOnly.push(a[i].category);
-    }
-    res.send(valuesOnly);
-  });
 
   // Receives article info based on category info
   app.get('/getarticles/:id', async (req,res) => {
@@ -493,25 +379,6 @@ app.get('/checkuser/:username/:password', async (req,res) => {
     } catch (error) {
       console.error(error);
       res.status(500).send('Server error');
-    }
-  });
-
-  app.get('/stubtestinggetbookmarks/', async (req,res) => {
-    let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", ['accountName']);
-    res.send(results.rows); 
-  });
-
-  // black box test for duplicate entries
-  app.post('/blackboxtestingaddbookmarkpost', async (req, res) => {
-    try {
-      const { username, url } = req.body;
-      await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [username,url]);
-      await pool.query("INSERT INTO public.bookmarks(username,url) VALUES ($1,$2)", [username,url]);
-      let results = await pool.query("SELECT url from public.bookmarks WHERE username = $1", [username]);
-      res.send(results.rows); 
-    } catch (error) {
-      console.error(error);
-      res.status(500).send(error);
     }
   });
 
