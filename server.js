@@ -253,7 +253,7 @@ app.get('/', async (req,res) => {
   app.post('/changecountry/', async (req, res) => {
     try {
       const { id, country } = req.body;
-      await pool.query("UPDATE public.changecountry SET country = $1 WHERE id = $2", [country, id]);
+      await pool.query("UPDATE public.country SET country = $1 WHERE id = $2", [country, id]);
       res.send("Updated successfully");
     } catch (error) {
       console.error(error);
