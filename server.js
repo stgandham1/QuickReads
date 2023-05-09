@@ -247,7 +247,7 @@ app.get('/', async (req,res) => {
 
   app.get('/getcountry/:id', async (req,res) => {
     let results = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
-    res.send(results["rows"][0]);
+    res.send(results["rows"][0]["country"]);
   });
 
   app.post('/changecountry/', async (req, res) => {
