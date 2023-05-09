@@ -250,18 +250,17 @@ app.get('/', async (req,res) => {
     res.send(results["rows"][0]["country"]);
   });
 
-  app.post('/changecountry/', async (req, res) => {
+  app.post('/changecountry', async (req, res) => {
     try {
-      console.log(req.body)
-      const { id, country } = req.body;
-      console.log(id,country)
+      let id = req.body.id
+      let country = req.body.country
       await pool.query("UPDATE public.country SET country = $1 WHERE id = $2", [country, id]);
-      res.send(req.body);
+      res.send("Updated successfully");
     } catch (error) {
       console.error(error);
       res.status(500).send(error);
     }
-  });
+  }); 
 
 
   // Add Category
