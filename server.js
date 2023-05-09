@@ -145,7 +145,32 @@ app.get('/', async (req,res) => {
       res.status(500).send('Server Error');
     }
   });
+  app.get('/getlang/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
   
+      if (!id) {
+        return res.status(400).json({ error: 'Missing required field: id' });
+      }
+  
+      const selectQuery = `
+        SELECT lang
+        FROM public.authorization
+        WHERE id = $1;
+      `;
+  
+      const result = await pool.query(selectQuery, [id]);
+  
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: `No record found for id: ${id}` });
+      }
+  
+      res.status(200).json({ id, lang: result.rows[0].lang });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
   app.post('/updatelang', async (req, res) => {
     try {
       let id = req.body.id
