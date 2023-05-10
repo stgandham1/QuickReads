@@ -183,7 +183,7 @@ export default function Feed({ navigation }) {
           submitHandler({
             title: responseJSON[key]["title"],
             summary: responseJSON[key][userLength],
-            tags: ["tag1", "tag2", "tag3"],
+            tags: responseJSON[key]["category"],
             key: key,
             imgURL: responseJSON[key]["imageurl"],
             newsurl: responseJSON[key]["newsurl"],
@@ -278,13 +278,25 @@ export default function Feed({ navigation }) {
               {item.shouldShow ? (
                 <View>
                   <Text variant="titleLarge">{item.summary}</Text>
+                  <FlatList
+                    horizontal={false}
+                    numColumns={10}
+                    data={[item.tags]}
+                    keyExtractor={(item, index) => index.toString()}
+                    //contentContainerStyle={globalStyles.scrollTags}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity style={{ padding: 5 }}>
+                        <Text style={globalStyles.tagText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
                   <TouchableOpacity
                     style={{ flexDirection: "row", justifyContent: "flex-end" }}
                   >
                     {!item.isSelected ? (
                       <FontAwesome
                         name="bookmark-o"
-                        size={30}
+                        size={45}
                         color="#134F5C"
                         backgroundColor="transparent"
                         borderRadius={10}
@@ -297,7 +309,7 @@ export default function Feed({ navigation }) {
                     ) : (
                       <FontAwesome
                         name="bookmark"
-                        size={30}
+                        size={45}
                         color="#134F5C"
                         backgroundColor="transparent"
                         borderRadius={10}

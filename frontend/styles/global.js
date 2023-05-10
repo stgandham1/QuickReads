@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 
 export const globalStyles = StyleSheet.create({
   container: {
-    backgroundColor: '#fafafa',
+    backgroundColor: "#fafafa",
     flex: 1,
     padding: 20,
   },
@@ -31,7 +31,7 @@ export const globalStyles = StyleSheet.create({
   },
   tagText: {
     backgroundColor: "#f5f5dc",
-    fontSize: 20,
+    fontSize: 25,
     padding: 10,
     borderRadius: 100,
   },
@@ -53,16 +53,26 @@ export const globalStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#444",
   },
-  dropdown1BtnTxtStyle: { color: "#444", textAlign: "left" },
+  dropdown1BtnTxtStyle: {
+    color: "#444",
+    textAlign: "left",
+    fontSize: 25,
+    fontFamily: "n-bold",
+  },
   dropdown1DropdownStyle: { backgroundColor: "#EFEFEF" },
   dropdown1RowStyle: {
     backgroundColor: "#EFEFEF",
     borderBottomColor: "#C5C5C5",
   },
-  dropdown1RowTxtStyle: { color: "#444", textAlign: "left" },
+  dropdown1RowTxtStyle: {
+    color: "#444",
+    textAlign: "left",
+    fontSize: 25,
+    fontFamily: "n-regular",
+  },
   // NATHANIEL BUTTONS //
   newsCard: {
-    backgroundColor: "#f2f7f7"
+    backgroundColor: "#f2f7f7",
   },
   input: {
     backgroundColor: "white",
@@ -72,7 +82,7 @@ export const globalStyles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     color: "grey",
-  }, 
+  },
   outlinedButton: {
     borderRadius: 10,
     backgroundColor: "#eeebf2",
@@ -82,8 +92,8 @@ export const globalStyles = StyleSheet.create({
     borderColor: "grey",
     borderWidth: 1,
     marginTop: 10,
-    textAlign:'center',
-    alignItems:'center'
+    textAlign: "center",
+    alignItems: "center",
   },
   filledButton: {
     borderRadius: 5,
