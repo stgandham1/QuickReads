@@ -13,19 +13,18 @@ import { FontAwesome } from "@expo/vector-icons";
 import { AccessTokenRequest } from "expo-auth-session";
 import SelectDropdown from "react-native-select-dropdown";
 
-
 export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState([]);
   const [refresh, setRefresh] = React.useState(false);
   const [selectedBookmark, setselectedBookmark] = useState([]);
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
-  let accessToken = global.id; 
-  let userLength = "longsummary"
-  const [catlist, setCatlist] = useState([])
+  let accessToken = global.id;
+  let userLength = "longsummary";
+  const [catlist, setCatlist] = useState([]);
   async function getUserCategories() {
-    console.log(root+"/getcategory/"+accessToken); 
-    const request = await fetch(root+"/getcategory/"+accessToken, {
+    console.log(root + "/getcategory/" + accessToken);
+    const request = await fetch(root + "/getcategory/" + accessToken, {
       method: "GET",
     })
       .then((response) => {
@@ -39,7 +38,7 @@ export default function Feed({ navigation }) {
     return catlist;
   }
 
-  console.log("Entering Feed")
+  console.log(accessToken);
   const addToBookmark = (url) => {
     setselectedBookmark((preText) => {
       return [url, ...preText];
@@ -127,7 +126,7 @@ export default function Feed({ navigation }) {
       return [];
     });
   };
-  
+
   useEffect(() => {
     async function wait() {
       refreshArticles();
@@ -152,7 +151,7 @@ export default function Feed({ navigation }) {
           submitHandler({
             title: responseJSON[key]["title"],
             summary: responseJSON[key][userLength],
-            tags: ["tag1", "tag2", "tag3"],
+            tags: responseJSON[key]["category"],
             key: key,
             imgURL: responseJSON[key]["imageurl"],
             newsurl: responseJSON[key]["newsurl"],
@@ -165,11 +164,12 @@ export default function Feed({ navigation }) {
   }
 
   async function refreshCategoryArticles(cat) {
-    if (cat=="-All Categories-") { //RETURN IF SEE ALL IS SELECTED
+    if (cat == "-All Categories-") {
+      //RETURN IF SEE ALL IS SELECTED
       refreshArticles();
       return;
     }
-    console.log(root + "/getarticlesbycategory/" + cat)
+    console.log(root + "/getarticlesbycategory/" + cat);
     const articleRequest = await fetch(root + "/getarticlesbycategory/" + cat, {
       method: "GET",
     })
@@ -220,39 +220,39 @@ export default function Feed({ navigation }) {
 
   return (
     <View style={globalStyles.container}>
-        <Text>Sort by:</Text>
-        <SelectDropdown
-          data={catlist}
-          defaultValueByIndex={2}
-          defaultValue={"-All Categories-"}
-          onSelect={(selectedItem, index) => {
-            console.log(selectedItem, index);
-            refreshCategoryArticles(selectedItem);
-            //then tell backend languange changing
-          }}
-          defaultButtonText={"-All Categories-"}
-          buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
-          }}
-          rowTextForSelection={(item, index) => {
-            return item;
-          }}
-          buttonStyle={globalStyles.dropdown1BtnStyle}
-          buttonTextStyle={globalStyles.dropdown1BtnTxtStyle}
-          renderDropdownIcon={(isOpened) => {
-            return (
-              <FontAwesome
-                name={isOpened ? "chevron-up" : "chevron-down"}
-                color={"#444"}
-                size={18}
-              />
-            );
-          }}
-          dropdownIconPosition={"right"}
-          dropdownStyle={globalStyles.dropdown1DropdownStyle}
-          rowStyle={globalStyles.dropdown1RowStyle}
-          rowTextStyle={globalStyles.dropdown1RowTxtStyle}
-        />
+      <Text>Sort by:</Text>
+      <SelectDropdown
+        data={catlist}
+        defaultValueByIndex={2}
+        defaultValue={"-All Categories-"}
+        onSelect={(selectedItem, index) => {
+          console.log(selectedItem, index);
+          refreshCategoryArticles(selectedItem);
+          //then tell backend languange changing
+        }}
+        defaultButtonText={"-All Categories-"}
+        buttonTextAfterSelection={(selectedItem, index) => {
+          return selectedItem;
+        }}
+        rowTextForSelection={(item, index) => {
+          return item;
+        }}
+        buttonStyle={globalStyles.dropdown1BtnStyle}
+        buttonTextStyle={globalStyles.dropdown1BtnTxtStyle}
+        renderDropdownIcon={(isOpened) => {
+          return (
+            <FontAwesome
+              name={isOpened ? "chevron-up" : "chevron-down"}
+              color={"#444"}
+              size={18}
+            />
+          );
+        }}
+        dropdownIconPosition={"right"}
+        dropdownStyle={globalStyles.dropdown1DropdownStyle}
+        rowStyle={globalStyles.dropdown1RowStyle}
+        rowTextStyle={globalStyles.dropdown1RowTxtStyle}
+      />
 
       <FlatList
         data={reviews}

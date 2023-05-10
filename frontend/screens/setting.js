@@ -1,16 +1,86 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Button, TouchableOpacity } from "react-native";
 import { globalStyles } from "../styles/global";
 import { useNavigation } from "@react-navigation/native";
 import SelectDropdown from "react-native-select-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
 export default function About() {
-  const navigation = useNavigation();
-  const [language, setLanguage] = useState("en");
-
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
+  let accessToken = global.id;
+  const [chosenLang, setChosenLang] = useState("");
+  const [chosenCountry, setChosenCountry] = useState("");
+  async function getLang() {
+    console.log(root + "/getlang/" + accessToken);
+    const request = await fetch(root + "/getlang/" + accessToken, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseJSON) => {
+        setChosenLang(responseJSON["lang"]);
+      })
+      .catch();
+  }
 
+  async function getCountry() {
+    console.log(root + "/getcountry/" + accessToken);
+    const request = await fetch(root + "/getcountry/" + accessToken, {
+      method: "GET",
+    })
+      .then((response) => {
+        console.log(response);
+        return response.json();
+      })
+      .then((responseJSON) => {
+        console.log(responseJSON);
+        //setChosenCountry(responseJSON);
+      })
+      .catch();
+  }
+
+  async function addLangToBackend(item) {
+    const body = { id: accessToken, url: item };
+    try {
+      const response = await fetch(root + "/updatelang", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error occurred:", error.message);
+    }
+  }
+
+  async function addCountryToBackend(item) {
+    const body = { id: accessToken, url: item };
+    try {
+      const response = await fetch(root + "/changecountry", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error occurred:", error.message);
+    }
+  }
+
+  useEffect(() => {
+    getLang();
+    getCountry();
+  }, []);
+  const navigation = useNavigation();
   const pressHandler = () => {
     navigation.replace("Login");
   };
@@ -18,7 +88,7 @@ export default function About() {
     navigation.navigate("Bookmark");
   };
   const [wordLength, setWordLength] = useState(2);
-  console.log("Entering Settings")
+  console.log("Entering Settings");
 
   const shortPress = () => {
     setWordLength(1);
@@ -32,52 +102,6 @@ export default function About() {
     setWordLength(3);
     console.log("choose long word length");
   };
-
-  async function changeLang(item) {
-    console.log("Changing Language")
-    const body = { id: global.id, lang: item };
-    console.log(body)
-    try {
-      const response = await fetch(root + "/updatelang", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
-      }
-      else {
-        // const responseData = response.json();
-        console.log(response);
-        console.log("Language Change Successful");
-        // goHome(userAuth);
-      }
-    } catch (error) {
-      console.error("Error occurred:", error.message);
-    }
-  }
-
-  const langHelper = () => {
-    getLanguage();
-    return language;
-  }
-
-  async function getLanguage() {
-    console.log('Getting Language')
-    const countryRequest = await fetch(root + "/getlang/" + global.id, {
-      method: "GET",
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((responseJSON) => {
-        console.log(responseJSON);
-      })
-      .catch();
-  }
-
   const countries = [
     "ar",
     "de",
@@ -95,7 +119,7 @@ export default function About() {
     "zh",
   ];
   return (
-    <View style={[globalStyles.container] }>
+    <View style={[globalStyles.container]}>
       <Text style={globalStyles.titleText}>Settings</Text>
       <Text>Current User: {global.name}</Text>
       <View style={{ flex: 0.1, marginBottom: 10 }}>
@@ -171,14 +195,48 @@ export default function About() {
       <Text style={globalStyles.homeText}>Choose Languange:</Text>
       <SelectDropdown
         data={countries}
-        defaultValueByIndex={2}
-        defaultValue={"en"}
+        //defaultValueByIndex={2}
+        defaultValue={chosenLang}
         onSelect={(selectedItem, index) => {
           console.log(selectedItem, index);
           //then tell backend languange changing
-          changeLang(selectedItem);
+          addCountryToBackend(selectedItem);
         }}
-        defaultButtonText={langHelper()}
+        defaultButtonText={"Select country"}
+        buttonTextAfterSelection={(selectedItem, index) => {
+          return selectedItem;
+        }}
+        rowTextForSelection={(item, index) => {
+          return item;
+        }}
+        buttonStyle={globalStyles.dropdown1BtnStyle}
+        buttonTextStyle={globalStyles.dropdown1BtnTxtStyle}
+        renderDropdownIcon={(isOpened) => {
+          return (
+            <FontAwesome
+              name={isOpened ? "chevron-up" : "chevron-down"}
+              color={"#444"}
+              size={18}
+            />
+          );
+        }}
+        dropdownIconPosition={"right"}
+        dropdownStyle={globalStyles.dropdown1DropdownStyle}
+        rowStyle={globalStyles.dropdown1RowStyle}
+        rowTextStyle={globalStyles.dropdown1RowTxtStyle}
+      />
+
+      <Text style={globalStyles.homeText}>{"\n"}Choose Country:</Text>
+      <SelectDropdown
+        data={countries}
+        //defaultValueByIndex={2}
+        defaultValue={chosenCountry}
+        onSelect={(selectedItem, index) => {
+          console.log(selectedItem, index);
+          //then tell backend languange changing
+          addLangToBackend(selectedItem);
+        }}
+        defaultButtonText={"Select country"}
         buttonTextAfterSelection={(selectedItem, index) => {
           return selectedItem;
         }}
