@@ -60,9 +60,7 @@ app.get('/', async (req,res) => {
       let user;
   
       if (rows.length === 0) {
-        await pool.query("INSERT INTO public.categories(id) VALUES ($1)", [id]);
-        await pool.query("INSERT INTO public.country(id,country) VALUES ($1)", [id,"en"]);
-        await pool.query("INSERT INTO public.blacklist(id) VALUES ($1)",[id])
+        
         await pool.query
         const insertQuery =
           'INSERT INTO  public.authorization (id, email, name) VALUES ($1, $2, $3) RETURNING *';
@@ -71,6 +69,8 @@ app.get('/', async (req,res) => {
           email,
           name,
         ]);
+        await pool.query("INSERT INTO public.categories(id) VALUES ($1)", [id]);
+        await pool.query("INSERT INTO public.country(id,country) VALUES ($1,$2)", [id,'en']);
         user = result.rows[0];
       } else {
        
