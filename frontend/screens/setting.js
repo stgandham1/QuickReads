@@ -6,6 +6,11 @@ import SelectDropdown from "react-native-select-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
 export default function About() {
   const navigation = useNavigation();
+  const [language, setLanguage] = useState("en");
+
+  const root =
+    "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
+
   const pressHandler = () => {
     navigation.replace("Login");
   };
@@ -27,6 +32,52 @@ export default function About() {
     setWordLength(3);
     console.log("choose long word length");
   };
+
+  async function changeLang(item) {
+    console.log("Changing Language")
+    const body = { id: global.id, lang: item };
+    console.log(body)
+    try {
+      const response = await fetch(root + "/updatelang", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+      else {
+        // const responseData = response.json();
+        console.log(response);
+        console.log("Language Change Successful");
+        // goHome(userAuth);
+      }
+    } catch (error) {
+      console.error("Error occurred:", error.message);
+    }
+  }
+
+  const langHelper = () => {
+    getLanguage();
+    return language;
+  }
+
+  async function getLanguage() {
+    console.log('Getting Language')
+    const countryRequest = await fetch(root + "/getlang/" + global.id, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseJSON) => {
+        console.log(responseJSON);
+      })
+      .catch();
+  }
+
   const countries = [
     "ar",
     "de",
@@ -125,8 +176,9 @@ export default function About() {
         onSelect={(selectedItem, index) => {
           console.log(selectedItem, index);
           //then tell backend languange changing
+          changeLang(selectedItem);
         }}
-        defaultButtonText={"Select country"}
+        defaultButtonText={langHelper()}
         buttonTextAfterSelection={(selectedItem, index) => {
           return selectedItem;
         }}
