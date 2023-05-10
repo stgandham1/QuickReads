@@ -30,7 +30,7 @@ export default function LoginPage() {
   const imagePaths = ['../assets/hero_reader.jpg','../assets/hero_reel.jpg','../assets/hero_stack.jpg']
   const goHome = (userObj) => {
     if (userObj.email == "NO ACCOUNT"){ // DEFAULT USER: {email: "NO ACCOUNT"}
-      userObj = {email: "ilikesomensalad@gmail.com", given_name: "Kai W", id: "109514402886947340000", locale: "en", name: "Kai W", picture: "https://lh3.googleusercontent.com/a/AGNmyxZcrle_Ah-6rioWIXRN_0eZEbTfoFWcaPEs9zeaSg=s96-c", verified_email: true};
+      userObj = {email: "ilikesomensalad@gmail.com", given_name: "Kai W", id: "101083061286096234844", locale: "en", name: "Kai W", picture: "https://lh3.googleusercontent.com/a/AGNmyxZcrle_Ah-6rioWIXRN_0eZEbTfoFWcaPEs9zeaSg=s96-c", verified_email: true};
     }
     global.id = userObj.id;
     global.name = userObj.name;
