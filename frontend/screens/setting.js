@@ -200,7 +200,7 @@ export default function About() {
         onSelect={(selectedItem, index) => {
           console.log(selectedItem, index);
           //then tell backend languange changing
-          addCountryToBackend(selectedItem);
+          addLangToBackend(selectedItem);
         }}
         defaultButtonText={"Select country"}
         buttonTextAfterSelection={(selectedItem, index) => {
@@ -234,7 +234,7 @@ export default function About() {
         onSelect={(selectedItem, index) => {
           console.log(selectedItem, index);
           //then tell backend languange changing
-          addLangToBackend(selectedItem);
+          addCountryToBackend(selectedItem);
         }}
         defaultButtonText={"Select country"}
         buttonTextAfterSelection={(selectedItem, index) => {
