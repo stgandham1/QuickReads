@@ -242,7 +242,7 @@ app.get('/', async (req,res) => {
   
   app.get('/getsummarylength/:id', async (req,res) => {
     let results = await pool.query("SELECT length from public.summarylength WHERE id = $1", [req.params.id]);
-    res.send(results["rows"][0]["country"]);
+    res.send(results["rows"][0]["length"]);
   });
 
   app.post('/changesummarylength', async (req, res) => {
