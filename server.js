@@ -70,7 +70,9 @@ app.get('/', async (req,res) => {
           name,
         ]);
         await pool.query("INSERT INTO public.categories(id) VALUES ($1)", [id]);
-        await pool.query("INSERT INTO public.country(id,country) VALUES ($1,$2)", [id,'en']);
+        await pool.query("INSERT INTO public.country(id,country) VALUES ($1,$2)", [id,"en"]);
+	await pool.query("INSERT INTO public.summarylength(id,length) VALUES ($1,$2)", [id,"medium"]);
+
         user = result.rows[0];
       } else {
        
@@ -238,6 +240,22 @@ app.get('/', async (req,res) => {
     }
   });
   
+  app.get('/getsummarylength/:id', async (req,res) => {
+    let results = await pool.query("SELECT length from public.summarylength WHERE id = $1", [req.params.id]);
+    res.send(results["rows"][0]["country"]);
+  });
+
+  app.post('/changesummarylength', async (req, res) => {
+    try {
+      let id = req.body.id
+      let length = req.body.country
+      await pool.query("UPDATE public.summarylength SET length = $1 WHERE id = $2", [length, id]);
+      res.send("Updated successfully");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+    }
+  }); 
 
   
   // Remove category
