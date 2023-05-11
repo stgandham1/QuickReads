@@ -41,7 +41,7 @@ export default function About() {
   }
 
   async function addLangToBackend(item) {
-    const body = { id: accessToken, url: item };
+    const body = { id: accessToken, lang: item };
     try {
       const response = await fetch(root + "/updatelang", {
         method: "POST",
@@ -59,7 +59,7 @@ export default function About() {
   }
 
   async function addCountryToBackend(item) {
-    const body = { id: accessToken, url: item };
+    const body = { id: accessToken, country: item };
     try {
       const response = await fetch(root + "/changecountry", {
         method: "POST",
