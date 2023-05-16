@@ -169,8 +169,8 @@ app.get('/', async (req,res) => {
   app.get('/temporary', async (req, res) => {
     try {
       
-      let res = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;");
-      a = res.rows
+      let b = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;");
+      a = b.rows
       let result = {};
 
       // Loop through each element in array a
