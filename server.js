@@ -169,8 +169,27 @@ app.get('/', async (req,res) => {
   app.get('/temporary', async (req, res) => {
     try {
       
-      let results = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;");
-      res.send(results.rows)
+      let a = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;");
+      let result = {};
+
+      // Loop through each element in array a
+      for(let i = 0; i < a.length; i++) {
+        let lang = a[i].lang;
+        let category = a[i].category;
+
+        // Add category to existing language key or create a new language key with the category
+        if(result[lang]) {
+          result[lang] = result[lang].concat(category);
+        } else {
+          result[lang] = category;
+        }
+      }
+
+      // Remove duplicates from each value in the object
+      for(let key in result) {
+        result[key] = [...new Set(result[key])];
+      }
+      res.send(result)
       // var a = results["rows"];
       // var categories = [];
       // for (var i = 0; i < a.length; i++) {
