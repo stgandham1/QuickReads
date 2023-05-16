@@ -248,7 +248,7 @@ app.get('/', async (req,res) => {
   app.post('/changesummarylength', async (req, res) => {
     try {
       let id = req.body.id
-      let length = req.body.country
+      let length = req.body.length
       await pool.query("UPDATE public.summarylength SET length = $1 WHERE id = $2", [length, id]);
       res.send("Updated successfully");
     } catch (error) {
@@ -376,7 +376,9 @@ app.get('/', async (req,res) => {
   
   app.get('/getblacklist/:id', async (req,res) => {
     let results = await pool.query("SELECT site from public.blacklist WHERE id = $1", [req.params.id]);
-    res.send(results.rows);
+    let temp = results.rows
+    let sites = temp.map(obj => obj.site)
+    res.send(sites);
   });
 
   app.post('/addblacklist', async (req, res) => {
