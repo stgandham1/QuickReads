@@ -240,17 +240,6 @@ app.get('/', async (req,res) => {
         }
         }
       }
-
-      for (const category of categories){
-        const searchResult = await doSearch(category); // Wait for doSearch() to complete
-        for (const article of searchResult) {
-          if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
-            continue
-          }
-          const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
-          await pool.query('INSERT INTO public.updatedarticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary) VALUES ($1,$2,$3,$4,$5,$6,$7);',[article.title,category,article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary]);
-        }
-      }
       res.send('Articles added successfully');  
     } catch(error) {
       console.error(error);
