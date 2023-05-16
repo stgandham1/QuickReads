@@ -10,6 +10,7 @@ export default function About() {
   let accessToken = global.id;
   const [chosenLang, setChosenLang] = useState("");
   const [chosenCountry, setChosenCountry] = useState("");
+  const [wordLength, setWordLength] = useState(2);
   async function getLang() {
     console.log(root + "/getlang/" + accessToken);
     const request = await fetch(root + "/getlang/" + accessToken, {
@@ -30,12 +31,32 @@ export default function About() {
       method: "GET",
     })
       .then((response) => {
-        console.log(response);
-        return response.json();
+        return response.text();
       })
       .then((responseJSON) => {
         console.log(responseJSON);
-        //setChosenCountry(responseJSON);
+        setChosenCountry(responseJSON);
+      })
+      .catch();
+  }
+  async function getLength() {
+    console.log(root + "/getsummarylength/" + accessToken);
+    const request = await fetch(root + "/getsummarylength/" + accessToken, {
+      method: "GET",
+    })
+      .then((response) => {
+        //console.log(response);
+        return response.text();
+      })
+      .then((responseJSON) => {
+        console.log(responseJSON);
+        if (responseJSON == "medium") {
+          setWordLength(2);
+        } else if (responseJSON == "long") {
+          setWordLength(3);
+        } else {
+          setWordLength(1);
+        }
       })
       .catch();
   }
@@ -76,9 +97,28 @@ export default function About() {
     }
   }
 
+  async function addLengthToBackend(item) {
+    const body = { id: accessToken, length: item };
+    try {
+      const response = await fetch(root + "/changesummarylength", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Error occurred:", error.message);
+    }
+  }
+
   useEffect(() => {
     getLang();
     getCountry();
+    getLength();
   }, []);
   const navigation = useNavigation();
   const pressHandler = () => {
@@ -87,19 +127,21 @@ export default function About() {
   const BookmarkPressHandler = () => {
     navigation.navigate("Bookmark");
   };
-  const [wordLength, setWordLength] = useState(2);
   console.log("Entering Settings");
 
   const shortPress = () => {
     setWordLength(1);
+    addLengthToBackend("short");
     console.log("choose short word length");
   };
   const mediumPress = () => {
     setWordLength(2);
+    addLengthToBackend("medium");
     console.log("choose medium word length");
   };
   const longPress = () => {
     setWordLength(3);
+    addLengthToBackend("long");
     console.log("choose long word length");
   };
   const countries = [

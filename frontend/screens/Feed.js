@@ -38,6 +38,30 @@ export default function Feed({ navigation }) {
     return catlist;
   }
 
+  async function getLength() {
+    console.log(root + "/getsummarylength/" + accessToken);
+    const request = await fetch(root + "/getsummarylength/" + accessToken, {
+      method: "GET",
+    })
+      .then((response) => {
+        //console.log(response);
+        return response.text();
+      })
+      .then((responseJSON) => {
+        console.log(responseJSON);
+        if (responseJSON == "medium") {
+          console.log("set length to mediun");
+          userLength = "mediumsummary";
+        } else if (responseJSON == "long") {
+          console.log("set length to long");
+          userLength = "longsummary";
+        } else {
+          console.log("set length to short");
+          userLength = "shortsummary";
+        }
+      })
+      .catch();
+  }
   console.log(accessToken);
   const addToBookmark = (url) => {
     setselectedBookmark((preText) => {
@@ -129,6 +153,8 @@ export default function Feed({ navigation }) {
 
   useEffect(() => {
     async function wait() {
+      getLength();
+      setRefresh(!refresh);
       refreshArticles();
       refreshBookmark();
       getUserCategories();
