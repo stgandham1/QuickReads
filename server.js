@@ -226,7 +226,7 @@ app.get('/', async (req,res) => {
       for(let key in result) {
         result[key] = [...new Set(result[key])];
       }
-      for(let lang in a) {
+      for(let lang in result) {
         // Get the value corresponding to the key and loop through it
         let categories = a[lang];
         for(let i = 0; i < categories.length; i++) {
