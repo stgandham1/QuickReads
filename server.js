@@ -166,6 +166,23 @@ app.get('/', async (req,res) => {
     }
   }
 
+  app.get('/temporary', async (req, res) => {
+    try {
+      
+      let results = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;");
+      res.send(results.rows[0])
+      // var a = results["rows"];
+      // var categories = [];
+      // for (var i = 0; i < a.length; i++) {
+      //   categories.push(a[i].category);
+      // }
+      // res.send('Articles added successfully');  
+    } catch(error) {
+      console.error(error);
+      res.status(500).send('Server Error');
+    }
+  });
+
   app.get('/addarticlestest', async (req, res) => {
     try {
       let results = await pool.query("SELECT DISTINCT jsonb_array_elements_text(category) AS category from public.categories");
