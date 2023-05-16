@@ -169,8 +169,8 @@ app.get('/', async (req,res) => {
   app.get('/temporary', async (req, res) => {
     try {
       
-      let results = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;");
-      res.send(results.rows[0])
+      let results = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;",[req.params.id]);
+      res.send(results.rows)
       // var a = results["rows"];
       // var categories = [];
       // for (var i = 0; i < a.length; i++) {
