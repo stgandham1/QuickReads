@@ -170,6 +170,7 @@ app.get('/', async (req,res) => {
     try {
       
       let a = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;");
+      res.send(a);
       let result = {};
 
       // Loop through each element in array a
