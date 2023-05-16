@@ -316,6 +316,7 @@ export default function Feed({ navigation }) {
                       </TouchableOpacity>
                     )}
                   />
+                  <Text variant="titleSmall">{item.newsurl}</Text>
                   <TouchableOpacity
                     style={{ flexDirection: "row", justifyContent: "flex-end" }}
                   >
