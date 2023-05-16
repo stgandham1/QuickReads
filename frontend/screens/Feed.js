@@ -5,6 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
   Button,
+  Linking
 } from "react-native";
 import { Avatar, Card, Text, List } from "react-native-paper";
 import { globalStyles } from "../styles/global";
@@ -304,52 +305,65 @@ export default function Feed({ navigation }) {
               {item.shouldShow ? (
                 <View>
                   <Text variant="titleLarge">{item.summary}</Text>
-                  <FlatList
-                    horizontal={false}
-                    numColumns={10}
-                    data={[item.tags]}
-                    keyExtractor={(item, index) => index.toString()}
-                    //contentContainerStyle={globalStyles.scrollTags}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity style={{ padding: 5 }}>
-                        <Text style={globalStyles.tagText}>{item}</Text>
-                      </TouchableOpacity>
-                    )}
-                  />
-                  <a target="_blank" href={item.newsurl}>{item.newsurl}</a>
-                  <TouchableOpacity
-                    style={{ flexDirection: "row", justifyContent: "flex-end" }}
-                  >
-                    {!item.isSelected ? (
-                      <FontAwesome
-                        name="bookmark-o"
+
+                  {/* <a target="_blank" href={item.newsurl}>{item.newsurl}</a> */}
+                  <Card.Actions>
+                    <FlatList
+                      horizontal={false}
+                      numColumns={10}
+                      data={[item.tags]}
+                      keyExtractor={(item, index) => index.toString()}
+                      //contentContainerStyle={globalStyles.scrollTags}
+                      renderItem={({ item }) => (
+                        <TouchableOpacity style={{ padding: 5 }}>
+                          <Text style={globalStyles.tagText}>{item}</Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                    <FontAwesome
+                        name="link"
                         size={45}
                         color="#134F5C"
                         backgroundColor="transparent"
                         borderRadius={10}
                         suppressHighlighting={false}
-                        onPress={() => {
-                          addBookmark(item);
-                          setRefresh(!refresh);
-                        }}
+                        onPress={() => {Linking.openURL(item.newsurl)}}
                       />
-                    ) : (
-                      <FontAwesome
-                        name="bookmark"
-                        size={45}
-                        color="#134F5C"
-                        backgroundColor="transparent"
-                        borderRadius={10}
-                        suppressHighlighting={false}
-                        onPress={() => {
-                          removeBookmark(item);
-                          setRefresh(!refresh);
-                        }}
-                      />
-                    )}
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ flexDirection: "row", justifyContent: "flex-end" }}
+                    >
+                      {!item.isSelected ? (
+                        <FontAwesome
+                          name="bookmark-o"
+                          size={45}
+                          color="#134F5C"
+                          backgroundColor="transparent"
+                          borderRadius={10}
+                          suppressHighlighting={false}
+                          onPress={() => {
+                            addBookmark(item);
+                            setRefresh(!refresh);
+                          }}
+                        />
+                      ) : (
+                        <FontAwesome
+                          name="bookmark"
+                          size={45}
+                          color="#134F5C"
+                          backgroundColor="transparent"
+                          borderRadius={10}
+                          suppressHighlighting={false}
+                          onPress={() => {
+                            removeBookmark(item);
+                            setRefresh(!refresh);
+                          }}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  </Card.Actions>
                 </View>
-              ) : null}
+                
+              ) : null}   
             </Card.Content>
           </Card>
         )}
