@@ -226,12 +226,11 @@ app.get('/', async (req,res) => {
       for(let key in result) {
         result[key] = [...new Set(result[key])];
       }
-      res.send(result)
       for(let lang in result) {
         // Get the value corresponding to the key and loop through it
-        let categories = a[lang];
+        let categories = result[lang];
         for(let i = 0; i < categories.length; i++) {
-          const searchResult = await doSearch(lang,category); // Wait for doSearch() to complete
+          const searchResult = await doSearch(lang,categories[i]); // Wait for doSearch() to complete
           for (const article of searchResult) {
             if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
               continue
