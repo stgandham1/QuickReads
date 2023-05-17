@@ -192,6 +192,7 @@ app.get('/', async (req,res) => {
       for(let key in result) {
         result[key] = [...new Set(result[key])];
       }
+      res.send(result)
       for(let lang in result) {
         // Get the value corresponding to the key and loop through it
         let categories = result[lang];
@@ -212,6 +213,82 @@ app.get('/', async (req,res) => {
       res.status(500).send('Server Error');
     }
   });
+
+  async function topfetchArticles() {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yearToday = today.getFullYear();
+    const monthToday = String(today.getMonth() + 1).padStart(2, '0');
+    const dayToday = String(today.getDate()).padStart(2, '0');
+    const todayFormatted = `${yearToday}-${monthToday}-${dayToday}`;
+    
+    const yearYesterday = yesterday.getFullYear();
+    const monthYesterday = String(yesterday.getMonth() + 1).padStart(2, '0');
+    const dayYesterday = String(yesterday.getDate()).padStart(2, '0');
+    const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
+    let arr = [];
+    try {
+      const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`);
+      const data = await response.json();
+      let articles = data.articles;
+      console.log("hi")
+      console.log(articles);
+      for(let i=0; i<5; i++) {
+        let shortSummary,mediumSummary,longSummary;
+        try {
+          const result = await runPrompt("en",articles[i].url);
+          shortSummary = result.shortSummary;
+          mediumSummary = result.mediumSummary;
+          longSummary = result.longSummary;
+        } catch(error) {
+          console.error(error);
+        }
+        arr.push({
+          title: articles[i].title,
+          category: "hi",
+          url: articles[i].url,
+          imageurl: articles[i].urlToImage,
+          shortsummary: shortSummary,
+          mediumsummary: mediumSummary,
+          longsummary: longSummary
+        });
+      }
+      return arr;
+    } catch(error) {
+      console.error(error);
+      throw error; // re-throw the error so that it can be caught by an outer try/catch block if necessary
+    }
+  }
+  
+  async function topdoSearch() {
+    try {
+      const result = await topfetchArticles();
+      return result;
+    } catch (error) {
+      console.error(error);
+      throw error; // re-throw the error so that it can be caught by an outer try/catch block if necessary
+    }
+  }
+
+  app.get('/addtoparticlestest', async (req, res) => {
+    try {
+          const searchResult = await topdoSearch();
+          for (const article of searchResult) {
+            if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
+              continue
+            }
+            const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
+            await pool.query('INSERT INTO public.toparticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary,lang) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);',[article.title,"None",article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary,"en"]);
+        }
+      res.send('Articles added successfully');  
+    } catch(error) {
+      console.error(error);
+      res.status(500).send('Server Error');
+    }
+  });
+
+
   app.get('/getlang/:id', async (req, res) => {
     try {
       const { id } = req.params;
@@ -330,6 +407,16 @@ app.get('/', async (req,res) => {
       console.error(error);
       res.status(500).send('Server error');
     }
+  });
+
+  app.get('/gettoparticles', async (req,res) => {
+    let temp = await pool.query("SELECT * from public.toparticles");
+    let responseList = []
+    
+    for (r of temp.rows){
+      responseList.push({title: r.title,category:r.category, newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
+    }
+    res.json(responseList)
   });
 
   // Get Categories

@@ -5,6 +5,7 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
+  Linking,
 } from "react-native";
 import { globalStyles } from "../styles/global";
 import { articles } from "../articles";
@@ -63,7 +64,14 @@ export default function Bookmark({ navigation }) {
       <FlatList
         data={bookmark}
         renderItem={({ item }) => (
-          <Text style={globalStyles.homeText}>{item.url}</Text>
+          <TouchableOpacity
+            style={globalStyles.homeText}
+            onPress={() => {
+              Linking.openURL(item.url);
+            }}
+          >
+            {item.url}
+          </TouchableOpacity>
         )}
         ItemSeparatorComponent={() => <View style={{ height: 30 }} />}
       />
