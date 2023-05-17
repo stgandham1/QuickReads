@@ -248,39 +248,47 @@ export default function Feed({ navigation }) {
   return (
     <View style={globalStyles.container}>
       <Text>Sort by:</Text>
-      <SelectDropdown
-        data={catlist}
-        defaultValueByIndex={2}
-        defaultValue={"-All Categories-"}
-        onSelect={(selectedItem, index) => {
-          console.log(selectedItem, index);
-          refreshCategoryArticles(selectedItem);
-          //then tell backend languange changing
-        }}
-        defaultButtonText={"-All Categories-"}
-        buttonTextAfterSelection={(selectedItem, index) => {
-          return selectedItem;
-        }}
-        rowTextForSelection={(item, index) => {
-          return item;
-        }}
-        buttonStyle={globalStyles.dropdown1BtnStyle}
-        buttonTextStyle={globalStyles.dropdown1BtnTxtStyle}
-        renderDropdownIcon={(isOpened) => {
-          return (
-            <FontAwesome
-              name={isOpened ? "chevron-up" : "chevron-down"}
-              color={"#444"}
-              size={18}
-            />
-          );
-        }}
-        dropdownIconPosition={"right"}
-        dropdownStyle={globalStyles.dropdown1DropdownStyle}
-        rowStyle={globalStyles.dropdown1RowStyle}
-        rowTextStyle={globalStyles.dropdown1RowTxtStyle}
-      />
-
+        <SelectDropdown
+          data={catlist}
+          defaultValueByIndex={2}
+          defaultValue={"-All Categories-"}
+          onSelect={(selectedItem, index) => {
+            console.log(selectedItem, index);
+            refreshCategoryArticles(selectedItem);
+            //then tell backend languange changing
+          }}
+          defaultButtonText={"-All Categories-"}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            return selectedItem;
+          }}
+          rowTextForSelection={(item, index) => {
+            return item;
+          }}
+          buttonStyle={globalStyles.dropdown1BtnStyle}
+          buttonTextStyle={globalStyles.dropdown1BtnTxtStyle}
+          renderDropdownIcon={(isOpened) => {
+            return (
+              <FontAwesome
+                name={isOpened ? "chevron-up" : "chevron-down"}
+                color={"#444"}
+                size={18}
+              />
+            );
+          }}
+          dropdownIconPosition={"right"}
+          dropdownStyle={globalStyles.dropdown1DropdownStyle}
+          rowStyle={globalStyles.dropdown1RowStyle}
+          rowTextStyle={globalStyles.dropdown1RowTxtStyle}
+        />
+        {/* <FontAwesome
+            name="refresh"
+            size={45}
+            color="#134F5C"
+            backgroundColor="transparent"
+            borderRadius={10}
+            suppressHighlighting={false}
+            onPress={() => {console.log("refresh"); refreshArticles();}}
+        /> */}
       <FlatList
         data={reviews}
         renderItem={({ item }) => (

@@ -119,7 +119,7 @@ export default function Feed({ navigation }) {
   }, []);
   // deleting all the articles
   async function refreshArticles() {
-    const articleRequest = await fetch(root + "/gettopnews/" + accessToken, {
+    const articleRequest = await fetch(root + "/gettoparticles/", {
       method: "GET",
     })
       .then((response) => {
@@ -132,7 +132,6 @@ export default function Feed({ navigation }) {
           submitHandler({
             title: responseJSON[key]["title"],
             summary: responseJSON[key][userLength],
-            tags: ["tag1", "tag2", "tag3"],
             key: key,
             imgURL: responseJSON[key]["imageurl"],
             newsurl: responseJSON[key]["newsurl"],
@@ -187,45 +186,59 @@ export default function Feed({ navigation }) {
                 setRefresh(!refresh);
               }}
             >
-              <Card.Cover source={{ uri: item.imgURL }} />
+              <Card.Cover borderRadius={0} source={{ uri: item.imgURL }} />
             </TouchableOpacity>
             <Card.Content>
               {item.shouldShow ? (
                 <View>
-                  <Text variant="titleLarge">{item.content}</Text>
-                  <TouchableOpacity
-                    style={{ flexDirection: "row", justifyContent: "flex-end" }}
-                  >
-                    {!item.isSelected ? (
-                      <FontAwesome
-                        name="bookmark-o"
-                        size={30}
+                  <Text variant="titleLarge">{item.summary}</Text>
+
+                  {/* <a target="_blank" href={item.newsurl}>{item.newsurl}</a> */}
+                  <Card.Actions>
+                    <FontAwesome
+                        name="link"
+                        size={45}
                         color="#134F5C"
                         backgroundColor="transparent"
                         borderRadius={10}
                         suppressHighlighting={false}
-                        onPress={() => {
-                          addBookmark(item);
-                          setRefresh(!refresh);
-                        }}
+                        onPress={() => {Linking.openURL(item.newsurl)}}
                       />
-                    ) : (
-                      <FontAwesome
-                        name="bookmark"
-                        size={30}
-                        color="#134F5C"
-                        backgroundColor="transparent"
-                        borderRadius={10}
-                        suppressHighlighting={false}
-                        onPress={() => {
-                          removeBookmark(item);
-                          setRefresh(!refresh);
-                        }}
-                      />
-                    )}
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ flexDirection: "row", justifyContent: "flex-end" }}
+                    >
+                      {!item.isSelected ? (
+                        <FontAwesome
+                          name="bookmark-o"
+                          size={45}
+                          color="#134F5C"
+                          backgroundColor="transparent"
+                          borderRadius={10}
+                          suppressHighlighting={false}
+                          onPress={() => {
+                            addBookmark(item);
+                            setRefresh(!refresh);
+                          }}
+                        />
+                      ) : (
+                        <FontAwesome
+                          name="bookmark"
+                          size={45}
+                          color="#134F5C"
+                          backgroundColor="transparent"
+                          borderRadius={10}
+                          suppressHighlighting={false}
+                          onPress={() => {
+                            removeBookmark(item);
+                            setRefresh(!refresh);
+                          }}
+                        />
+                      )}
+                    </TouchableOpacity>
+                  </Card.Actions>
                 </View>
-              ) : null}
+                
+              ) : null}   
             </Card.Content>
           </Card>
         )}

@@ -30,7 +30,7 @@ export const globalStyles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   tagText: {
-    backgroundColor: "#f5f5dc",
+    backgroundColor: "#E3F3F3",
     fontSize: 25,
     padding: 10,
     borderRadius: 100,

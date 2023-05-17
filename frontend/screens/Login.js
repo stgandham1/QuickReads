@@ -110,12 +110,12 @@ export default function LoginPage() {
           />
         </View>
         <View>
-          <Button 
+          {/* <Button 
               title="No Account"
               onPress={() => goHome({email: "NO ACCOUNT"})}
               color="#A2C4C9"
               style={styles.noAccountButton}
-            />
+            /> */}
         </View>
       </View>
     </View>
