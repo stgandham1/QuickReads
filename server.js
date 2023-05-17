@@ -90,7 +90,8 @@ app.get('/', async (req,res) => {
 
   const runPrompt = async (lang,url) => {
     const prompt = `
-      Summarize this article in ${lang} language amd in 3 different lengths, one short, one medium, and one long: ${url}
+      Summarize this article in ${lang} language and in 3 different lengths, one short, one medium, and one long: ${url}
+      The summaries should start with "short","medium" and "long"
       `;
   
     const response = await openai.createCompletion({
@@ -125,9 +126,9 @@ app.get('/', async (req,res) => {
     const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
     let arr = [];
     try {
-      console.log("hi")
       console.log(lang,topic)
       const excludedDomain = 'consent.google.com,news.google.com'; // replace with your desired excluded domain(s)
+      console.log(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`)
       const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`);
       const data = await response.json();
       let articles = data.articles;
@@ -168,43 +169,6 @@ app.get('/', async (req,res) => {
       throw error; // re-throw the error so that it can be caught by an outer try/catch block if necessary
     }
   }
-
-  app.get('/temporary', async (req, res) => {
-    try {
-      
-      let b = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;");
-      a = b.rows
-      let result = {};
-
-      // Loop through each element in array a
-      for(let i = 0; i < a.length; i++) {
-        let lang = a[i].lang;
-        let category = a[i].category;
-
-        // Add category to existing language key or create a new language key with the category
-        if(result[lang]) {
-          result[lang] = result[lang].concat(category);
-        } else {
-          result[lang] = category;
-        }
-      }
-
-      // Remove duplicates from each value in the object
-      for(let key in result) {
-        result[key] = [...new Set(result[key])];
-      }
-      res.send(result)
-      // var a = results["rows"];
-      // var categories = [];
-      // for (var i = 0; i < a.length; i++) {
-      //   categories.push(a[i].category);
-      // }
-      // res.send('Articles added successfully');  
-    } catch(error) {
-      console.error(error);
-      res.status(500).send('Server Error');
-    }
-  });
 
   app.get('/addarticlestest', async (req, res) => {
     try {
