@@ -126,13 +126,10 @@ app.get('/', async (req,res) => {
     const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
     let arr = [];
     try {
-      console.log(lang,topic)
       const excludedDomain = 'consent.google.com,news.google.com'; // replace with your desired excluded domain(s)
-      console.log(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`)
       const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`);
       const data = await response.json();
       let articles = data.articles;
-      console.log(articles)
       for(let i=0; i<5; i++) {
         let shortSummary,mediumSummary,longSummary;
         try {
@@ -143,8 +140,6 @@ app.get('/', async (req,res) => {
         } catch(error) {
           console.error(error);
         }
-        console.log("article")
-        console.log(articles[i])
         arr.push({
           title: articles[i].title,
           category: topic,
@@ -195,14 +190,11 @@ app.get('/', async (req,res) => {
       for(let key in result) {
         result[key] = [...new Set(result[key])];
       }
-      res.send(result)
-      console.log(keys)
       for(let lang in result) {
         // Get the value corresponding to the key and loop through it
         let categories = result[lang];
         for(let i = 0; i < categories.length; i++) {
           const searchResult = await doSearch(lang,categories[i]);
-          console.log(searchResult) // Wait for doSearch() to complete
           for (const article of searchResult) {
             if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
               continue
