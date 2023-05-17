@@ -126,7 +126,7 @@ app.get('/', async (req,res) => {
     let arr = [];
     try {
       const excludedDomain = 'consent.google.com,news.google.com'; // replace with your desired excluded domain(s)
-      const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=en&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`);
+      const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`);
       const data = await response.json();
       let articles = data.articles;
       console.log(articles)
@@ -231,13 +231,14 @@ app.get('/', async (req,res) => {
         // Get the value corresponding to the key and loop through it
         let categories = result[lang];
         for(let i = 0; i < categories.length; i++) {
-          const searchResult = await doSearch(lang,categories[i]); // Wait for doSearch() to complete
-          for (const article of searchResult) {
-            if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
-              continue
-            }
-            const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
-            await pool.query('INSERT INTO public.updatedarticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary) VALUES ($1,$2,$3,$4,$5,$6,$7);',[article.title,categories[i],article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary]);
+          console.log(lang,categories[i]);
+          // const searchResult = await doSearch(lang,categories[i]); // Wait for doSearch() to complete
+          // for (const article of searchResult) {
+          //   if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
+          //     continue
+          //   }
+          //   const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
+          //   await pool.query('INSERT INTO public.updatedarticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary) VALUES ($1,$2,$3,$4,$5,$6,$7);',[article.title,categories[i],article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary]);
         }
         }
       }
