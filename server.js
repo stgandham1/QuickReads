@@ -237,7 +237,7 @@ app.get('/', async (req,res) => {
       for(let i=0; i<5; i++) {
         let shortSummary,mediumSummary,longSummary;
         try {
-          const result = await runPrompt(lang,articles[i].url);
+          const result = await runPrompt("en",articles[i].url);
           shortSummary = result.shortSummary;
           mediumSummary = result.mediumSummary;
           longSummary = result.longSummary;
@@ -246,7 +246,7 @@ app.get('/', async (req,res) => {
         }
         arr.push({
           title: articles[i].title,
-          category: topic,
+          category: "hi",
           url: articles[i].url,
           imageurl: articles[i].urlToImage,
           shortsummary: shortSummary,
@@ -279,7 +279,7 @@ app.get('/', async (req,res) => {
               continue
             }
             const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
-            await pool.query('INSERT INTO public.toparticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary,lang) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);',[article.title,categories[i],article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary,lang]);
+            await pool.query('INSERT INTO public.toparticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary,lang) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);',[article.title,"None",article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary,"en"]);
         }
       res.send('Articles added successfully');  
     } catch(error) {
