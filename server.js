@@ -128,8 +128,8 @@ app.get('/', async (req,res) => {
     try {
       const excludedDomain = 'consent.google.com,news.google.com'; // replace with your desired excluded domain(s)
       // const response = await fetch(`https://newsapi.org/v2/everything?q=Health&from=2023-04-17&sortBy=publishedAt&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`);
-      console.log(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=$en&excludeDomains=${excludedDomain}&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`)
-      const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=$en&excludeDomains=${excludedDomain}&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`);
+      console.log(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`)
+      const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`);
       const data = await response.json();
       let articles = data.articles;
       console.log("hi")
