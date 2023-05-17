@@ -126,7 +126,6 @@ app.get('/', async (req,res) => {
     const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
     let arr = [];
     try {
-      console.log(`https://newsapi.org/v2/everything?q=${topic}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`)
       const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&language=${lang}&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`);
       const data = await response.json();
       let articles = data.articles;
