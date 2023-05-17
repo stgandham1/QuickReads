@@ -143,6 +143,8 @@ app.get('/', async (req,res) => {
         } catch(error) {
           console.error(error);
         }
+        console.log("article")
+        console.log(articles[i])
         arr.push({
           title: articles[i].title,
           category: topic,
@@ -193,6 +195,7 @@ app.get('/', async (req,res) => {
       for(let key in result) {
         result[key] = [...new Set(result[key])];
       }
+      console.log(keys)
       for(let lang in result) {
         // Get the value corresponding to the key and loop through it
         let categories = result[lang];
