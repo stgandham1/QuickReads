@@ -129,6 +129,7 @@ app.get('/', async (req,res) => {
       const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${todayFormatted}&to=${yesterdayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`);
       const data = await response.json();
       let articles = data.articles;
+      console.log(articles)
       for(let i=0; i<5; i++) {
         let shortSummary,mediumSummary,longSummary;
         try {
