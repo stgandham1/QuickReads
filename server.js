@@ -409,6 +409,16 @@ app.get('/', async (req,res) => {
     }
   });
 
+  app.get('/gettoparticles', async (req,res) => {
+    let temp = await pool.query("SELECT * from public.toparticles");
+    let responseList = []
+    
+    for (r of temp.rows){
+      responseList.push({title: r.title,category:r.category, newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
+    }
+    res.json(responseList)
+  });
+
   // Get Categories
   app.get('/getcategory/:id', async (req,res) => {
     let results = await pool.query("SELECT category from public.categories WHERE id = $1", [req.params.id]);
