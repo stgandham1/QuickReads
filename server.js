@@ -237,7 +237,7 @@ app.get('/', async (req,res) => {
       for(let i=0; i<5; i++) {
         let shortSummary,mediumSummary,longSummary;
         try {
-          const result = await runPrompt(lang,articles[i].url);
+          const result = await runPrompt("en",articles[i].url);
           shortSummary = result.shortSummary;
           mediumSummary = result.mediumSummary;
           longSummary = result.longSummary;
