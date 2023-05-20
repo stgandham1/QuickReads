@@ -416,7 +416,7 @@ app.get('/', async (req,res) => {
     }
   });
 
-  app.get('/gettoparticles', async (req,res) => {
+  app.get('/gettoparticles/:id', async (req,res) => { 
     let temp = await pool.query("SELECT * from public.toparticles");
     let responseList = []
     
