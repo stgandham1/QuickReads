@@ -132,7 +132,7 @@ app.get('/', async (req,res) => {
       let articles = data.articles;
       console.log("hi")
       console.log(articles);
-      for(let i=0; i<5; i++) {
+      for(let i=0; i<Math.min(5, articles.length); i++) {
         let shortSummary,mediumSummary,longSummary;
         try {
           const result = await runPrompt(lang,articles[i].url);
