@@ -416,12 +416,14 @@ app.get('/', async (req,res) => {
     }
   });
 
-  app.get('/gettoparticles/:id', async (req,res) => { 
-    let temp = await pool.query("SELECT * from public.toparticles");
+  app.get('/gettoparticles/:id', async (req,res) => {
+    let temp = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
+    temp2 = temp.rows
+    country = temp2[0]["country"]
+    let temp = await pool.query("SELECT * from public.toparticles WHERE country=$1",[country]);
     let responseList = []
-    
     for (r of temp.rows){
-      responseList.push({title: r.title,category:r.category, newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
+      responseList.push({title: r.title,newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
     }
     res.json(responseList)
   });
@@ -468,7 +470,10 @@ app.get('/', async (req,res) => {
   });
 
   app.get('/getcountry123/:id', async (req,res) => {
-    let results = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
+    let temp = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
+    temp2 = temp.rows
+    country = temp2[0]["country"]
+	  
     res.send(results.rows);
   });
 
