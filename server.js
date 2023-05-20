@@ -350,18 +350,20 @@ app.get('/', async (req,res) => {
     }
   });
   
+// GET request which fetches a user's summary length given user ID
   app.get('/getsummarylength/:id', async (req,res) => {
-    let results = await pool.query("SELECT length from public.summarylength WHERE id = $1", [req.params.id]);
+    let results = await pool.query("SELECT length from public.summarylength WHERE id = $1", [req.params.id]); //Searches summarylength table for summary length given user ID
     res.send(results["rows"][0]["length"]);
   });
 
+  // POST request which changes a user's summary length given user ID and length
   app.post('/changesummarylength', async (req, res) => {
     try {
       let id = req.body.id
-      let length = req.body.length
-      await pool.query("UPDATE public.summarylength SET length = $1 WHERE id = $2", [length, id]);
+      let length = req.body.length //Parses id and length from the body of the request
+      await pool.query("UPDATE public.summarylength SET length = $1 WHERE id = $2", [length, id]); //Changes the users summary length by searching for user ID
       res.send("Updated successfully");
-    } catch (error) {
+    } catch (error) { //Catches error
       console.error(error);
       res.status(500).send(error);
     }
@@ -372,72 +374,70 @@ app.get('/', async (req,res) => {
 
 
 
-
+  // GET request which fetches a user's country given user ID
   app.get('/getcountry/:id', async (req,res) => {
-    let results = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
+    let results = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]); //Searches country table for country given user ID
     res.send(results["rows"][0]["country"]);
   });
 
+  // POST request which changes a user's country given user ID and country
   app.post('/changecountry', async (req, res) => {
     try {
       let id = req.body.id
-      let country = req.body.country
-      await pool.query("UPDATE public.country SET country = $1 WHERE id = $2", [country, id]);
+      let country = req.body.country //Parses id and country from the body of the request
+      await pool.query("UPDATE public.country SET country = $1 WHERE id = $2", [country, id]); //Changes the users country by searching for user ID
+      res.send(currentCategories);
       res.send("Updated successfully");
-    } catch (error) {
+    } catch (error) { //Catches error
       console.error(error);
       res.status(500).send(error);
     }
   }); 
 
 
-  // Add Category
+  // POST request which adds a user's category given user ID and category
   app.post('/addcategorypost/', async (req, res) => {
     try {
-      const { id, category } = req.body;
+      const { id, category } = req.body; //Parses id and categoy from the body of the request
       const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE id=$1", [id]);
       console.log(currentCategoriesResult)
       console.log(currentCategoriesResult.rows[0])
       let currentCategories = currentCategoriesResult.rows[0].category;
       currentCategories.push(category);
-      await pool.query("UPDATE public.categories SET category = $1 WHERE id = $2", [JSON.stringify(currentCategories), id]);
+      await pool.query("UPDATE public.categories SET category = $1 WHERE id = $2", [JSON.stringify(currentCategories), id]); //Adds category to the categories table by seraching for the ID and pushing a new category to the array
       res.send(currentCategories);
-    } catch (error) {
+    } catch (error) { //Catches error
       console.error(error);
       res.status(500).send(error);
     }
   });
 
-  // Remove categories
+  // POST request which removes a user's category given user ID and category
   app.post('/removecategorypost', async (req, res) => {
     try {
-      const { id, category } = req.body;
-      await pool.query("UPDATE public.categories SET category = category - $2 WHERE id = $1", [id, category]);
+      const { id, category } = req.body; //Parses id and categoy from the body of the request
+      await pool.query("UPDATE public.categories SET category = category - $2 WHERE id = $1", [id, category]); //Removes category from the categories table by seraching for the ID
       res.send("Deleted category");
-    } catch (error) {
+    } catch (error) { //Catches error
       console.error(error);
       res.status(500).send('Server error');
     }
   });
 
-  // Route for getting top articles given the id as a parameter
-  app.get('/gettoparticles/:id', async (req,res) => {
-    // Getting the country for the given id 
-    let temp1 = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
-    temp2 = temp1.rows
-    country = temp2[0]["country"]
-    // fetching all the articles for the country that user has selected
-    let temp = await pool.query("SELECT * from public.toparticles WHERE country=$1",[country]);
+  // GET request which fetches a user's news categories given user ID
+  app.get('/gettoparticles', async (req,res) => {
+    let temp = await pool.query("SELECT * from public.toparticles");
     let responseList = []
+    
     for (r of temp.rows){
-      responseList.push({title: r.title,newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
+      responseList.push({title: r.title,category:r.category, newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
     }
     res.json(responseList)
   });
 
-  // Get Categories
-  app.get('/getcategory/:id', async (req,res) => {
-    let results = await pool.query("SELECT category from public.categories WHERE id = $1", [req.params.id]);
+// GET request which fetches a user's news categories given user ID
+app.get('/getcategory/:id', async (req,res) => {
+    let results = await pool.query("SELECT category from public.categories WHERE id = $1", [req.params.id]); //Searches for category associated with the user ID
     res.send(results["rows"][0]["category"]);
   });
 
@@ -470,37 +470,31 @@ app.get('/', async (req,res) => {
       res.json(responseList)
     });
 
-//get bookmark
+// GET request which fetches a user's bookmarks given user ID
   app.get('/getbookmarks/:id', async (req,res) => {
-    let results = await pool.query("SELECT url from public.bookmarks WHERE id = $1", [req.params.id]);
+    let results = await pool.query("SELECT url from public.bookmarks WHERE id = $1", [req.params.id]); //Searches for url associated with the user ID
     res.send(results.rows);
   });
 
-  app.get('/getcountry123/:id', async (req,res) => {
-    let temp = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
-    temp2 = temp.rows
-    country = temp2[0]["country"]
-	  
-    res.send(results.rows);
-  });
-
+// POST request which removes a user's bookmark given user ID and url of the bookmark
   app.post('/removebookmarkpost', async (req, res) => {
     try {
-      const { id, url } = req.body;
-      await pool.query("DELETE FROM public.bookmarks WHERE id = $1 and url = $2", [id, url]);
+      const { id, url } = req.body; //Parses id and url from the body of the request
+      await pool.query("DELETE FROM public.bookmarks WHERE id = $1 and url = $2", [id, url]); //Removes bookmark url from the bookmarks table by seraching for the ID and URL
       res.send();
-    } catch (error) {
+    } catch (error) { //Catches error
       console.error(error);
       res.status(500).send('Server error');
     }
   });
   
+  // POST request which adds a user's bookmark given user ID and url of the bookmark
   app.post('/addbookmarkpost', async (req, res) => {
     try {
-      const { id, url } = req.body;
-      await pool.query("INSERT INTO public.bookmarks(id,url) VALUES ($1,$2)", [id,url]);
+      const { id, url } = req.body; //Parses id and url from the body of the request
+      await pool.query("INSERT INTO public.bookmarks(id,url) VALUES ($1,$2)", [id,url]); //Adds user id and bookmark url to the bookmarks table
       res.send();
-    } catch (error) {
+    } catch (error) { //Catches error
       console.error(error);
       res.status(500).send(error);
     }
