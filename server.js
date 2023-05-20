@@ -202,7 +202,7 @@ app.get('/', async (req,res) => {
             if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
               continue
             }
-            const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
+            const imageUrl = article.imageurl ? article.imageurl : 'https://media.istockphoto.com/id/1166832903/photo/detail.jpg?b=1&s=170667a&w=0&k=20&c=0z5bwVx4SHoU3txpY-Q6we_XtQluSCPPLaM5zZ9UO74=';
             await pool.query('INSERT INTO public.updatedarticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary,lang) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);',[article.title,categories[i],article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary,lang]);
         }
         }
