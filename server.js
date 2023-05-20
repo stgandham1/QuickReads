@@ -276,7 +276,7 @@ app.get('/', async (req,res) => {
 	  let temp = await pool.query("SELECT DISTINCT country FROM public.country");
           countries = temp.rows;
 	  for (let i = 0; i < countries.length; i++) {
-            const searchResult = await topdoSearch(a[i]["country"]);
+            const searchResult = await topdoSearch(countries[i]["country"]);
             for (const article of searchResult) {
               if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
                 continue
