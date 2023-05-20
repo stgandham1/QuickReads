@@ -400,8 +400,6 @@ app.get('/', async (req,res) => {
     try {
       const { id, category } = req.body; //Parses id and categoy from the body of the request
       const currentCategoriesResult = await pool.query("SELECT category FROM public.categories WHERE id=$1", [id]);
-      console.log(currentCategoriesResult)
-      console.log(currentCategoriesResult.rows[0])
       let currentCategories = currentCategoriesResult.rows[0].category;
       currentCategories.push(category);
       await pool.query("UPDATE public.categories SET category = $1 WHERE id = $2", [JSON.stringify(currentCategories), id]); //Adds category to the categories table by seraching for the ID and pushing a new category to the array
@@ -424,13 +422,17 @@ app.get('/', async (req,res) => {
     }
   });
 
-  // GET request which fetches a user's news categories given user ID
-  app.get('/gettoparticles', async (req,res) => {
-    let temp = await pool.query("SELECT * from public.toparticles");
+  // Route for getting top articles given the id as a parameter
+  app.get('/gettoparticles/:id', async (req,res) => {
+    // Getting the country for the given id 
+    let temp1 = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
+    temp2 = temp1.rows
+    country = temp2[0]["country"]
+    // fetching all the articles for the country that user has selected
+    let temp = await pool.query("SELECT * from public.toparticles WHERE country=$1",[country]);
     let responseList = []
-    
     for (r of temp.rows){
-      responseList.push({title: r.title,category:r.category, newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
+      responseList.push({title: r.title,newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
     }
     res.json(responseList)
   });
@@ -463,8 +465,6 @@ app.get('/getcategory/:id', async (req,res) => {
       let responseList = []
       
       for (r of temp.rows){
-        console.log(r.title)
-        console.log(r.summary)
         responseList.push({title: r.title,category:r.category, newsurl:r.url,imageurl:r.imageurl,shortsummary:r.shortsummary,mediumsummary:r.mediumsummary,longsummary:r.longsummary})
       }
       res.json(responseList)
