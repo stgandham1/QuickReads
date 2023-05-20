@@ -110,8 +110,9 @@ app.get('/', async (req,res) => {
   
   
   
-  
+  // Main Function for getting articles from newsapi and getting the summaries for each article from chatgpt api
   async function fetchArticles(lang,topic) {
+    // Getting today's and yesterday's date in the correct format to pass to newsapi
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
@@ -124,14 +125,15 @@ app.get('/', async (req,res) => {
     const monthYesterday = String(yesterday.getMonth() + 1).padStart(2, '0');
     const dayYesterday = String(yesterday.getDate()).padStart(2, '0');
     const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
-    let arr = [];
+    // articles_arr will consists of all the article objects
+    let articles_arr = [];
     try {
-      const excludedDomain = 'consent.google.com,news.google.com'; 
+      const excludedDomain = 'consent.google.com,news.google.com';
+      // Making a request to the newsapi 
       const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${yesterdayFormatted}&to=${todayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`);
       const data = await response.json();
       let articles = data.articles;
-      console.log("hi")
-      console.log(articles);
+      // Maximum 5 articles will be returned. If the newsapi gives less than 5 articles, then only that many articles will be returned.
       for(let i=0; i<Math.min(5, articles.length); i++) {
         let shortSummary,mediumSummary,longSummary;
         try {
@@ -142,7 +144,8 @@ app.get('/', async (req,res) => {
         } catch(error) {
           console.error(error);
         }
-        arr.push({
+        // Adding the article object to the articles array
+        articles_arr.push({
           title: articles[i].title,
           category: topic,
           url: articles[i].url,
@@ -152,25 +155,28 @@ app.get('/', async (req,res) => {
           longsummary: longSummary
         });
       }
-      return arr;
+      return articles_arr;
     } catch(error) {
       console.error(error);
-      throw error; // re-throw the error so that it can be caught by an outer try/catch block if necessary
+      throw error; 
     }
   }
   
+  // This function is called by the route and it calls the fetcharticles route. It returns array of articles for given language and category (topic)
   async function doSearch(lang,topic) {
     try {
       const result = await fetchArticles(lang,topic);
       return result;
     } catch (error) {
       console.error(error);
-      throw error; // re-throw the error so that it can be caught by an outer try/catch block if necessary
+      throw error; 
     }
   }
-
-  app.get('/addarticlestest', async (req, res) => {
+  // This is the route for adding main feed articles to the database table
+  app.get('/addarticles', async (req, res) => {
     try {
+      // Removing previous articles from the table
+      await pool.query("DELETE FROM public.updatedarticles")
       let b = await pool.query("SELECT u.lang, c.category FROM public.authorization u JOIN public.categories c ON c.id = u.id;");
       a = b.rows
       let result = {};
@@ -192,12 +198,14 @@ app.get('/', async (req,res) => {
       for(let key in result) {
         result[key] = [...new Set(result[key])];
       }
-      console.log(result)
+      // result consists of key value pairs where key is language and value is array of categories
       for(let lang in result) {
         // Get the value corresponding to the key and loop through it
         let categories = result[lang];
+        // Looping through each category for the current language
         for(let i = 0; i < categories.length; i++) {
           const searchResult = await doSearch(lang,categories[i]);
+          // Adding all the articles to the database for the current language and category 
           for (const article of searchResult) {
             if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
               continue
@@ -214,29 +222,18 @@ app.get('/', async (req,res) => {
     }
   });
 
+  // This function takes country as parameter and returns an array of article objects of top news for that country. 
   async function topfetchArticles(country) {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yearToday = today.getFullYear();
-    const monthToday = String(today.getMonth() + 1).padStart(2, '0');
-    const dayToday = String(today.getDate()).padStart(2, '0');
-    const todayFormatted = `${yearToday}-${monthToday}-${dayToday}`;
-    
-    const yearYesterday = yesterday.getFullYear();
-    const monthYesterday = String(yesterday.getMonth() + 1).padStart(2, '0');
-    const dayYesterday = String(yesterday.getDate()).padStart(2, '0');
-    const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
-    let arr = [];
     try {
+      let articles_arr = [];
       const response = await fetch(`https://newsapi.org/v2/top-headlines?country=${country}&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`);
       const data = await response.json();
       let articles = data.articles;
-      console.log("hi")
-      console.log(articles);
+      // Adding only 5 articles
       for(let i=0; i<5; i++) {
         let shortSummary,mediumSummary,longSummary;
         try {
+          // Getting the summary of three lengths from chatgpt api using runprompt() function
           const result = await runPrompt("english",articles[i].url);
           shortSummary = result.shortSummary;
           mediumSummary = result.mediumSummary;
@@ -244,9 +241,9 @@ app.get('/', async (req,res) => {
         } catch(error) {
           console.error(error);
         }
-        arr.push({
+        // Adding article object to the articles array
+        articles_arr.push({
           title: articles[i].title,
-          category: "hi",
           url: articles[i].url,
           imageurl: articles[i].urlToImage,
           shortsummary: shortSummary,
@@ -254,28 +251,34 @@ app.get('/', async (req,res) => {
           longsummary: longSummary
         });
       }
-      return arr;
+      return articles_arr;
     } catch(error) {
       console.error(error);
-      throw error; // re-throw the error so that it can be caught by an outer try/catch block if necessary
+      throw error; 
     }
   }
   
+  // This function is called by the addtoparticles route and it calls the fetcharticles route. It returns array of articles for given language and category (topic)
   async function topdoSearch(country) {
     try {
       const result = await topfetchArticles(country);
       return result;
     } catch (error) {
       console.error(error);
-      throw error; // re-throw the error so that it can be caught by an outer try/catch block if necessary
+      throw error; 
     }
   }
-
-  app.get('/addtoparticlestest', async (req, res) => {
+  // Route for adding articles to the top news data table
+  app.get('/addtoparticles', async (req, res) => {
     try {
+      // Removing previous data from the table
+      await pool.query("DELETE FROM public.toparticles"); 
+      // Getting list of distinct countries that all the users have selected
 	  let temp = await pool.query("SELECT DISTINCT country FROM public.country");
-          countries = temp.rows;
+      countries = temp.rows;
+      // Looping through each country 
 	  for (let i = 0; i < countries.length; i++) {
+            // Fetching the articles for that country and adding it to the database table
             const searchResult = await topdoSearch(countries[i]["country"]);
             for (const article of searchResult) {
               if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
@@ -291,6 +294,7 @@ app.get('/', async (req,res) => {
       res.status(500).send('Server Error');
     }
   });
+
   app.get('/getcountries/', async (req,res) => {
     let results = await pool.query("SELECT DISTINCT country FROM public.country");
     res.send(results.rows);
@@ -416,10 +420,13 @@ app.get('/', async (req,res) => {
     }
   });
 
+  // Route for getting top articles given the id as a parameter
   app.get('/gettoparticles/:id', async (req,res) => {
+    // Getting the country for the given id 
     let temp1 = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
     temp2 = temp1.rows
     country = temp2[0]["country"]
+    // fetching all the articles for the country that user has selected
     let temp = await pool.query("SELECT * from public.toparticles WHERE country=$1",[country]);
     let responseList = []
     for (r of temp.rows){
