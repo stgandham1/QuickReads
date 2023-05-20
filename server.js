@@ -70,7 +70,7 @@ app.get('/', async (req,res) => {
           name,
         ]);
         await pool.query("INSERT INTO public.categories(id) VALUES ($1)", [id]);
-        await pool.query("INSERT INTO public.country(id,country) VALUES ($1,$2)", [id,"en"]);
+        await pool.query("INSERT INTO public.country(id,country) VALUES ($1,$2)", [id,"us"]);
 	await pool.query("INSERT INTO public.summarylength(id,length) VALUES ($1,$2)", [id,"medium"]);
 
         user = result.rows[0];
@@ -288,7 +288,10 @@ app.get('/', async (req,res) => {
       res.status(500).send('Server Error');
     }
   });
-
+  app.get('/getcountries/', async (req,res) => {
+    let results = await pool.query("SELECT DISTINCT country FROM public.country");
+    res.send(results.rows);
+  });
 
   app.get('/getlang/:id', async (req, res) => {
     try {
