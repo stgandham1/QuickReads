@@ -467,6 +467,10 @@ app.get('/', async (req,res) => {
     res.send(results.rows);
   });
 
+  app.get('/getcountry123/:id', async (req,res) => {
+    let results = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
+    res.send(results.rows);
+  });
 
   app.post('/removebookmarkpost', async (req, res) => {
     try {
