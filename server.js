@@ -214,7 +214,7 @@ app.get('/', async (req,res) => {
     }
   });
 
-  async function topfetchArticles() {
+  async function topfetchArticles(country) {
     const today = new Date();
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
@@ -229,7 +229,7 @@ app.get('/', async (req,res) => {
     const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
     let arr = [];
     try {
-      const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`);
+      const response = await fetch(`https://newsapi.org/v2/top-headlines?country=${country}&apiKey=3bf34ff8fdb24f628e456a5fc1eb7131`);
       const data = await response.json();
       let articles = data.articles;
       console.log("hi")
@@ -237,7 +237,7 @@ app.get('/', async (req,res) => {
       for(let i=0; i<5; i++) {
         let shortSummary,mediumSummary,longSummary;
         try {
-          const result = await runPrompt("en",articles[i].url);
+          const result = await runPrompt("same language as article",articles[i].url);
           shortSummary = result.shortSummary;
           mediumSummary = result.mediumSummary;
           longSummary = result.longSummary;
@@ -261,9 +261,9 @@ app.get('/', async (req,res) => {
     }
   }
   
-  async function topdoSearch() {
+  async function topdoSearch(country) {
     try {
-      const result = await topfetchArticles();
+      const result = await topfetchArticles(country);
       return result;
     } catch (error) {
       console.error(error);
@@ -273,16 +273,19 @@ app.get('/', async (req,res) => {
 
   app.get('/addtoparticlestest', async (req, res) => {
     try {
-	  
-          const searchResult = await topdoSearch();
-          for (const article of searchResult) {
-            if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
-              continue
+	  let temp = await pool.query("SELECT DISTINCT country FROM public.country");
+          countries = temp.rows;
+	  for (let i = 0; i < countries.length; i++) {
+            const searchResult = await topdoSearch(a[i]["country"]);
+            for (const article of searchResult) {
+              if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
+                continue
+              }
+              const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
+              await pool.query('INSERT INTO public.toparticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary,lang) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);',[article.title,"None",article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary,"en"]);
             }
-            const imageUrl = article.imageurl ? article.imageurl : 'https://img.freepik.com/premium-photo/golden-retriever-lying-panting-isolated-white_191971-16974.jpg';
-            await pool.query('INSERT INTO public.toparticles(title, category, url, imageurl, shortsummary, mediumsummary, longsummary,lang) VALUES ($1,$2,$3,$4,$5,$6,$7,$8);',[article.title,"None",article.url,imageUrl,article.shortsummary,article.mediumsummary,article.longsummary,"en"]);
-        }
-      res.send('Articles added successfully');  
+          }
+          res.send('Articles added successfully');  
     } catch(error) {
       console.error(error);
       res.status(500).send('Server Error');
