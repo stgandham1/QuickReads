@@ -417,8 +417,8 @@ app.get('/', async (req,res) => {
   });
 
   app.get('/gettoparticles/:id', async (req,res) => {
-    let temp = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
-    temp2 = temp.rows
+    let temp1 = await pool.query("SELECT country from public.country WHERE id = $1", [req.params.id]);
+    temp2 = temp1.rows
     country = temp2[0]["country"]
     let temp = await pool.query("SELECT * from public.toparticles WHERE country=$1",[country]);
     let responseList = []
