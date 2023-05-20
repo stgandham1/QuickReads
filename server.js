@@ -126,7 +126,7 @@ app.get('/', async (req,res) => {
     const yesterdayFormatted = `${yearYesterday}-${monthYesterday}-${dayYesterday}`;
     let arr = [];
     try {
-      const excludedDomain = 'consent.google.com,news.google.com'; // replace with your desired excluded domain(s)
+      const excludedDomain = 'consent.google.com,news.google.com'; 
       const response = await fetch(`https://newsapi.org/v2/everything?q=${topic}&from=${yesterdayFormatted}&to=${todayFormatted}&language=${lang}&excludeDomains=${excludedDomain}&apiKey=b96538face724581aae3298f379c3895`);
       const data = await response.json();
       let articles = data.articles;
@@ -273,6 +273,7 @@ app.get('/', async (req,res) => {
 
   app.get('/addtoparticlestest', async (req, res) => {
     try {
+	  
           const searchResult = await topdoSearch();
           for (const article of searchResult) {
             if (article.shortsummary === null || article.mediumsummary === null || article.longsummary === null){
@@ -483,33 +484,5 @@ app.get('/', async (req,res) => {
     }
   });
   
-  app.get('/getblacklist/:id', async (req,res) => {
-    let results = await pool.query("SELECT site from public.blacklist WHERE id = $1", [req.params.id]);
-    let temp = results.rows
-    let sites = temp.map(obj => obj.site)
-    res.send(sites);
-  });
-
-  app.post('/addblacklist', async (req, res) => {
-    try {
-      const { id, site } = req.body;
-      await pool.query("INSERT INTO public.blacklist(id,site) VALUES ($1,$2)", [id,site]);
-      res.send();
-    } catch (error) {
-      console.error(error);
-      res.status(500).send(error);
-    }
-  });
-
-  app.post('/removeblacklist', async (req, res) => {
-    try {
-      const { id, site } = req.body;
-      await pool.query("DELETE FROM public.blacklist WHERE id = $1 and site = $2", [id, site]);
-      res.send();
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Server error');
-    }
-  });
 
   app.listen(8080, () => {console.log("Running")});
