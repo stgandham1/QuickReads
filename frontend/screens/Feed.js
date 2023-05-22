@@ -18,10 +18,13 @@ export default function Feed({ navigation }) {
   const [reviews, setReviews] = useState([]);
   const [refresh, setRefresh] = React.useState(false);
   const [selectedBookmark, setselectedBookmark] = useState([]);
+  const [present, setPresent] = useState([]);
+
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
   let accessToken = global.id;
-  let userLength = "longsummary";
+  let userLength = (global.userLength == null)? "mediumsummary" : global.userLength;
+
   const [catlist, setCatlist] = useState([]);
   async function getUserCategories() {
     console.log(root + "/getcategory/" + accessToken);
@@ -52,13 +55,13 @@ export default function Feed({ navigation }) {
         console.log(responseJSON);
         if (responseJSON == "medium") {
           console.log("set length to mediun");
-          userLength = "mediumsummary";
+          global.userLength = "mediumsummary";
         } else if (responseJSON == "long") {
           console.log("set length to long");
-          userLength = "longsummary";
+          global.userLength = "longsummary";
         } else {
           console.log("set length to short");
-          userLength = "shortsummary";
+          global.userLength = "shortsummary";
         }
       })
       .catch();
@@ -196,6 +199,7 @@ export default function Feed({ navigation }) {
       refreshArticles();
       return;
     }
+    console.log("ARTICLES WITH " + userLength)
     console.log(root + "/getarticlesbycategory/" + cat);
     const articleRequest = await fetch(root + "/getarticlesbycategory/" + cat, {
       method: "GET",

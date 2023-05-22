@@ -12,24 +12,26 @@ import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { globalStyles } from "../styles/global";
 
 const Tab = createBottomTabNavigator();
+
 const BottomTabNavigator = ({route}) => {
   const { userInfo } = route.params;
   //GETS THE USER SUMMARY LENGTH//
-  async function getUserCategories() {
-    console.log(root+"/getcategory/"+accessToken); 
-    const request = await fetch(root+"/getcategory/"+accessToken, {
-      method: "GET",
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((responseJSON) => {
-        let cats = responseJSON;
-        setCatlist((oldArr) => cats);
-      })
-      .catch();
-    return;
-  }
+  // accessToken = userInfo.id; 
+  // async function getUserCategories() {
+  //   console.log(root+"/getcategory/"+accessToken); 
+  //   const request = await fetch(root+"/getcategory/"+accessToken, {
+  //     method: "GET",
+  //   })
+  //     .then((response) => {
+  //       return response.json();
+  //     })
+  //     .then((responseJSON) => {
+  //       let cats = responseJSON;
+  //       setCatlist((oldArr) => cats);
+  //     })
+  //     .catch();
+  //   return;
+  // }
 
   return (
       <Tab.Navigator 
