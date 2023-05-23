@@ -2,12 +2,10 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import Feed from "../screens/Feed";
-import ReviewDetail from "../screens/reviewDetails";
 import Category from "../screens/Category";
 import Setting from "../screens/setting";
 import Newsletter from "../screens/Newsletter";
 import Bookmark from "../screens/Bookmark";
-
 
 const Stack = createNativeStackNavigator();
 
@@ -23,7 +21,6 @@ const HomeStackNavigator = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Feed" component={Feed} />
-      <Stack.Screen name="ReviewDetail" component={ReviewDetail} />
     </Stack.Navigator>
   );
 };
@@ -41,7 +38,6 @@ const SettingStackNavigator = () => {
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Settings" component={Setting} />
       <Stack.Screen name="Bookmark" component={Bookmark} />
-      <Stack.Screen name="ReviewDetail" component={ReviewDetail} />
     </Stack.Navigator>
   );
 };
