@@ -74,6 +74,9 @@ export const globalStyles = StyleSheet.create({
   newsCard: {
     backgroundColor: "#f2f7f7",
   },
+  errorText: {
+    color: 'grey'
+  },
   input: {
     backgroundColor: "white",
     paddingVertical: 10,

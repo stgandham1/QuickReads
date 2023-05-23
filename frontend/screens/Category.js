@@ -2,18 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Card, Text, List, shadow,} from "react-native-paper";
 import { TextInput, StyleSheet, View, SafeAreaView, KeyboardAvoidingView, Button, FlatList } from "react-native";
 import { globalStyles } from "../styles/global";
-// import CardActions from "react-native-paper/lib/typescript/src/components/Card/CardActions";
 
 export default function Category() {
-  const [keyword, setKeyword] = useState(""); //Keyword to Search.
-  const [catlist, setCatlist] = useState([]); //User's categories
-  const [objlist, setObjlist] = useState([]); //User's categories
-  const [refresh, setRefresh] = React.useState(false);
+  const [keyword, setKeyword] = useState(""); // Keyword to Search.
+  const [catlist, setCatlist] = useState([]); // User's categories
+  const [objlist, setObjlist] = useState([]); // User's categories
+  const [error, setError] = useState(" "); // Error Message
+  // const [refresh, setRefresh] = React.useState(false); // Refresh Page
+  let accessToken = global.id; // Save global.id as accessToken
+  let root ="http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; 
 
-  let accessToken = global.id; 
-  let root ="http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com"; // SHOULD BE SAME ON ALL PAGES: MAKE GLOBAL?
-  console.log("Entering Categories")
-
+  // PAGE FUNCTIONS //
+  /** Gets user's categories from database and set them as catlist */
   async function getUserCategories() {
     console.log(root+"/getcategory/"+accessToken); 
     const request = await fetch(root+"/getcategory/"+accessToken, {
@@ -30,20 +30,24 @@ export default function Category() {
       .catch();
     return;
   }
+  /** Add Keyword in Input to Database */
   async function handleAddKeyword() {
+    // Check if Keyword Empty or Already Exists
     setKeyword(keyword.trim()); 
     if (keyword.length == 0) {
       console.log("Keyword is Empty!");
-      setKeyword(""); 
+      setError("Keyword is Empty");
+      setKeyword("");
       return; 
     }
     if (catlist.includes(keyword)) {
-      console.log("Keyword Already Exists!");
-      setKeyword(""); 
+      console.log(catlist);
+      setError("Keyword Already Exists");
+      setKeyword(" "); 
       return; 
     }
+    // Otherwise, add to database
     let body = {category: keyword, id: accessToken};
-    console.log(body);
     const request = await fetch(root+"/addcategorypost", {
       method: "POST",
       headers: {
@@ -56,9 +60,12 @@ export default function Category() {
       })
       .catch((error) => {console.log(error);});
       console.log("Adding " + keyword + " to user list of Categories");
-      setKeyword("");
+      setKeyword(" ");
       getUserCategories();
   }
+  /** Remove keyword from database
+   * @Param removedKeyword is keyword to remove from Database
+   */
   async function handleRemoveKeyword(removedKeyword) {
     let body = {category: removedKeyword, id: accessToken};
     console.log(body);
@@ -73,7 +80,7 @@ export default function Category() {
       console.log("Removing " + removedKeyword + " from user list of Categories");
       getUserCategories();
   }
-
+  /** Asynchonously get User Categories */
   useEffect(() => {
     async function wait() {
       getUserCategories();
@@ -81,6 +88,7 @@ export default function Category() {
     wait();
   }, []);
 
+  // RENDER PAGE //
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView style={styles.inputContainer} behavior="padding">
@@ -90,11 +98,12 @@ export default function Category() {
           value={keyword}
           onChangeText={(input) => {
             setKeyword(input);
+            setError(" ");
           }}
           style={styles.catInput}
         />
       </KeyboardAvoidingView>
-
+      <Text style={globalStyles.errorText}>{error}</Text>
       <Button
         title="Add Category"
         onPress={handleAddKeyword}
