@@ -7,10 +7,12 @@ import { FontAwesome } from "@expo/vector-icons";
 export default function About() {
   const root =
     "http://quickreads-env.eba-nmhvwvfp.us-east-1.elasticbeanstalk.com";
-  let accessToken = global.id;
-  const [chosenLang, setChosenLang] = useState("");
-  const [chosenCountry, setChosenCountry] = useState("");
+  let accessToken = global.id; // Save global.id as accessToken
+  const [chosenLang, setChosenLang] = useState(""); // user's chosen language
+  const [chosenCountry, setChosenCountry] = useState(""); // user's chosen country
+  // user's chosen word length, 1 means short, 2 means medium, 3 means long
   const [wordLength, setWordLength] = useState(2);
+  /* get language from backend and change user's chosen language to it */
   async function getLang() {
     console.log(root + "/getlang/" + accessToken);
     const request = await fetch(root + "/getlang/" + accessToken, {
@@ -24,7 +26,7 @@ export default function About() {
       })
       .catch();
   }
-
+  /* get country from backend and change user's chosen country to it */
   async function getCountry() {
     console.log(root + "/getcountry/" + accessToken);
     const request = await fetch(root + "/getcountry/" + accessToken, {
@@ -39,6 +41,7 @@ export default function About() {
       })
       .catch();
   }
+  /* get length from backend and change user's chosen length to it */
   async function getLength() {
     console.log(root + "/getsummarylength/" + accessToken);
     const request = await fetch(root + "/getsummarylength/" + accessToken, {
@@ -60,7 +63,7 @@ export default function About() {
       })
       .catch();
   }
-
+  /* add language to backend */
   async function addLangToBackend(item) {
     const body = { id: accessToken, lang: item };
     try {
@@ -78,7 +81,7 @@ export default function About() {
       console.error("Error occurred:", error.message);
     }
   }
-
+  /* add country to backend */
   async function addCountryToBackend(item) {
     const body = { id: accessToken, country: item };
     try {
@@ -96,7 +99,7 @@ export default function About() {
       console.error("Error occurred:", error.message);
     }
   }
-
+  /* add length to backend */
   async function addLengthToBackend(item) {
     const body = { id: accessToken, length: item };
     try {
@@ -114,6 +117,7 @@ export default function About() {
       console.error("Error occurred:", error.message);
     }
   }
+  /* every time visit setting page, refresh language, country and summary length */
 
   useEffect(() => {
     getLang();
@@ -121,13 +125,16 @@ export default function About() {
     getLength();
   }, []);
   const navigation = useNavigation();
+  /* press got to login page */
   const pressHandler = () => {
     navigation.replace("Login");
   };
+  /* press go to bookmark page */
   const BookmarkPressHandler = () => {
     navigation.navigate("Bookmark");
   };
-  console.log("Entering Settings");
+
+  /* press handler to change summary length */
 
   const shortPress = () => {
     setWordLength(1);
@@ -145,6 +152,7 @@ export default function About() {
     console.log("choose long word length");
   };
   const countries = [
+    // all countries user cna choose
     "ar",
     "de",
     "en",
